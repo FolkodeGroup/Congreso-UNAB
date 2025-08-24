@@ -1,5 +1,7 @@
+const API_BASE = "http://192.168.1.101:8000/api";
+
 export async function registrarAsistencia(data: any) {
-  const res = await fetch('http://127.0.0.1:8000/api/registrar-asistencia/', {
+  const res = await fetch(`${API_BASE}/registrar-asistencia/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
@@ -8,7 +10,7 @@ export async function registrarAsistencia(data: any) {
 }
 // Utilidades para consumir la API del backend
 export async function inscribirIndividual(data: any) {
-  const res = await fetch('http://127.0.0.1:8000/api/inscripcion/', {
+  const res = await fetch(`${API_BASE}/inscripcion/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
@@ -17,7 +19,7 @@ export async function inscribirIndividual(data: any) {
 }
 
 export async function inscribirGrupal(data: any) {
-  const res = await fetch('http://127.0.0.1:8000/api/inscripcion-grupal/', {
+  const res = await fetch(`${API_BASE}/inscripcion-grupal/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)

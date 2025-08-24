@@ -29,11 +29,23 @@ def api_registrar_asistencia(request):
 	except Registration.DoesNotExist:
 		return Response({'error': 'Registro de inscripción no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 	if reg.attended_at:
-		return Response({'message': 'Asistencia ya registrada', 'attended_at': reg.attended_at}, status=status.HTTP_200_OK)
+		# Si ya existe certificado, devolver info
+		cert = None
+		try:
+			from .models import Certificate
+			cert = Certificate.objects.get(registration=reg)
+		except Exception:
+			pass
+		return Response({'message': 'Asistencia ya registrada', 'attended_at': reg.attended_at, 'certificate_id': cert.id if cert else None}, status=status.HTTP_200_OK)
 	from django.utils import timezone
 	reg.attended_at = timezone.now()
 	reg.save()
-	return Response({'message': 'Asistencia registrada', 'attended_at': reg.attended_at}, status=status.HTTP_200_OK)
+	# Crear certificado si no existe
+	from .models import Certificate
+	cert, created = Certificate.objects.get_or_create(registration=reg)
+	if created or not cert.pdf:
+		cert.generate_pdf()
+	return Response({'message': 'Asistencia registrada', 'attended_at': reg.attended_at, 'certificate_id': cert.id}, status=status.HTTP_200_OK)
 
 
 

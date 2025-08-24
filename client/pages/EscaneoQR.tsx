@@ -11,6 +11,7 @@ export default function EscaneoQR() {
   const [mensaje, setMensaje] = useState<string|null>(null);
   const [error, setError] = useState<string|null>(null);
   const [asistencia, setAsistencia] = useState<any>(null);
+  const [certId, setCertId] = useState<number|null>(null);
   const [showScanner, setShowScanner] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -19,10 +20,20 @@ export default function EscaneoQR() {
     setError(null);
     setAsistencia(null);
     let payload: any = {};
-    if (/^\d+$/.test(valor)) {
-      payload.attendee_id = Number(valor);
-    } else if (valor.includes('@')) {
-      payload.email = valor;
+    let cleanValor = valor;
+    // Si el valor viene en formato 'asistente:<id>:<email>', extraer solo el email
+    if (cleanValor.startsWith('asistente:')) {
+      const partes = cleanValor.split(':');
+      if (partes.length === 3) {
+        cleanValor = partes[2];
+      } else if (partes.length === 2) {
+        cleanValor = partes[1];
+      }
+    }
+    if (/^\d+$/.test(cleanValor)) {
+      payload.attendee_id = Number(cleanValor);
+    } else if (cleanValor.includes('@')) {
+      payload.email = cleanValor;
     } else {
       setError('Debes ingresar un email o ID válido.');
       return;
@@ -32,13 +43,21 @@ export default function EscaneoQR() {
       if (resp.message) {
         setMensaje(resp.message);
         setAsistencia(resp);
+        if (resp.certificate_id) {
+          setCertId(resp.certificate_id);
+        } else {
+          setCertId(null);
+        }
       } else if (resp.error) {
         setError(resp.error);
+        setCertId(null);
       } else {
         setError('Error desconocido.');
+        setCertId(null);
       }
     } catch (err) {
       setError('No se pudo conectar con el servidor.');
+      setCertId(null);
     }
   };
 
@@ -92,6 +111,23 @@ export default function EscaneoQR() {
               {error && <div className="mt-4 p-3 bg-red-100 text-red-800 rounded">{error}</div>}
               {asistencia?.attended_at && (
                 <div className="mt-2 text-sm text-gray-700">Asistió: {new Date(asistencia.attended_at).toLocaleString()}</div>
+              )}
+              {certId && (
+                <Button
+                  type="button"
+                  className="mt-4 w-full"
+                  onClick={() => {
+                    const url = `/api/certificates/${certId}/download/`;
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', `certificado_${certId}.pdf`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                >
+                  Descargar certificado PDF
+                </Button>
               )}
             </CardContent>
           </Card>

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-2zba+jiuh_gqthifa5*y7illxqrj8oz03yv005)g0-wfpi@o1d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.101']
 
 
 
@@ -149,9 +149,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173', # Vite development server
 ]
 CORS_ALLOW_ALL_ORIGINS = True # For development, consider refining in production
+
+# Media files (PDFs, imágenes, etc)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

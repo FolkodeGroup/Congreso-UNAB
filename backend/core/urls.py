@@ -15,9 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
 
 from api import views as api_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', api_views.landing_page, name='landing_page'),
@@ -29,4 +32,9 @@ urlpatterns = [
     path('api/inscripcion/', api_views.api_register_individual, name='api_register_individual'),
     path('api/inscripcion-grupal/', api_views.api_register_group, name='api_register_group'),
     path('api/registrar-asistencia/', api_views.api_registrar_asistencia, name='api_registrar_asistencia'),
+    path('api/', include('api.urls')),  # Endpoints RESTful DRF
 ]
+
+# Servir archivos media en desarrollo
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
