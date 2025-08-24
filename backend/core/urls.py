@@ -23,4 +23,7 @@ urlpatterns = [
     path('inscripcion/', api_views.register_individual, name='register_individual'),
     path('inscripcion-grupal/', api_views.register_group, name='register_group'),
     path('inscripcion/exito/', api_views.registration_success, name='registration_success'),
+    # Endpoints API para integración frontend
+    path('api/inscripcion/', api_views.api_register_individual, name='api_register_individual'),
+    path('api/inscripcion-grupal/', api_views.api_register_group, name='api_register_group'),
 ]

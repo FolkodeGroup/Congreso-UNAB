@@ -29,11 +29,19 @@ ALLOWED_HOSTS = []
 
 
 
+
 # Application definition
 
 import os
 from dotenv import load_dotenv
 load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+# Configuración CORS para permitir peticiones del frontend
+CORS_ALLOW_ALL_ORIGINS = True  # Para desarrollo, permite cualquier origen
+# Para producción, usa:
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',  # Cambia por la URL de tu frontend
+# ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
