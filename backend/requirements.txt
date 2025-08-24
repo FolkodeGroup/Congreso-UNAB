@@ -4,3 +4,11 @@ django-cors-headers==4.7.0
 djangorestframework==3.16.1
 sqlparse==0.5.3
 tzdata==2025.2
+
+# Para generación de QR
+qrcode==7.4.2
+Pillow==10.3.0
+
+# Para generación de PDF
+reportlab==4.2.0
+python-dotenv==1.0.1
