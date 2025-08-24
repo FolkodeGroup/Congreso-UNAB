@@ -10,5 +10,5 @@ class AttendeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendee
         fields = [
-            'id', 'first_name', 'last_name', 'email', 'phone', 'company', 'position', 'participant_type', 'registered_at', 'qr_code'
+            'id', 'first_name', 'last_name', 'email', 'phone', 'company', 'company_name', 'position', 'participant_type', 'registered_at', 'qr_code'
         ]

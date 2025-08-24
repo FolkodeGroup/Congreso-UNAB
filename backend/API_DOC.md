@@ -1,3 +1,52 @@
+### Registrar Asistencia (Escaneo QR)
+
+**POST** `/api/registrar-asistencia/`
+
+Permite marcar la asistencia de un participante usando su email o ID (por ejemplo, tras escanear el QR).
+
+#### Body (JSON)
+```json
+{
+  "email": "juan@correo.com"
+}
+```
+O bien:
+```json
+{
+  "attendee_id": 1
+}
+```
+
+#### Respuesta exitosa
+```json
+{
+  "message": "Asistencia registrada",
+  "attended_at": "2025-11-15T09:00:00Z"
+}
+```
+
+#### Si ya estaba registrada
+```json
+{
+  "message": "Asistencia ya registrada",
+  "attended_at": "2025-11-15T09:00:00Z"
+}
+```
+
+#### Errores posibles
+- Asistente no encontrado:
+```json
+{ "error": "Asistente no encontrado" }
+```
+- Registro de inscripción no encontrado:
+```json
+{ "error": "Registro de inscripción no encontrado" }
+```
+- Faltan datos:
+```json
+{ "error": "Debe enviar email o attendee_id" }
+```
+
 # API de Inscripción Congreso UNaB
 
 ## Endpoints REST
@@ -7,13 +56,14 @@
 **POST** `/api/inscripcion/`
 
 #### Body (JSON)
+
 ```json
 {
   "first_name": "Juan",
   "last_name": "Pérez",
   "email": "juan@correo.com",
   "phone": "+54 11 1234 5678",
-  "company": null,
+  "company_name": "Empresa S.A.",
   "position": "Estudiante",
   "participant_type": "estudiante"
 }
@@ -29,7 +79,8 @@
     "last_name": "Pérez",
     "email": "juan@correo.com",
     "phone": "+54 11 1234 5678",
-    "company": null,
+  "company": null,
+  "company_name": "Empresa S.A.",
     "position": "Estudiante",
     "participant_type": "estudiante",
     "registered_at": "2025-08-24T12:34:56Z",

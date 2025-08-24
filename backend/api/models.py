@@ -23,6 +23,7 @@ class Attendee(models.Model):
 	email = models.EmailField(unique=True)
 	phone = models.CharField(max_length=30, blank=True, null=True)
 	company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True, related_name='attendees')
+	company_name = models.CharField(max_length=255, blank=True, null=True, help_text="Nombre de la empresa si no está registrada en la base")
 	position = models.CharField(max_length=100, blank=True, null=True)
 	PARTICIPANT_TYPES = [
 		('estudiante', 'Estudiante'),

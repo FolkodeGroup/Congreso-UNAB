@@ -1,5 +1,3 @@
-
-
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import AttendeeForm, CompanyForm, AttendeeFormSet
@@ -10,6 +8,39 @@ from rest_framework import status
 from .serializers import AttendeeSerializer, CompanySerializer
 
 @api_view(['POST'])
+def api_registrar_asistencia(request):
+	"""
+	Marca la asistencia de un participante usando email, id o datos del QR.
+	Espera: { "email": "..." } o { "attendee_id": 1 }
+	"""
+	email = request.data.get('email')
+	attendee_id = request.data.get('attendee_id')
+	if not email and not attendee_id:
+		return Response({'error': 'Debe enviar email o attendee_id'}, status=status.HTTP_400_BAD_REQUEST)
+	try:
+		if attendee_id:
+			attendee = Attendee.objects.get(id=attendee_id)
+		else:
+			attendee = Attendee.objects.get(email=email)
+	except Attendee.DoesNotExist:
+		return Response({'error': 'Asistente no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+	try:
+		reg = Registration.objects.get(attendee=attendee, event_name='Convención Logística UNaB')
+	except Registration.DoesNotExist:
+		return Response({'error': 'Registro de inscripción no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+	if reg.attended_at:
+		return Response({'message': 'Asistencia ya registrada', 'attended_at': reg.attended_at}, status=status.HTTP_200_OK)
+	from django.utils import timezone
+	reg.attended_at = timezone.now()
+	reg.save()
+	return Response({'message': 'Asistencia registrada', 'attended_at': reg.attended_at}, status=status.HTTP_200_OK)
+
+
+
+def landing_page(request):
+	return render(request, 'api/landing.html')
+
+@api_view(['POST'])
 def api_register_individual(request):
 	required_fields = ['first_name', 'last_name', 'email', 'participant_type']
 	missing = [f for f in required_fields if not request.data.get(f)]
@@ -18,7 +49,12 @@ def api_register_individual(request):
 			'error': 'Faltan campos obligatorios',
 			'missing_fields': missing
 		}, status=status.HTTP_400_BAD_REQUEST)
-	serializer = AttendeeSerializer(data=request.data)
+	# Solo tomar company_name, nunca company (que es para grupal)
+	data = dict(request.data)
+	data['company'] = None
+	if 'company_name' not in data:
+		data['company_name'] = request.data.get('company_name') or ''
+	serializer = AttendeeSerializer(data=data)
 	if serializer.is_valid():
 		attendee = serializer.save()
 		Registration.objects.create(attendee=attendee, event_name='Convención Logística UNaB')

@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
 from api import views as api_views
 
 urlpatterns = [
+    path('', api_views.landing_page, name='landing_page'),
     path('admin/', admin.site.urls),
     path('inscripcion/', api_views.register_individual, name='register_individual'),
     path('inscripcion-grupal/', api_views.register_group, name='register_group'),
@@ -26,4 +28,5 @@ urlpatterns = [
     # Endpoints API para integración frontend
     path('api/inscripcion/', api_views.api_register_individual, name='api_register_individual'),
     path('api/inscripcion-grupal/', api_views.api_register_group, name='api_register_group'),
+    path('api/registrar-asistencia/', api_views.api_registrar_asistencia, name='api_registrar_asistencia'),
 ]

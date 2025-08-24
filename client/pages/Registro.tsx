@@ -4,7 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useState } from 'react';
+import { useState, useState as useStateReact } from 'react';
+import { inscribirIndividual } from '../lib/api';
 
 export default function Registro() {
   const [formData, setFormData] = useState({
@@ -32,16 +33,48 @@ export default function Registro() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [mensaje, setMensaje] = useStateReact<string|null>(null);
+  const [error, setError] = useStateReact<string|null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement registration logic
-    console.log('Datos de registro:', formData);
-    alert('Registro enviado correctamente. Pronto recibirás un email de confirmación.');
+    setMensaje(null);
+    setError(null);
+    // Mapear campos frontend -> backend
+    const payload: any = {
+      first_name: formData.nombre,
+      last_name: formData.apellido,
+      email: formData.email,
+      phone: formData.telefono,
+      company_name: formData.institucion,
+      position: formData.cargo,
+      participant_type: formData.tipoParticipante
+    };
+    try {
+      const resp = await inscribirIndividual(payload);
+      if (resp.message) {
+        setMensaje('¡Registro exitoso! Pronto recibirás un email de confirmación.');
+      } else if (resp.error) {
+        let detalle = '';
+        if (resp.missing_fields) {
+          detalle = ': ' + resp.missing_fields.join(', ');
+        } else if (resp.details) {
+          detalle = ': ' + Object.entries(resp.details).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`).join('; ');
+        }
+        setError(resp.error + detalle);
+      } else {
+        setError('Error desconocido.');
+      }
+    } catch (err) {
+      setError('No se pudo conectar con el servidor.');
+    }
   };
 
   return (
     <Layout>
       <div className="container mx-auto px-4 py-16">
+        {mensaje && <div className="mb-4 p-3 bg-green-100 text-green-800 rounded">{mensaje}</div>}
+        {error && <div className="mb-4 p-3 bg-red-100 text-red-800 rounded">{error}</div>}
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
