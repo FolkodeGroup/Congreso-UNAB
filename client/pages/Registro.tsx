@@ -4,39 +4,77 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'sonner';
+
+// Esquema de validación con Zod, basado en los modelos de Django
+const inscripcionSchema = z.object({
+  nombre_completo: z.string().min(3, 'El nombre es requerido'),
+  dni: z.string().regex(/^\d{7,8}$/, 'DNI inválido, debe tener 7 u 8 dígitos'),
+  email: z.string().email('Email inválido'),
+  tipo_inscripcion: z.enum(['INDIVIDUAL', 'EMPRESA', 'GRUPO'], { required_error: 'Debes seleccionar un tipo' }),
+  // Campos opcionales que dependen del tipo
+  empresa: z.string().optional(),
+  nombre_grupo: z.string().optional(),
+});
+
+type InscripcionFormData = z.infer<typeof inscripcionSchema>;
 
 export default function Registro() {
-  const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    email: '',
-    telefono: '',
-    institucion: '',
-    cargo: '',
-    tipoParticipante: ''
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<InscripcionFormData>({
+    resolver: zodResolver(inscripcionSchema),
+    defaultValues: {
+      tipo_inscripcion: 'INDIVIDUAL',
+    },
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  const tipoInscripcion = watch('tipo_inscripcion');
 
-  const handleSelectChange = (value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      tipoParticipante: value
-    }));
-  };
+  const onSubmit = async (data: InscripcionFormData) => {
+    const payload = {
+      tipo_inscripcion: data.tipo_inscripcion,
+      asistente: {
+        nombre_completo: data.nombre_completo,
+        dni: data.dni,
+        email: data.email,
+      },
+      empresa: data.empresa || null, // Enviar null si está vacío
+      nombre_grupo: data.nombre_grupo || '',
+    };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implement registration logic
-    console.log('Datos de registro:', formData);
-    alert('Registro enviado correctamente. Pronto recibirás un email de confirmación.');
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/inscripcion/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        // Si el error viene del backend (ej. email duplicado), lo mostramos
+        throw new Error(result.message?.error || 'Ocurrió un error en el servidor.');
+      }
+
+      toast.success('¡Inscripción exitosa!', {
+        description: 'Hemos enviado un correo de confirmación con tu código QR.',
+      });
+      // Aquí se podría resetear el formulario
+    } catch (error) {
+      toast.error('Error en la inscripción', {
+        description: error instanceof Error ? error.message : 'No se pudo completar el registro.',
+      });
+    }
   };
 
   return (
@@ -48,128 +86,69 @@ export default function Registro() {
               Registro al Congreso
             </h1>
             <p className="text-xl text-gray-600">
-              Completa el formulario para participar en el Congreso de Logística y Transporte 2025
+              Completa el formulario para asegurar tu lugar.
             </p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Información del Participante</CardTitle>
+              <CardTitle>Formulario de Inscripción</CardTitle>
               <CardDescription>
-                Proporciona tus datos para completar el registro
+                Los campos marcados con * son obligatorios.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div>
+                  <Label htmlFor="nombre_completo">Nombre Completo *</Label>
+                  <Input id="nombre_completo" {...register('nombre_completo')} placeholder="Juan Pérez" />
+                  {errors.nombre_completo && <p className="text-red-500 text-sm mt-1">{errors.nombre_completo.message}</p>}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="nombre">Nombre *</Label>
-                    <Input
-                      id="nombre"
-                      name="nombre"
-                      type="text"
-                      required
-                      value={formData.nombre}
-                      onChange={handleInputChange}
-                      placeholder="Tu nombre"
-                    />
+                    <Label htmlFor="dni">DNI *</Label>
+                    <Input id="dni" {...register('dni')} placeholder="12345678" />
+                    {errors.dni && <p className="text-red-500 text-sm mt-1">{errors.dni.message}</p>}
                   </div>
                   <div>
-                    <Label htmlFor="apellido">Apellido *</Label>
-                    <Input
-                      id="apellido"
-                      name="apellido"
-                      type="text"
-                      required
-                      value={formData.apellido}
-                      onChange={handleInputChange}
-                      placeholder="Tu apellido"
-                    />
+                    <Label htmlFor="email">Email *</Label>
+                    <Input id="email" type="email" {...register('email')} placeholder="tu@email.com" />
+                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="tu@email.com"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="telefono">Teléfono</Label>
-                  <Input
-                    id="telefono"
-                    name="telefono"
-                    type="tel"
-                    value={formData.telefono}
-                    onChange={handleInputChange}
-                    placeholder="+54 11 1234 5678"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="institucion">Institución/Empresa</Label>
-                  <Input
-                    id="institucion"
-                    name="institucion"
-                    type="text"
-                    value={formData.institucion}
-                    onChange={handleInputChange}
-                    placeholder="Universidad, empresa o institución"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="cargo">Cargo/Posición</Label>
-                  <Input
-                    id="cargo"
-                    name="cargo"
-                    type="text"
-                    value={formData.cargo}
-                    onChange={handleInputChange}
-                    placeholder="Estudiante, Profesor, Gerente, etc."
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="tipoParticipante">Tipo de Participante *</Label>
-                  <Select value={formData.tipoParticipante} onValueChange={handleSelectChange}>
+                  <Label htmlFor="tipo_inscripcion">Tipo de Inscripción *</Label>
+                  <Select onValueChange={(value) => setValue('tipo_inscripcion', value as any)} defaultValue={tipoInscripcion}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecciona el tipo de participante" />
+                      <SelectValue placeholder="Selecciona una opción" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="estudiante">Estudiante</SelectItem>
-                      <SelectItem value="academico">Académico/Investigador</SelectItem>
-                      <SelectItem value="profesional">Profesional de la Industria</SelectItem>
-                      <SelectItem value="funcionario">Funcionario Público</SelectItem>
-                      <SelectItem value="empresa">Representante de Empresa</SelectItem>
-                      <SelectItem value="otro">Otro</SelectItem>
+                      <SelectItem value="INDIVIDUAL">Individual</SelectItem>
+                      <SelectItem value="EMPRESA">Empresa</SelectItem>
+                      <SelectItem value="GRUPO">Grupo</SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.tipo_inscripcion && <p className="text-red-500 text-sm mt-1">{errors.tipo_inscripcion.message}</p>}
                 </div>
 
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="font-semibold text-congress-blue mb-2">Información del Evento</h3>
-                  <div className="text-sm text-gray-700 space-y-1">
-                    <p>📅 <strong>Fecha:</strong> 15 de Noviembre 2025</p>
-                    <p>📍 <strong>Lugar:</strong> Campus UNaB, Blas Parera 132</p>
-                    <p>💰 <strong>Costo:</strong> Gratuito</p>
-                    <p>✉️ <strong>Contacto:</strong> congresologisticaytransporte@unab.edu.ar</p>
+                {tipoInscripcion === 'EMPRESA' && (
+                  <div>
+                    <Label htmlFor="empresa">Nombre de la Empresa</Label>
+                    <Input id="empresa" {...register('empresa')} placeholder="Nombre de tu empresa" />
                   </div>
-                </div>
+                )}
 
-                <Button 
-                  type="submit" 
-                  className="w-full bg-congress-blue hover:bg-congress-blue-dark"
-                  size="lg"
-                >
-                  Registrarme al Congreso
+                {tipoInscripcion === 'GRUPO' && (
+                  <div>
+                    <Label htmlFor="nombre_grupo">Nombre del Grupo</Label>
+                    <Input id="nombre_grupo" {...register('nombre_grupo')} placeholder="Nombre del grupo o institución" />
+                  </div>
+                )}
+
+                <Button type="submit" disabled={isSubmitting} className="w-full bg-congress-blue hover:bg-congress-blue-dark" size="lg">
+                  {isSubmitting ? 'Enviando...' : 'Registrarme al Congreso'}
                 </Button>
               </form>
             </CardContent>

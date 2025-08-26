@@ -2,7 +2,8 @@ import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FiCheckCircle, FiUsers, FiAward, FiClock, FiHome, FiHandshake, FiTrendingUp, FiStar } from 'react-icons/fi';
+import { FiCheckCircle, FiUsers, FiAward, FiClock, FiHome, FiTrendingUp, FiStar } from 'react-icons/fi';
+import { FaBuilding, FaHandshake } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 export default function Empresas() {
@@ -56,7 +57,7 @@ export default function Empresas() {
                 <CardHeader>
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-congress-cyan rounded-lg flex items-center justify-center">
-                      {/* No existe FiHandshake, puedes usar otro ícono o eliminarlo */}
+                      <FaHandshake className="w-5 h-5 text-white" />
                     </div>
                     <CardTitle>Networking Estratégico</CardTitle>
                   </div>
@@ -146,7 +147,7 @@ export default function Empresas() {
                       Acceso a todos los asistentes
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Inclusión en material oficial
                     </li>
                   </ul>
@@ -171,19 +172,19 @@ export default function Empresas() {
                   </CardDescription>
                   <ul className="space-y-2 text-sm text-gray-600">
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Espacio para demostración
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Presentación técnica
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Interacción directa con público
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Destacado como innovación
                     </li>
                   </ul>
@@ -208,19 +209,19 @@ export default function Empresas() {
                   </CardDescription>
                   <ul className="space-y-2 text-sm text-gray-600">
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Aula equipada incluida
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Material técnico permitido
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Posicionamiento como experto
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Feedback directo de asistentes
                     </li>
                   </ul>
@@ -231,7 +232,7 @@ export default function Empresas() {
                 <CardHeader>
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-12 h-12 bg-congress-cyan rounded-lg flex items-center justify-center">
-                      <Building className="w-6 h-6 text-white" />
+                      <FaBuilding className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <CardTitle className="text-xl">Modalidad Personalizada</CardTitle>
@@ -245,19 +246,19 @@ export default function Empresas() {
                   </CardDescription>
                   <ul className="space-y-2 text-sm text-gray-600">
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Propuesta adaptada a tu empresa
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Formato flexible
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Colaboración especial
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <FiCheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Contacto directo con organizadores
                     </li>
                   </ul>

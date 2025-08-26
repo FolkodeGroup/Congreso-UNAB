@@ -11,8 +11,9 @@ import NotFound from "./pages/NotFound";
 import Programa from "./pages/Programa";
 import Registro from "./pages/Registro";
 import Ponentes from "./pages/Ponentes";
-import Contacto from "./pages/Contacto";
+import Contacto from "././pages/Contacto";
 import Empresas from "./pages/Empresas";
+import CheckInPage from "./pages/CheckInPage"; // Import the new CheckInPage
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/ponentes" element={<Ponentes />} />
           <Route path="/empresas" element={<Empresas />} />
           <Route path="/contacto" element={<Contacto />} />
+          <Route path="/check-in" element={<CheckInPage />} /> {/* Add the new route */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
