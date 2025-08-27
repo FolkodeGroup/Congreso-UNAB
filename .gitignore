@@ -25,3 +25,7 @@ dist-ssr
 
 .config/
 !.env
+env/
+
+__pycache__/
+.vscode/
