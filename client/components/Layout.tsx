@@ -22,21 +22,21 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             {/* Logo and Title */}
             <div className="mb-4 lg:mb-0">
-              <CongressLogo size="md" showText={true} className="text-white" />
+              <img src="/images/LogoUnab.png" alt="UNaB Logo" className="h-20 w-auto" />
             </div>
 
             {/* Navigation */}
             <nav className="flex flex-wrap gap-2 lg:gap-4">
               <Link to="/">
-                <Button 
+                <Button
                   variant={isActive('/') ? 'secondary' : 'ghost'}
-                  className={isActive('/') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
+                  className={isActive('/') ? 'bg-white text-congress-blue' : 'hover:bg-congress-blue-dark text-congress-white'}
                 >
                   Inicio
                 </Button>
               </Link>
               <Link to="/programa">
-                <Button 
+                <Button
                   variant={isActive('/programa') ? 'secondary' : 'ghost'}
                   className={isActive('/programa') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
                 >
@@ -44,7 +44,7 @@ export default function Layout({ children }: LayoutProps) {
                 </Button>
               </Link>
               <Link to="/registro">
-                <Button 
+                <Button
                   variant={isActive('/registro') ? 'secondary' : 'ghost'}
                   className={isActive('/registro') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
                 >
@@ -76,7 +76,7 @@ export default function Layout({ children }: LayoutProps) {
                 </Button>
               </Link>
               <Link to="/contacto">
-                <Button 
+                <Button
                   variant={isActive('/contacto') ? 'secondary' : 'ghost'}
                   className={isActive('/contacto') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
                 >
@@ -112,13 +112,7 @@ export default function Layout({ children }: LayoutProps) {
             <div>
               <h3 className="text-lg font-bold mb-4">Universidad Nacional Guillermo Brown</h3>
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-congress-blue rounded-lg flex items-center justify-center">
-                  <div className="w-6 h-6 bg-white rounded-sm flex items-center justify-center">
-                    <div className="w-4 h-4 bg-congress-blue rounded-sm relative">
-                      <div className="absolute inset-1 border border-white rounded-sm"></div>
-                    </div>
-                  </div>
-                </div>
+                <img src="/images/LogoUnab.png" alt="UNaB Logo" className="h-16 w-auto" />
                 <div>
                   <div className="text-white font-semibold">UNaB</div>
                   <div className="text-gray-300 text-sm">Universidad Nacional</div>

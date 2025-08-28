@@ -8,7 +8,7 @@ export default function Index() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-congress-blue to-congress-blue-dark text-white py-20">
+      <section className="bg-gradient-to-br from-congress-blue to-congress-blue-dark text-white py-20 degradado-hero">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-8">
@@ -16,36 +16,34 @@ export default function Index() {
                 CONGRESO DE LOGÍSTICA
                 <span className="block text-congress-cyan">Y TRANSPORTE</span>
               </h1>
-              <div className="w-24 h-1 bg-congress-cyan mx-auto mb-6"></div>
-              <h2 className="text-xl md:text-2xl font-semibold mb-4 text-congress-cyan-light">
+              <div className="w-24 h-1 bg-congress-cyan mx-auto mb-10"></div>
+              <h2 className="text-xl md:text-2xl font-semibold mb-4 text-congress-white">
                 MOVIENDO EL FUTURO
               </h2>
               <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto mb-4">
                 Innovación y desafíos en la logística y el transporte
               </p>
-              <div className="flex items-center justify-center space-x-3 opacity-80">
-                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <div className="w-5 h-5 bg-congress-blue rounded-sm flex items-center justify-center">
-                    <div className="w-3 h-3 border border-white rounded-sm"></div>
-                  </div>
+              <div className="flex items-center justify-center space-x-3 opacity-80 mb-10">
+                <div className="mb-4 lg:mb-0">
+                  <img src="/images/Logo_unab2.png" alt="UNaB Logo" className="h-28 w-auto" />
                 </div>
-                <span className="text-sm font-medium">Universidad Nacional Guillermo Brown</span>
+                <span className="text-lg font-medium">Universidad Nacional Guillermo Brown</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center mt-10">
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                <FiCalendar className="w-8 h-8 mx-auto mb-3 text-congress-cyan" />
+                <FiCalendar className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
                 <h3 className="font-semibold mb-2">Fecha</h3>
                 <p className="text-lg">15 de Noviembre 2025</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                <FiMapPin className="w-8 h-8 mx-auto mb-3 text-congress-cyan" />
+                <FiMapPin className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
                 <h3 className="font-semibold mb-2">Ubicación</h3>
                 <p className="text-lg">Campus UNaB<br />Blas Parera 132</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                <FiMail className="w-8 h-8 mx-auto mb-3 text-congress-cyan" />
+                <FiMail className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
                 <h3 className="font-semibold mb-2">Contacto</h3>
                 <p className="text-sm break-all">congresologisticaytransporte@unab.edu.ar</p>
               </div>
@@ -53,12 +51,12 @@ export default function Index() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/registro">
-                <Button size="lg" className="bg-congress-cyan hover:bg-congress-cyan-light text-congress-blue font-semibold px-8 py-3">
+                <Button size="lg" className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3">
                   Registrarse Ahora
                 </Button>
               </Link>
               <Link to="/programa">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-congress-blue px-8 py-3">
+                <Button size="lg" className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3">
                   Ver Programa
                 </Button>
               </Link>
@@ -117,13 +115,13 @@ export default function Index() {
       </section>
 
       {/* About Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 degradado-section">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Sobre el Congreso
             </h2>
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-lg text-white leading-relaxed">
               El Congreso de Logística y Transporte 2025 de la Universidad Nacional Guillermo Brown
               es un evento académico de alcance nacional e internacional que reúne a más de 30 empresas
               del sector y más de 25 disertantes de primer nivel. Nuestro objetivo es crear un espacio
@@ -174,60 +172,60 @@ export default function Index() {
       </section>
 
       {/* Topics Section */}
-      <section className="py-16">
+      <section className="py-16 bg-section">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-12">
+          <div className="max-w-4xl mx-auto justify-items-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
               Temas del Congreso
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-congress-blue mb-4">Logística</h3>
+                <h3 className="text-xl font-semibold text-congress-cyan mb-4">Logística</h3>
                 <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-start">
+                  <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Gestión de cadenas de suministro
                   </li>
-                  <li className="flex items-start">
+                  <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Logística 4.0 y transformación digital
                   </li>
-                  <li className="flex items-start">
+                  <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Automatización de almacenes
                   </li>
-                  <li className="flex items-start">
+                  <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Sostenibilidad en la logística
                   </li>
-                  <li className="flex items-start">
+                  <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     E-commerce y última milla
                   </li>
                 </ul>
               </div>
-              
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-congress-blue mb-4">Transporte</h3>
+
+              <div className="space-y-4 ml-20">
+                <h3 className="text-xl font-semibold text-congress-cyan mb-4">Transporte</h3>
                 <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-start">
+                  <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Movilidad urbana sostenible
                   </li>
-                  <li className="flex items-start">
+                  <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Transporte multimodal
                   </li>
-                  <li className="flex items-start">
+                  <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Vehículos autónomos
                   </li>
-                  <li className="flex items-start">
+                  <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Infraestructura inteligente
                   </li>
-                  <li className="flex items-start">
+                  <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     Políticas públicas de transporte
                   </li>
@@ -351,11 +349,11 @@ export default function Index() {
             ¿Listo para ser parte del futuro?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto text-congress-cyan-light">
-            Únete a nosotros en este importante evento que marcará el rumbo 
+            Únete a nosotros en este importante evento que marcará el rumbo
             de la logística y el transporte en Argentina y Latinoamérica.
           </p>
           <Link to="/registro">
-            <Button size="lg" className="bg-congress-cyan hover:bg-congress-cyan-light text-congress-blue font-semibold px-8 py-3">
+            <Button size="lg" className="bg-congress-cyan hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3">
               Registrarse Gratis
             </Button>
           </Link>
