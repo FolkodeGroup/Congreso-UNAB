@@ -7,7 +7,7 @@ tzdata==2025.2
 
 # Para generación de QR
 qrcode==7.4.2
-Pillow==10.3.0
+# Pillow==10.3.0 # TODO: Reinstalar. Se comentó para resolver conflictos de merge.
 
 # Para generación de PDF
 reportlab==4.2.0
