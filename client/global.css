@@ -58,8 +58,9 @@
     /* Congress brand colors */
     --congress-blue: 202 91% 25%;
     --congress-blue-dark: 202 91% 15%;
-    --congress-cyan: 185 78% 47%;
-    --congress-cyan-light: 185 78% 65%;
+    --congress-cyan: 197 88% 44%;
+    --congress-cyan-light: 197 81% 50%;
+    --congress-white: 0 0% 100%;
   }
 
   .dark {
@@ -115,4 +116,39 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.cambio {
+  color: var(--congress-blue);
+}
+
+.cambio :hover {
+  background-color: var(--congress-blue-dark);
+  color: var(--congress-white);
+}
+
+.degradado-hero {
+  background: linear-gradient(
+    to bottom,
+    #002E4D 0%,   /* azul oscuro arriba */
+    #004C73 35%,  /* azul intermedio */
+    #007BA7 70%,  /* azul más claro */
+    #002E4D 100%  /* celeste abajo */
+  );
+}
+
+.degradado-section {
+  background: linear-gradient(
+    to bottom,
+    #002E4D 0%,
+    #002E4D 5%,
+    #002E4D 40%,
+    #0d99d3 65%,
+    #002E4D 95%,
+    #002E4D 5%
+  );
+}
+
+.bg-section {
+  background-color: #002E4D;
 }
