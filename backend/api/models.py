@@ -1,97 +1,123 @@
-
 from django.db import models
+from django.contrib.auth.models import User
+import uuid
 
-class Company(models.Model):
-	name = models.CharField(max_length=255)
-	contact_email = models.EmailField(blank=True, null=True)
-	contact_phone = models.CharField(max_length=50, blank=True, null=True)
-	created_at = models.DateTimeField(auto_now_add=True)
-
-	def __str__(self):
-		return self.name
-
-
-
+# Imports añadidos para la generación de QR y PDF
 import qrcode
 from io import BytesIO
 from django.core.files.base import ContentFile
-
-
-class Attendee(models.Model):
-	first_name = models.CharField(max_length=100)
-	last_name = models.CharField(max_length=100)
-	email = models.EmailField(unique=True)
-	phone = models.CharField(max_length=30, blank=True, null=True)
-	company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True, related_name='attendees')
-	company_name = models.CharField(max_length=255, blank=True, null=True, help_text="Nombre de la empresa si no está registrada en la base")
-	position = models.CharField(max_length=100, blank=True, null=True)
-	PARTICIPANT_TYPES = [
-		('estudiante', 'Estudiante'),
-		('profesor', 'Profesor'),
-		('gerente', 'Gerente'),
-		('ponente', 'Ponente'),
-		('otro', 'Otro'),
-	]
-	participant_type = models.CharField(max_length=30, choices=PARTICIPANT_TYPES, blank=True, null=True)
-	registered_at = models.DateTimeField(auto_now_add=True)
-	qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
-
-	def __str__(self):
-		return f"{self.first_name} {self.last_name}"
-
-	def save(self, *args, **kwargs):
-		# Generar QR solo si no existe
-		if not self.qr_code:
-			qr_data = f"asistente:{self.pk or ''}:{self.email}"
-			qr = qrcode.make(qr_data)
-			buffer = BytesIO()
-			qr.save(buffer, format='PNG')
-			file_name = f"qr_{self.email}.png"
-			self.qr_code.save(file_name, ContentFile(buffer.getvalue()), save=False)
-		super().save(*args, **kwargs)
-
-
-class Registration(models.Model):
-	attendee = models.ForeignKey(Attendee, on_delete=models.CASCADE, related_name='registrations')
-	event_name = models.CharField(max_length=255)
-	status = models.CharField(max_length=50, choices=[('registered', 'Registrado'), ('attended', 'Asistió'), ('certified', 'Certificado Enviado')], default='registered')
-	registered_at = models.DateTimeField(auto_now_add=True)
-	attended_at = models.DateTimeField(blank=True, null=True)
-	certified_at = models.DateTimeField(blank=True, null=True)
-
-	def __str__(self):
-		return f"{self.attendee} - {self.event_name}"
-
-
-
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-class Certificate(models.Model):
-	registration = models.OneToOneField(Registration, on_delete=models.CASCADE, related_name='certificate')
-	pdf = models.FileField(upload_to='certificates/', blank=True, null=True)
-	sent = models.BooleanField(default=False)
-	sent_at = models.DateTimeField(blank=True, null=True)
-	created_at = models.DateTimeField(auto_now_add=True)
 
-	def __str__(self):
-		return f"Certificado de {self.registration.attendee} para {self.registration.event_name}"
+class Disertante(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    nombre = models.CharField(max_length=200)
+    bio = models.TextField(verbose_name="Biografía")
+    foto_url = models.URLField(max_length=300, blank=True, verbose_name="URL de la Foto")
+    tema_presentacion = models.CharField(max_length=255, verbose_name="Título de la Presentación")
 
-	def generate_pdf(self):
-		buffer = BytesIO()
-		c = canvas.Canvas(buffer, pagesize=letter)
-		attendee = self.registration.attendee
-		c.setFont("Helvetica-Bold", 20)
-		c.drawCentredString(300, 700, "Certificado de Asistencia")
-		c.setFont("Helvetica", 14)
-		c.drawCentredString(300, 650, f"Se certifica que {attendee.first_name} {attendee.last_name}")
-		c.drawCentredString(300, 630, f"asistió a la Convención de Logística UNaB")
-		c.drawCentredString(300, 610, f"Fecha de registro: {attendee.registered_at.strftime('%d/%m/%Y')}")
-		c.setFont("Helvetica", 10)
-		c.drawCentredString(300, 570, "Folkode Group - UNaB 2025")
-		c.showPage()
-		c.save()
-		buffer.seek(0)
-		file_name = f"certificado_{attendee.email}.pdf"
-		self.pdf.save(file_name, ContentFile(buffer.getvalue()), save=False)
-		self.save()
+    def __str__(self):
+        return self.nombre
+
+class Programa(models.Model):
+    titulo = models.CharField(max_length=255, verbose_name="Título del Evento")
+    disertante = models.ForeignKey(Disertante, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Disertante")
+    hora_inicio = models.TimeField(verbose_name="Hora de Inicio")
+    hora_fin = models.TimeField(verbose_name="Hora de Fin")
+    dia = models.DateField(verbose_name="Día del Evento")
+    descripcion = models.TextField(blank=True, verbose_name="Descripción")
+
+    def __str__(self):
+        return f"{self.titulo} - {self.dia} {self.hora_inicio}"
+
+class Empresa(models.Model):
+    razon_social = models.CharField(max_length=255, verbose_name="Razón Social")
+    cuit = models.CharField(max_length=13, unique=True)
+    logo_url = models.URLField(max_length=300, blank=True, verbose_name="URL del Logo")
+
+    def __str__(self):
+        return self.razon_social
+
+class Asistente(models.Model):
+    email = models.EmailField(unique=True)
+    nombre_completo = models.CharField(max_length=255)
+    dni = models.CharField(max_length=10, unique=True)
+
+    def __str__(self):
+        return f"{self.nombre_completo} ({self.email})"
+
+class Inscripcion(models.Model):
+    class Tipo(models.TextChoices):
+        INDIVIDUAL = 'INDIVIDUAL', 'Individual'
+        EMPRESA = 'EMPRESA', 'Empresa'
+        GRUPO = 'GRUPO', 'Grupo'
+
+    tipo_inscripcion = models.CharField(max_length=10, choices=Tipo.choices, default=Tipo.INDIVIDUAL, verbose_name="Tipo de Inscripción")
+    asistente = models.ForeignKey(Asistente, on_delete=models.CASCADE)
+    empresa = models.ForeignKey(Empresa, on_delete=models.SET_NULL, null=True, blank=True)
+    nombre_grupo = models.CharField(max_length=100, blank=True, verbose_name="Nombre del Grupo")
+    fecha_inscripcion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Inscripción")
+
+    def __str__(self):
+        return f"Inscripción de {self.asistente.nombre_completo} ({self.get_tipo_inscripcion_display()})"
+
+class CodigoQR(models.Model):
+    inscripcion = models.OneToOneField(Inscripcion, on_delete=models.CASCADE, verbose_name="Inscripción")
+    codigo = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    check_in_realizado = models.BooleanField(default=False, verbose_name="Check-in Realizado")
+    fecha_check_in = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Check-in")
+    imagen_qr = models.ImageField(upload_to='qr_codes/', blank=True, null=True, verbose_name="Imagen del Código QR")
+
+
+    def __str__(self):
+        return f"QR para {self.inscripcion.asistente.nombre_completo}"
+
+    def generar_imagen_qr(self, save=True):
+        """
+        Genera una imagen para el campo 'codigo' y la guarda en 'imagen_qr'.
+        """
+        if not self.imagen_qr:
+            qr_data = str(self.codigo)
+            qr_img = qrcode.make(qr_data)
+            buffer = BytesIO()
+            qr_img.save(buffer, format='PNG')
+            file_name = f"qr_{self.inscripcion.asistente.email}_{self.codigo}.png"
+            self.imagen_qr.save(file_name, ContentFile(buffer.getvalue()), save=save)
+
+class Certificado(models.Model):
+    class TipoCertificado(models.TextChoices):
+        ASISTENCIA = 'ASISTENCIA', 'Asistencia'
+        DISERTANTE = 'DISERTANTE', 'Disertante'
+        EMPRESA = 'EMPRESA', 'Empresa'
+
+    asistente = models.ForeignKey(Asistente, on_delete=models.CASCADE)
+    tipo_certificado = models.CharField(max_length=10, choices=TipoCertificado.choices, verbose_name="Tipo de Certificado")
+    pdf_generado = models.FileField(upload_to='certificados/', blank=True, null=True, verbose_name="PDF Generado")
+    fecha_generacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Generación")
+
+    def __str__(self):
+        return f"Certificado de {self.get_tipo_certificado_display()} para {self.asistente.nombre_completo}"
+
+    def generar_pdf(self, save=True):
+        """
+        Genera un PDF de certificado y lo guarda en el campo 'pdf_generado'.
+        """
+        buffer = BytesIO()
+        c = canvas.Canvas(buffer, pagesize=letter)
+        
+        c.setFont("Helvetica-Bold", 20)
+        c.drawCentredString(300, 700, "Certificado de Asistencia")
+        c.setFont("Helvetica", 14)
+        c.drawCentredString(300, 650, f"Se certifica que {self.asistente.nombre_completo}")
+        c.drawCentredString(300, 630, f"asistió a la Convención de Logística UNaB")
+        c.drawCentredString(300, 610, f"Fecha de emisión: {self.fecha_generacion.strftime('%d/%m/%Y')}")
+        c.setFont("Helvetica", 10)
+        c.drawCentredString(300, 570, "Folkode Group - UNaB 2025")
+        
+        c.showPage()
+        c.save()
+        buffer.seek(0)
+        
+        file_name = f"certificado_{self.asistente.email}.pdf"
+        self.pdf_generado.save(file_name, ContentFile(buffer.getvalue()), save=save)

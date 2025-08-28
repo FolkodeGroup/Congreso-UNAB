@@ -1,16 +1,15 @@
-from rest_framework import routers
-from . import views
-from .viewsets import CompanyViewSet, AttendeeViewSet, RegistrationViewSet, CertificateViewSet
 from django.urls import path, include
-from .certificate_api import CertificateDownloadView
+from rest_framework.routers import DefaultRouter
+from .views import DisertanteViewSet, InscripcionViewSet, CheckInView, ProgramaViewSet
 
-router = routers.DefaultRouter()
-router.register(r'companies', CompanyViewSet)
-router.register(r'attendees', AttendeeViewSet)
-router.register(r'registrations', RegistrationViewSet)
-router.register(r'certificates', CertificateViewSet)
+# Se crea un router para registrar los ViewSets
+router = DefaultRouter()
+router.register(r'disertantes', DisertanteViewSet, basename='disertante')
+router.register(r'inscripcion', InscripcionViewSet, basename='inscripcion')
+router.register(r'programa', ProgramaViewSet, basename='programa')
 
+# Las URLs de la API son determinadas automáticamente por el router
 urlpatterns = [
     path('', include(router.urls)),
-    path('certificates/<int:pk>/download/', CertificateDownloadView.as_view(), name='certificate-download'),
+    path('checkin/', CheckInView.as_view(), name='checkin'),
 ]

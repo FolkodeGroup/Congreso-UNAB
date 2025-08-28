@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Inscripción al Congreso de Logística UNAB</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #0056b3; /* Color azul del congreso */
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .header h1 {
+            color: #0056b3;
+            font-size: 28px;
+            margin: 0;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .content p {
+            margin-bottom: 15px;
+        }
+        .qr-code {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .qr-code img {
+            max-width: 200px;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            background-color: #fff;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #777;
+        }
+        .button {
+            display: inline-block;
+            background-color: #007bff;
+            color: #ffffff !important;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .highlight {
+            color: #0056b3;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Inscripción Confirmada!</h1>
+        </div>
+        <div class="content">
+            <p>Estimado/a <span class="highlight">{{ asistente_nombre }}</span>,</p>
+            <p>Nos complace confirmar tu inscripción al <span class="highlight">Congreso de Logística UNAB</span>.</p>
+            <p>Tu participación es muy importante para nosotros. A continuación, encontrarás tu código QR personal. Por favor, preséntalo en la entrada del evento para realizar tu check-in.</p>
+            
+            <div class="qr-code">
+                <p><strong>Tu Código QR de Acceso:</strong></p>
+                <img src="cid:qr_code_image" alt="Código QR de Acceso">
+            </div>
+
+            <p>Detalles de tu inscripción:</p>
+            <ul>
+                <li><strong>Tipo de Inscripción:</strong> {{ tipo_inscripcion }}</li>
+                {% if empresa %}
+                <li><strong>Empresa:</strong> {{ empresa }}</li>
+                {% endif %}
+                {% if nombre_grupo %}
+                <li><strong>Grupo:</strong> {{ nombre_grupo }}</li>
+                {% endif %}
+                <li><strong>Email Registrado:</strong> {{ asistente_email }}</li>
+            </ul>
+
+            <p>Te esperamos para compartir conocimientos y experiencias en el mundo de la logística.</p>
+            <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+            <p>Saludos cordiales,</p>
+            <p>El Equipo del Congreso de Logística UNAB</p>
+        </div>
+        <div class="footer">
+            <p>&copy; {{ year }} Congreso de Logística UNAB. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>
