@@ -31,7 +31,7 @@ export default function CongressLogo({ size = 'md', showText = true, className =
           </div>
         </div>
       </div>
-      
+
       {showText && (
         <div className="flex-1">
           <div className={`font-bold text-congress-blue ${textSizeClasses[size]}`}>
