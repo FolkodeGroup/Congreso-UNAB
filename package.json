@@ -26,6 +26,7 @@
     "lucide-react": "^0.542.0",
     "react-icons": "^5.5.0",
     "react-qr-reader": "3.0.0-beta-1",
+    "react-zxing": "^2.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
