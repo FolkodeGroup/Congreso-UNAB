@@ -1,4 +1,4 @@
-from rest_framework import viewsets, mixins, status, views
+from rest_framework import viewsets, mixins, status, views, serializers
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .models import Disertante, Inscripcion, CodigoQR, Programa, Certificado # Import Certificado model
@@ -40,9 +40,9 @@ class InscripcionViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
             headers = self.get_success_headers(serializer.data)
             return Response({'status': 'success', 'message': 'Inscripción realizada correctamente.'}, status=status.HTTP_201_CREATED, headers=headers)
         except serializers.ValidationError as e:
-            # Corregido para acceder al detalle del error correctamente
-            error_detail = e.detail.get('error', ['Error desconocido'])[0]
-            return Response({'status': 'error', 'message': error_detail}, status=status.HTTP_400_BAD_REQUEST)
+            # e.detail puede ser un string o un dict, lo convertimos a string si es necesario
+            error_message = str(e.detail)
+            return Response({'status': 'error', 'message': error_message}, status=status.HTTP_400_BAD_REQUEST)
 
 class CheckInView(views.APIView):
     """
