@@ -2,6 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 
+# Imports añadidos para la generación de QR y PDF
+import qrcode
+from io import BytesIO
+from django.core.files.base import ContentFile
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
+
 class Disertante(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     nombre = models.CharField(max_length=200)
@@ -59,9 +67,23 @@ class CodigoQR(models.Model):
     codigo = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     check_in_realizado = models.BooleanField(default=False, verbose_name="Check-in Realizado")
     fecha_check_in = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Check-in")
+    imagen_qr = models.ImageField(upload_to='qr_codes/', blank=True, null=True, verbose_name="Imagen del Código QR")
+
 
     def __str__(self):
         return f"QR para {self.inscripcion.asistente.nombre_completo}"
+
+    def generar_imagen_qr(self, save=True):
+        """
+        Genera una imagen para el campo 'codigo' y la guarda en 'imagen_qr'.
+        """
+        if not self.imagen_qr:
+            qr_data = str(self.codigo)
+            qr_img = qrcode.make(qr_data)
+            buffer = BytesIO()
+            qr_img.save(buffer, format='PNG')
+            file_name = f"qr_{self.inscripcion.asistente.email}_{self.codigo}.png"
+            self.imagen_qr.save(file_name, ContentFile(buffer.getvalue()), save=save)
 
 class Certificado(models.Model):
     class TipoCertificado(models.TextChoices):
@@ -71,8 +93,31 @@ class Certificado(models.Model):
 
     asistente = models.ForeignKey(Asistente, on_delete=models.CASCADE)
     tipo_certificado = models.CharField(max_length=10, choices=TipoCertificado.choices, verbose_name="Tipo de Certificado")
-    pdf_url = models.URLField(max_length=300, blank=True, verbose_name="URL del PDF")
+    pdf_generado = models.FileField(upload_to='certificados/', blank=True, null=True, verbose_name="PDF Generado")
     fecha_generacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Generación")
 
     def __str__(self):
         return f"Certificado de {self.get_tipo_certificado_display()} para {self.asistente.nombre_completo}"
+
+    def generar_pdf(self, save=True):
+        """
+        Genera un PDF de certificado y lo guarda en el campo 'pdf_generado'.
+        """
+        buffer = BytesIO()
+        c = canvas.Canvas(buffer, pagesize=letter)
+        
+        c.setFont("Helvetica-Bold", 20)
+        c.drawCentredString(300, 700, "Certificado de Asistencia")
+        c.setFont("Helvetica", 14)
+        c.drawCentredString(300, 650, f"Se certifica que {self.asistente.nombre_completo}")
+        c.drawCentredString(300, 630, f"asistió a la Convención de Logística UNaB")
+        c.drawCentredString(300, 610, f"Fecha de emisión: {self.fecha_generacion.strftime('%d/%m/%Y')}")
+        c.setFont("Helvetica", 10)
+        c.drawCentredString(300, 570, "Folkode Group - UNaB 2025")
+        
+        c.showPage()
+        c.save()
+        buffer.seek(0)
+        
+        file_name = f"certificado_{self.asistente.email}.pdf"
+        self.pdf_generado.save(file_name, ContentFile(buffer.getvalue()), save=save)
