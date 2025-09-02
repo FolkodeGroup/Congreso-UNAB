@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as React from 'react';
 import type { LogoItem } from '@/components/data/logos';
 
 type Direction = 'ltr' | 'rtl';
@@ -141,24 +142,28 @@ export default function LogoMarquee({
   }, [direction, durationSec, startDelaySec, logos]);
 
   return (
-    <div className="relative w-full overflow-hidden py-4 bg-white rounded-xl border border-congress-cyan/40 shadow-sm ring-1 ring-inset ring-congress-cyan/10">
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
+    <div className="marquee-frame">
+      <div className="relative w-full overflow-hidden py-4 bg-white rounded-[inherit]">
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
 
-      <div className="relative">
-        <div
-          ref={seq1Ref}
-          className="marquee-track no-anim"
-          style={{ ['--marquee-gap' as any]: `${gapPx}px`, willChange: 'transform' }}
-        >
-          {renderLogos('a')}
-        </div>
-        <div
-          ref={seq2Ref}
-          className="marquee-track no-anim absolute top-0 left-0"
-          style={{ ['--marquee-gap' as any]: `${gapPx}px`, willChange: 'transform' }}
-        >
-          {renderLogos('b')}
+        <div className="relative">
+          <div
+            ref={seq1Ref}
+            className="marquee-track no-anim"
+            style={{ ['--marquee-gap' as any]: `${gapPx}px`, willChange: 'transform' }}
+          >
+            {renderLogos('a')}
+            <div className="shrink-0" style={{ width: `var(--marquee-gap, ${gapPx}px)` }} />
+          </div>
+          <div
+            ref={seq2Ref}
+            className="marquee-track no-anim absolute top-0 left-0"
+            style={{ ['--marquee-gap' as any]: `${gapPx}px`, willChange: 'transform' }}
+          >
+            {renderLogos('b')}
+            <div className="shrink-0" style={{ width: `var(--marquee-gap, ${gapPx}px)` }} />
+          </div>
         </div>
       </div>
     </div>
