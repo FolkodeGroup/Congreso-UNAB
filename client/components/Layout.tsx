@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
+import { ChevronDown } from 'lucide-react';
 import CongressLogo from './CongressLogo';
 
 interface LayoutProps {
@@ -9,6 +10,13 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const isSobreElCongresoActive = () => {
+    return ['/programa', '/ponentes', '/empresas', '/sobre-el-congreso'].includes(location.pathname);
+  }
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -35,14 +43,54 @@ export default function Layout({ children }: LayoutProps) {
                   Inicio
                 </Button>
               </Link>
-              <Link to="/programa">
+              {/* Dropdown para "Sobre el Congreso" */}
+              <div
+                className="relative"
+                onMouseEnter={() => setIsDropdownOpen(true)}
+                onMouseLeave={() => setIsDropdownOpen(false)}
+              >
                 <Button
-                  variant={isActive('/programa') ? 'secondary' : 'ghost'}
-                  className={isActive('/programa') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
+                  variant={isSobreElCongresoActive() ? 'secondary' : 'ghost'}
+                  className={`${isSobreElCongresoActive() ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'} flex items-center gap-1`}
                 >
-                  Programa
+                  Sobre el Congreso
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                 </Button>
-              </Link>
+
+                {isDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                    <Link
+                      to="/programa"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-congress-blue hover:text-white"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Programa
+                    </Link>
+                    <Link
+                      to="/ponentes"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-congress-blue hover:text-white"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Ponentes
+                    </Link>
+                    <Link
+                      to="/empresas"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-congress-blue hover:text-white"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Empresas
+                    </Link>
+                    <Link
+                      to="/sobre-el-congreso"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-congress-blue hover:text-white"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Información General
+                    </Link>
+                  </div>
+                )}
+              </div>
+
               <Link to="/registro">
                 <Button
                   variant={isActive('/registro') ? 'secondary' : 'ghost'}
@@ -51,30 +99,7 @@ export default function Layout({ children }: LayoutProps) {
                   Registro
                 </Button>
               </Link>
-              <Link to="/ponentes">
-                <Button
-                  variant={isActive('/ponentes') ? 'secondary' : 'ghost'}
-                  className={isActive('/ponentes') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
-                >
-                  Ponentes
-                </Button>
-              </Link>
-              <Link to="/empresas">
-                <Button
-                  variant={isActive('/empresas') ? 'secondary' : 'ghost'}
-                  className={isActive('/empresas') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
-                >
-                  Empresas
-                </Button>
-              </Link>
-              <Link to="/sobre-el-congreso">
-                <Button
-                  variant={isActive('/sobre-el-congreso') ? 'secondary' : 'ghost'}
-                  className={isActive('/sobre-el-congreso') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
-                >
-                  Sobre el Congreso
-                </Button>
-              </Link>
+
               <Link to="/generar-qrs">
                 <Button
                   variant={isActive('/generar-qrs') ? 'secondary' : 'ghost'}
@@ -91,14 +116,14 @@ export default function Layout({ children }: LayoutProps) {
                   Contacto
                 </Button>
               </Link>
-                <Link to="/historia-campus">
-                  <Button
-                    variant={isActive('/historia-campus') ? 'secondary' : 'ghost'}
-                    className={isActive('/historia-campus') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-cyan-dark'}
-                  >
-                    Historia del Campus
-                  </Button>
-                </Link>
+              <Link to="/historia-campus">
+                <Button
+                  variant={isActive('/historia-campus') ? 'secondary' : 'ghost'}
+                  className={isActive('/historia-campus') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
+                >
+                  Historia del Campus
+                </Button>
+              </Link>
             </nav>
           </div>
         </div>
