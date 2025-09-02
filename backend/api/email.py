@@ -35,11 +35,22 @@ def send_confirmation_email(inscripcion_instance):
     email = EmailMultiAlternatives(
         subject='Confirmación de Inscripción al Congreso de Logística UNAB',
         body=text_content,
-        from_email=settings.DEFAULT_FROM_EMAIL, # Asegúrate de configurar esto en settings.py
+        from_email=settings.DEFAULT_FROM_EMAIL,
         to=[asistente.email],
     )
     email.attach_alternative(html_content, "text/html")
-    email.attach('qr_code.png', qr_img_bytes.getvalue(), 'image/png', cid='qr_code_image')
+
+    # Adjuntar el QR como imagen embebida (Content-ID)
+    from email.mime.image import MIMEImage
+    qr_img_bytes.seek(0)
+    qr_image = MIMEImage(qr_img_bytes.read(), _subtype="png")
+    qr_image.add_header('Content-ID', '<qr_code_image>')
+    qr_image.add_header('Content-Disposition', 'inline', filename='qr_code.png')
+    email.attach(qr_image)
+
+    # Adjuntar el QR como archivo descargable (opcional, para que el usuario lo tenga)
+    qr_img_bytes.seek(0)
+    email.attach('qr_code.png', qr_img_bytes.read(), 'image/png')
 
     email.send()
 

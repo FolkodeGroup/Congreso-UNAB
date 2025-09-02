@@ -20,22 +20,17 @@ export default function EscaneoQR() {
     setError(null);
     setAsistencia(null);
     let payload: any = {};
-    let cleanValor = valor;
-    // Si el valor viene en formato 'asistente:<id>:<email>', extraer solo el email
-    if (cleanValor.startsWith('asistente:')) {
-      const partes = cleanValor.split(':');
-      if (partes.length === 3) {
-        cleanValor = partes[2];
-      } else if (partes.length === 2) {
-        cleanValor = partes[1];
-      }
-    }
-    if (/^\d+$/.test(cleanValor)) {
+    let cleanValor = valor.trim();
+    // Si es UUID (código QR), lo enviamos como { codigo: ... }
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (uuidRegex.test(cleanValor)) {
+      payload.codigo = cleanValor;
+    } else if (/^\d+$/.test(cleanValor)) {
       payload.attendee_id = Number(cleanValor);
     } else if (cleanValor.includes('@')) {
       payload.email = cleanValor;
     } else {
-      setError('Debes ingresar un email o ID válido.');
+      setError('Debes ingresar un email, ID o código QR válido.');
       return;
     }
     try {

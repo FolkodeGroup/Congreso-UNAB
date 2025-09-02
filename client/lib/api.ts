@@ -1,7 +1,8 @@
 const API_BASE = "http://192.168.1.101:8000/api";
 
 export async function registrarAsistencia(data: any) {
-  const res = await fetch(`${API_BASE}/registrar-asistencia/`, {
+  // Ahora apunta al endpoint correcto de checkin
+  const res = await fetch(`${API_BASE}/checkin/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)

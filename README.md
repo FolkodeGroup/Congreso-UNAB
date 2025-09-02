@@ -36,6 +36,18 @@ Este proyecto es una plataforma web para la gestión y difusión del Congreso de
    pnpm run dev
    ```
 
+### Configuración de variables de entorno (.env)
+
+- Copia el archivo `backend/.env.example` a `backend/.env` y completa los valores reales.
+- **Nunca subas el archivo `.env` al repositorio.**
+- Comparte los valores sensibles solo por canales seguros.
+
+### Configuración de variables de entorno para el frontend
+
+- Copia el archivo `client/.env.example` a `client/.env` y completa los valores reales.
+- **Nunca subas el archivo `.env` del frontend al repositorio.**
+- Usa `VITE_API_BASE_URL` para definir la URL base del backend en desarrollo o producción.
+
 ## Despliegue
 
 El proyecto está listo para ser desplegado en Netlify (frontend) y cualquier servicio compatible con Django (backend).

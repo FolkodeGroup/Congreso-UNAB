@@ -34,7 +34,12 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.101']
 
 import os
 from dotenv import load_dotenv
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+# Cargar variables de entorno desde .env en la raíz del backend
+dotenv_path = os.path.join(BASE_DIR, '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+else:
+    print(f"[WARNING] No se encontró el archivo .env en {dotenv_path}")
 
 # Configuración CORS para permitir peticiones del frontend
 CORS_ALLOW_ALL_ORIGINS = True  # Para desarrollo, permite cualquier origen
@@ -117,14 +122,28 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Email configuration (Gmail SMTP)
+
+# =================== CONFIGURACIÓN DE EMAIL (GMAIL SMTP) ===================
+# Asegúrate de tener las siguientes variables en tu .env:
+# EMAIL_HOST_USER=contactofolkode@gmail.com
+# EMAIL_HOST_PASSWORD=tu_contraseña_o_app_password
+# EMAIL_HOST=smtp.gmail.com
+# EMAIL_PORT=587
+# EMAIL_USE_TLS=True
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() in ['true', '1', 'yes']
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+
+# Validación básica para evitar errores comunes
+if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
+    print("[ERROR] EMAIL_HOST_USER o EMAIL_HOST_PASSWORD no están definidos en el .env. El envío de emails fallará.")
+if EMAIL_HOST_USER and '@gmail.com' in EMAIL_HOST_USER and len(EMAIL_HOST_PASSWORD) < 16:
+    print("[ADVERTENCIA] Gmail requiere una contraseña de aplicación (16 caracteres) si tienes 2FA activado. Verifica tu .env.")
 
 
 # Internationalization
@@ -162,4 +181,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Email settings for development
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
