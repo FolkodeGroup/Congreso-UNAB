@@ -1,10 +1,10 @@
-from rest_framework import viewsets, mixins, status, views
+from rest_framework import viewsets, mixins, status, views, serializers
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .models import Disertante, Inscripcion, CodigoQR, Programa, Certificado # Import Certificado model
+from .models import Disertante, Inscripcion, Programa, Certificado, Asistente
 from .serializers import DisertanteSerializer, InscripcionSerializer, AsistenteSerializer, ProgramaSerializer
 from django.utils import timezone
-from .email import send_certificate_email # Import the certificate sending function
+from .email import send_certificate_email
 
 class DisertanteViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -44,46 +44,85 @@ class InscripcionViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
             error_detail = e.detail.get('error', ['Error desconocido'])[0]
             return Response({'status': 'error', 'message': error_detail}, status=status.HTTP_400_BAD_REQUEST)
 
-class CheckInView(views.APIView):
+class VerificarDNIView(views.APIView):
     """
-    Vista para manejar el proceso de check-in a través de un código QR.
+    Vista para verificar si un DNI está registrado y confirmar asistencia.
     """
-    permission_classes = [AllowAny] # En un caso real, debería ser IsAuthenticated
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        codigo_qr = request.data.get('codigo')
-        if not codigo_qr:
-            return Response({'status': 'error', 'message': 'No se proporcionó código QR.'}, status=status.HTTP_400_BAD_REQUEST)
+        dni = request.data.get('dni')
+        if not dni:
+            return Response({'status': 'error', 'message': 'No se proporcionó DNI.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            qr = CodigoQR.objects.select_related('inscripcion__asistente').get(codigo=codigo_qr)
-        except CodigoQR.DoesNotExist:
-            return Response({'status': 'error', 'message': 'Código QR no válido o no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+            asistente = Asistente.objects.get(dni=dni)
+        except Asistente.DoesNotExist:
+            return Response({'status': 'error', 'message': 'DNI no encontrado en el listado de registrados.'}, status=status.HTTP_404_NOT_FOUND)
 
-        if qr.check_in_realizado:
+        if asistente.asistencia_confirmada:
             return Response({
                 'status': 'error',
-                'message': f'Este código ya fue utilizado el {qr.fecha_check_in.strftime("%d/%m/%Y a las %H:%M:%S")}.',
+                'message': f'La asistencia ya fue confirmada el {asistente.fecha_confirmacion.strftime("%d/%m/%Y a las %H:%M:%S")}.',
             }, status=status.HTTP_409_CONFLICT)
 
-        # Realizar el check-in
-        qr.check_in_realizado = True
-        qr.fecha_check_in = timezone.now()
-        qr.save()
+        # Confirmar asistencia
+        asistente.asistencia_confirmada = True
+        asistente.fecha_confirmacion = timezone.now()
+        asistente.save()
 
-        # Create Certificado instance
+        # Crear certificado de asistencia
         certificado, created = Certificado.objects.get_or_create(
-            asistente=qr.inscripcion.asistente,
+            asistente=asistente,
             tipo_certificado=Certificado.TipoCertificado.ASISTENCIA
         )
-        # Send certificate email
+        
+        # Enviar certificado por email
         send_certificate_email(certificado)
 
         # Preparar la respuesta con los datos del asistente
-        asistente_data = AsistenteSerializer(qr.inscripcion.asistente).data
+        asistente_data = AsistenteSerializer(asistente).data
         
         return Response({
             'status': 'success',
-            'message': 'Check-in realizado con éxito. Certificado enviado por email.',
+            'message': 'Asistencia confirmada con éxito. Certificado enviado por email.',
             'asistente': asistente_data
         }, status=status.HTTP_200_OK)
+
+class RegistroRapidoView(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    """
+    Vista para registro rápido in-situ en el evento.
+    """
+    queryset = Inscripcion.objects.all()
+    serializer_class = InscripcionSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            inscripcion = serializer.save()
+            
+            # Confirmar asistencia inmediatamente para registro in-situ
+            asistente = inscripcion.asistente
+            asistente.asistencia_confirmada = True
+            asistente.fecha_confirmacion = timezone.now()
+            asistente.save()
+            
+            # Crear certificado de asistencia
+            certificado, created = Certificado.objects.get_or_create(
+                asistente=asistente,
+                tipo_certificado=Certificado.TipoCertificado.ASISTENCIA
+            )
+            
+            # Enviar certificado por email
+            send_certificate_email(certificado)
+            
+            headers = self.get_success_headers(serializer.data)
+            return Response({
+                'status': 'success', 
+                'message': 'Registro completado. Asistencia confirmada y certificado enviado por email.'
+            }, status=status.HTTP_201_CREATED, headers=headers)
+        except serializers.ValidationError as e:
+            error_detail = e.detail.get('error', ['Error desconocido'])[0]
+            return Response({'status': 'error', 'message': error_detail}, status=status.HTTP_400_BAD_REQUEST)

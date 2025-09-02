@@ -1,9 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-import uuid
-
-# Imports añadidos para la generación de QR y PDF
-import qrcode
 from io import BytesIO
 from django.core.files.base import ContentFile
 from reportlab.lib.pagesizes import letter
@@ -43,6 +39,8 @@ class Asistente(models.Model):
     email = models.EmailField(unique=True)
     nombre_completo = models.CharField(max_length=255)
     dni = models.CharField(max_length=10, unique=True)
+    asistencia_confirmada = models.BooleanField(default=False, verbose_name="Asistencia Confirmada")
+    fecha_confirmacion = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Confirmación")
 
     def __str__(self):
         return f"{self.nombre_completo} ({self.email})"
@@ -61,29 +59,6 @@ class Inscripcion(models.Model):
 
     def __str__(self):
         return f"Inscripción de {self.asistente.nombre_completo} ({self.get_tipo_inscripcion_display()})"
-
-class CodigoQR(models.Model):
-    inscripcion = models.OneToOneField(Inscripcion, on_delete=models.CASCADE, verbose_name="Inscripción")
-    codigo = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    check_in_realizado = models.BooleanField(default=False, verbose_name="Check-in Realizado")
-    fecha_check_in = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Check-in")
-    imagen_qr = models.ImageField(upload_to='qr_codes/', blank=True, null=True, verbose_name="Imagen del Código QR")
-
-
-    def __str__(self):
-        return f"QR para {self.inscripcion.asistente.nombre_completo}"
-
-    def generar_imagen_qr(self, save=True):
-        """
-        Genera una imagen para el campo 'codigo' y la guarda en 'imagen_qr'.
-        """
-        if not self.imagen_qr:
-            qr_data = str(self.codigo)
-            qr_img = qrcode.make(qr_data)
-            buffer = BytesIO()
-            qr_img.save(buffer, format='PNG')
-            file_name = f"qr_{self.inscripcion.asistente.email}_{self.codigo}.png"
-            self.imagen_qr.save(file_name, ContentFile(buffer.getvalue()), save=save)
 
 class Certificado(models.Model):
     class TipoCertificado(models.TextChoices):

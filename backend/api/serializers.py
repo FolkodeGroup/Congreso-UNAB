@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Disertante, Empresa, Asistente, Inscripcion, CodigoQR, Programa
-from .email import send_confirmation_email # Import the email sending function
+from .models import Disertante, Empresa, Asistente, Inscripcion, Programa
 
 class DisertanteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,10 +41,6 @@ class InscripcionSerializer(serializers.ModelSerializer):
         # Crear la inscripción
         inscripcion = Inscripcion.objects.create(asistente=asistente, **validated_data)
         
-        # Crear el código QR asociado
-        CodigoQR.objects.create(inscripcion=inscripcion)
-        
-        # Send confirmation email
-        send_confirmation_email(inscripcion) # Call the email sending function
+        # No se crea QR ni se envía email de confirmación según nuevos requerimientos
         
         return inscripcion

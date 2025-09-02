@@ -11,4 +11,7 @@ qrcode[pil]==7.4.2
 reportlab==4.2.0
 
 # Para variables de entorno
-python-dotenv==1.0.1xhtml2pdf
+python-dotenv==1.0.1
+
+# Para generación de PDF desde HTML
+xhtml2pdf

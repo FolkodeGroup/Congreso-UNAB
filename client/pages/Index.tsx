@@ -171,6 +171,77 @@ export default function Index() {
         </div>
       </section>
 
+      {/* QR Information Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              Asistencia al Congreso
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed mb-8">
+              Hemos implementado un sistema de QR códigos para facilitar tu participación en el evento.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <Card className="border-2 border-blue-200">
+              <CardHeader className="text-center bg-blue-50">
+                <div className="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">✓</span>
+                </div>
+                <CardTitle className="text-blue-700">¿Ya estás registrado?</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center space-y-4 pt-6">
+                <p className="text-gray-600">
+                  Si ya te registraste previamente, escanea el QR azul en el evento para confirmar tu asistencia y recibir tu certificado.
+                </p>
+                <Link to="/verificar-dni">
+                  <Button className="bg-blue-500 hover:bg-blue-600">
+                    Confirmar Asistencia
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-green-200">
+              <CardHeader className="text-center bg-green-50">
+                <div className="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">+</span>
+                </div>
+                <CardTitle className="text-green-700">¿Vienes sin registro?</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center space-y-4 pt-6">
+                <p className="text-gray-600">
+                  No te preocupes. Escanea el QR verde en el evento para registrarte al momento y confirmar tu asistencia automáticamente.
+                </p>
+                <Link to="/registro-rapido">
+                  <Button className="bg-green-500 hover:bg-green-600">
+                    Registro Rápido
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Card className="max-w-2xl mx-auto border-2 border-yellow-200 bg-yellow-50">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center mr-3">
+                    <span className="text-sm">!</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-yellow-800">Importante</h3>
+                </div>
+                <p className="text-yellow-700">
+                  En ambos casos recibirás tu certificado de asistencia por email automáticamente.
+                  Solo necesitas tu DNI para confirmar tu participación.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Topics Section */}
       <section className="py-16 bg-section">
         <div className="container mx-auto px-4">
