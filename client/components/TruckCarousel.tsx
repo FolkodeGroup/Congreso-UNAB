@@ -8,6 +8,7 @@ interface TruckCarouselProps {
   logos?: LogoItem[];
   direction?: Direction; // default 'rtl'
   durationSec?: number; // full cross duration
+  startDelaySec?: number; // offset start between carousels
 }
 
 const Wheel: React.FC<{ className?: string }> = ({ className }) => (
@@ -40,6 +41,7 @@ const Truck: React.FC<{ logos: LogoItem[]; color: 'blue' | 'cyan' }>
         <div className="relative flex-1">
           <div className="rounded-r-md border-2 border-congress-blue bg-white shadow-lg">
             <div className="h-2 bg-gradient-to-r from-congress-cyan to-congress-cyan-light rounded-t-md" />
+            <div className="absolute -bottom-2 left-4 right-4 h-1 bg-gray-400 rounded" />
             <div className="grid grid-cols-4 gap-4 p-4">
               {logos.map((l, idx) => (
                 <div key={idx} className="flex items-center justify-center">
@@ -66,7 +68,7 @@ const Truck: React.FC<{ logos: LogoItem[]; color: 'blue' | 'cyan' }>
   );
 };
 
-export const TruckCarousel: React.FC<TruckCarouselProps> = ({ logos = DEFAULT_LOGOS, direction = 'rtl', durationSec = 18 }) => {
+export const TruckCarousel: React.FC<TruckCarouselProps> = ({ logos = DEFAULT_LOGOS, direction = 'rtl', durationSec = 18, startDelaySec = 0 }) => {
   const groups = chunk(logos.slice(0, 12), 4); // 3 groups of 4
   const initialX = direction === 'rtl' ? '110%' : '-110%';
   const targetX = direction === 'rtl' ? '-130%' : '130%';
@@ -78,7 +80,7 @@ export const TruckCarousel: React.FC<TruckCarouselProps> = ({ logos = DEFAULT_LO
           key={i}
           initial={{ x: initialX }}
           animate={{ x: targetX }}
-          transition={{ duration: durationSec, ease: 'linear', repeat: Infinity, repeatType: 'loop', delay: i * (durationSec / 3) }}
+          transition={{ duration: durationSec, ease: 'linear', repeat: Infinity, repeatType: 'loop', delay: startDelaySec + i * (durationSec / 3) }}
           className="absolute top-0"
           style={{ left: direction === 'rtl' ? undefined : 0, right: direction === 'rtl' ? 0 : undefined }}
         >
