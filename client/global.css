@@ -130,33 +130,37 @@
 .degradado-hero {
   background: linear-gradient(
     to bottom,
-    #002E4D 0%,   /* azul oscuro arriba */
-    #004C73 35%,  /* azul intermedio */
-    #007BA7 70%,  /* azul más claro */
-    #002E4D 100%  /* celeste abajo */
+    #002e4d 0%,
+    /* azul oscuro arriba */ #004c73 35%,
+    /* azul intermedio */ #007ba7 70%,
+    /* azul más claro */ #002e4d 100% /* celeste abajo */
   );
 }
 
 .degradado-section {
   background: linear-gradient(
     to bottom,
-    #002E4D 0%,
-    #002E4D 5%,
-    #002E4D 40%,
+    #002e4d 0%,
+    #002e4d 5%,
+    #002e4d 40%,
     #0d99d3 65%,
-    #002E4D 95%,
-    #002E4D 5%
+    #002e4d 95%,
+    #002e4d 5%
   );
 }
 
 .bg-section {
-  background-color: #002E4D;
+  background-color: #002e4d;
 }
 
 /* Seamless marquee animation */
 @keyframes marquee-scroll {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
 
 .marquee-track {
@@ -189,14 +193,17 @@
   position: relative;
   border-radius: 0.875rem; /* ~rounded-xl */
   padding: 1.5px; /* border thickness */
-  background: linear-gradient(90deg,
+  background: linear-gradient(
+    90deg,
     hsl(var(--congress-cyan)) 0%,
     color-mix(in hsl, hsl(var(--congress-cyan)) 30%, white 70%) 25%,
     color-mix(in hsl, hsl(var(--congress-cyan)) 20%, white 80%) 50%,
     color-mix(in hsl, hsl(var(--congress-cyan)) 30%, white 70%) 75%,
     hsl(var(--congress-cyan)) 100%
   );
-  box-shadow: 0 4px 18px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.05);
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* Ensure track sizes to content exactly */
