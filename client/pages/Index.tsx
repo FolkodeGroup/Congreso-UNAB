@@ -264,6 +264,35 @@ export default function Index() {
               El congreso se realizará en el Campus de la Universidad Nacional Guillermo Brown,
               ubicado en Blas Parera 132. Te esperamos!
             </p>
+            <h4 className="text-2xl md:text-2xl font-bold text-gray-900 mb-6">
+              Desde Adrogue
+            </h4>
+            <p className="text-lg text-gray-600 mb-8">
+              506 (Gendarmeria - Por Bynnon) - Av Espora - esq. Ricardo Rojas
+              <br />
+              79 (Constitucion - San Vicente) - Av Espora (Colegio Nacional de Adrogue)
+              <br />
+              74 (A) - Av Espora (Colegio Nacional de Adrogue)
+            </p>
+            <h4 className="text-2xl md:text-2xl font-bold text-gray-900 mb-6">
+              Desde Burzaco
+            </h4>
+            <p className="text-lg text-gray-600 mb-8">
+              506 (Gendarmeria - Por Bynnon) - Av Espora - esq. Ricardo Rojas
+              <br />
+              266 (4) - Estacion Burzaco
+              <br />
+              74 (A) - Av Espora - esq. Ricardo Rojas
+            </p>
+            <h4 className="text-2xl md:text-2xl font-bold text-gray-900 mb-6">
+              Desde Longchamps
+            </h4>
+            <p className="text-lg text-gray-600 mb-8">
+              79 (San Vicente) - Constitucion (Chiesa y Francia)
+              <br />
+              506  (San Jose, Por Bynnon) - Alsina y Magdalena Motti de Tieghi
+              <br />
+            </p>
           </div>
 
           <div className="flex justify-center">
