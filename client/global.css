@@ -178,3 +178,8 @@
     transform: translate3d(0, 0, 0) !important;
   }
 }
+
+/* Disable CSS animation when JS-driven loop is active */
+.marquee-track.no-anim {
+  animation: none !important;
+}
