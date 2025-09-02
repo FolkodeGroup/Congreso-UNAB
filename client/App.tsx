@@ -12,7 +12,6 @@ import Programa from "./pages/Programa";
 import SeleccionRegistro from "./pages/SeleccionRegistro";
 import Registro from "./pages/Registro";
 import RegistroGrupal from "./pages/RegistroGrupal";
-import EscaneoQR from "./pages/EscaneoQR";
 import Ponentes from "./pages/Ponentes";
 import Contacto from "././pages/Contacto";
 import Empresas from "./pages/Empresas";
@@ -35,7 +34,6 @@ const App = () => (
           <Route path="/registro" element={<SeleccionRegistro />} />
           <Route path="/registro/individual" element={<Registro />} />
           <Route path="/registro-grupal" element={<RegistroGrupal />} />
-          <Route path="/escaneo-qr" element={<EscaneoQR />} />
           <Route path="/ponentes" element={<Ponentes />} />
           <Route path="/empresas" element={<Empresas />} />
           <Route path="/contacto" element={<Contacto />} />

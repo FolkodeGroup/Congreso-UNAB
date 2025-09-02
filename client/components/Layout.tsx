@@ -67,14 +67,6 @@ export default function Layout({ children }: LayoutProps) {
                   Empresas
                 </Button>
               </Link>
-              <Link to="/escaneo-qr">
-                <Button
-                  variant={isActive('/escaneo-qr') ? 'secondary' : 'ghost'}
-                  className={isActive('/escaneo-qr') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
-                >
-                  Escanear QR
-                </Button>
-              </Link>
               <Link to="/generar-qrs">
                 <Button
                   variant={isActive('/generar-qrs') ? 'secondary' : 'ghost'}
