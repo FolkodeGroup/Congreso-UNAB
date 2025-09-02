@@ -54,7 +54,7 @@ export default function LogoMarquee({
         if (offsetRef.current >= 0) offsetRef.current -= half;
         if (offsetRef.current < -half) offsetRef.current = -half;
       }
-      el.style.transform = `translate3d=${offsetRef.current}px, 0, 0`;
+      el.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
     });
     resizeObserver.observe(el);
 
