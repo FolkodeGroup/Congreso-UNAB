@@ -32,6 +32,22 @@ export const FIRST_CAROUSEL_LOGOS: LogoItem[] = [
   { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fc8118b50d6664eeb9846515ba656ea09?format=webp&width=800", alt: "Logística E-LECE", heightClass: "h-12" }
 ];
 
+// Second carousel explicit set (user-provided)
+export const SECOND_CAROUSEL_LOGOS: LogoItem[] = [
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fb8c28f51aab546d8b8dba9a267a61832?format=webp&width=800", alt: "Núcleo Logístico", heightClass: "h-16" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F243a0df489fe4e6ba92c28ca9df5650b?format=webp&width=800", alt: "N&G Transportes", heightClass: "h-16" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fb0fa9a2f41654e38b32ccdc4cbd9f549?format=webp&width=800", alt: "Performance Lube", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F46484e6b719e431d88131e652c67f1fb?format=webp&width=800", alt: "Rasta", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fa7a05cf917c846c5bef1673a23fdc4cf?format=webp&width=800", alt: "Red Logística", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F3daf5da61e494062a57206984de195b1?format=webp&width=800", alt: "Red Parques Digital", heightClass: "h-12" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fb6b599c7928344ba91dec709c1062c3c?format=webp&width=800", alt: "Shiaffer", heightClass: "h-10" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fee1aaca255aa41798acb46bf441f8c49?format=webp&width=800", alt: "KPI Consulting", heightClass: "h-16" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F77b635486d7b47e48d7b5bc700023b7b?format=webp&width=800", alt: "La Postal", heightClass: "h-12" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fb23bcdbe9d4d4edba1b5f785bcf8553c?format=webp&width=800", alt: "Logística Carpic", heightClass: "h-16" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fe0800014034b456cb21b66fc750e3c89?format=webp&width=800", alt: "Cargo", heightClass: "h-10" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F43674f51cd7d41d5865218ac02526921?format=webp&width=800", alt: "Muvon", heightClass: "h-14" }
+];
+
 export function chunk<T>(arr: T[], size: number): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
