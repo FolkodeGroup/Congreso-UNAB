@@ -19,6 +19,7 @@ import Empresas from "./pages/Empresas";
 import VerificarDNI from "./pages/VerificarDNI";
 import RegistroRapido from "./pages/RegistroRapido";
 import GenerarQRs from "./pages/GenerarQRs";
+import HistoriaCampus from "./pages/HistoriaCampus";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/ponentes" element={<Ponentes />} />
           <Route path="/empresas" element={<Empresas />} />
           <Route path="/contacto" element={<Contacto />} />
+          <Route path="/historia-campus" element={<HistoriaCampus />} />
           <Route path="/verificar-dni" element={<VerificarDNI />} />
           <Route path="/registro-rapido" element={<RegistroRapido />} />
           <Route path="/generar-qrs" element={<GenerarQRs />} />
