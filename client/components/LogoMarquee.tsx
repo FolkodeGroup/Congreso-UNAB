@@ -22,7 +22,7 @@ export default function LogoMarquee({
   const animationDirection: React.CSSProperties['animationDirection'] = direction === 'ltr' ? 'reverse' : 'normal';
 
   return (
-    <div className="relative w-full overflow-hidden py-6 bg-white">
+    <div className="relative w-full overflow-hidden py-4 bg-white rounded-xl border border-congress-cyan/40 shadow-sm ring-1 ring-inset ring-congress-cyan/10">
       <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
 
