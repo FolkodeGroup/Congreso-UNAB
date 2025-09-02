@@ -9,7 +9,7 @@ export default function LogoCarouselsSection() {
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">Empresas Participantes</h2>
         <div className="space-y-6">
           <TruckCarousel direction="rtl" logos={FIRST_CAROUSEL_LOGOS} />
-          <TruckCarousel direction="ltr" />
+          <TruckCarousel direction="ltr" logos={SECOND_CAROUSEL_LOGOS} />
           <TruckCarousel direction="rtl" />
         </div>
       </div>
