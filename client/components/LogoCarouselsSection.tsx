@@ -1,5 +1,6 @@
 import * as React from 'react';
 import TruckCarousel from '@/components/TruckCarousel';
+import { FIRST_CAROUSEL_LOGOS } from '@/components/data/logos';
 
 export default function LogoCarouselsSection() {
   return (
