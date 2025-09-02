@@ -152,3 +152,28 @@
 .bg-section {
   background-color: #002E4D;
 }
+
+/* Seamless marquee animation */
+@keyframes marquee-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: var(--marquee-gap, 32px);
+  will-change: transform;
+  animation-name: marquee-scroll;
+  animation-duration: var(--marquee-duration, 18s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: var(--marquee-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation-play-state: paused;
+    transform: translate3d(0, 0, 0) !important;
+  }
+}
