@@ -12,7 +12,6 @@ import Programa from "./pages/Programa";
 import SeleccionRegistro from "./pages/SeleccionRegistro";
 import Registro from "./pages/Registro";
 import RegistroGrupal from "./pages/RegistroGrupal";
-import EscaneoQR from "./pages/EscaneoQR";
 import Ponentes from "./pages/Ponentes";
 import Contacto from "././pages/Contacto";
 import Empresas from "./pages/Empresas";
@@ -20,6 +19,8 @@ import VerificarDNI from "./pages/VerificarDNI";
 import RegistroRapido from "./pages/RegistroRapido";
 import GenerarQRs from "./pages/GenerarQRs";
 import HistoriaCampus from "./pages/HistoriaCampus";
+
+import SobreElCongreso from "./pages/SobreElCongreso";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +36,6 @@ const App = () => (
           <Route path="/registro" element={<SeleccionRegistro />} />
           <Route path="/registro/individual" element={<Registro />} />
           <Route path="/registro-grupal" element={<RegistroGrupal />} />
-          <Route path="/escaneo-qr" element={<EscaneoQR />} />
           <Route path="/ponentes" element={<Ponentes />} />
           <Route path="/empresas" element={<Empresas />} />
           <Route path="/contacto" element={<Contacto />} />
@@ -43,6 +43,7 @@ const App = () => (
           <Route path="/verificar-dni" element={<VerificarDNI />} />
           <Route path="/registro-rapido" element={<RegistroRapido />} />
           <Route path="/generar-qrs" element={<GenerarQRs />} />
+          <Route path="/sobre-el-congreso" element={<SobreElCongreso />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
