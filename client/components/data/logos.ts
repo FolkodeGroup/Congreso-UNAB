@@ -1,4 +1,4 @@
-export type LogoItem = { src: string; alt: string };
+export type LogoItem = { src: string; alt: string; heightClass?: string };
 
 // 12 logos to populate the carousels (4 per truck, 3 trucks)
 export const LOGOS_12: LogoItem[] = [
