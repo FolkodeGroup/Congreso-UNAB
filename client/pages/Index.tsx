@@ -37,6 +37,16 @@ export default function Index() {
               <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto mb-4">
                 Innovación y desafíos en la logística y el transporte
               </p>
+              <div className="mb-6">
+                <Link to="/historia-campus">
+                  <Button
+                    variant="secondary"
+                    className="bg-congress-cyan text-white font-semibold px-6 py-2 rounded shadow hover:bg-congress-cyan-dark transition-colors text-lg"
+                  >
+                    Conocé la historia del campus y la casona
+                  </Button>
+                </Link>
+              </div>
               <div className="flex items-center justify-center space-x-3 opacity-80 mb-10">
                 <div className="mb-4 lg:mb-0">
                   <img

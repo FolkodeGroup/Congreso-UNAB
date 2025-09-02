@@ -91,6 +91,14 @@ export default function Layout({ children }: LayoutProps) {
                   Contacto
                 </Button>
               </Link>
+                <Link to="/historia-campus">
+                  <Button
+                    variant={isActive('/historia-campus') ? 'secondary' : 'ghost'}
+                    className={isActive('/historia-campus') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-cyan-dark'}
+                  >
+                    Historia del Campus
+                  </Button>
+                </Link>
             </nav>
           </div>
         </div>
