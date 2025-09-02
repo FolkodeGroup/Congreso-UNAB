@@ -28,10 +28,10 @@ export default function LogoMarquee({
       <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
 
       <motion.div
-        className="flex min-w-fit items-center"
+        className="flex min-w-fit items-center will-change-transform"
         style={{ gap: `${gapPx}px` }}
         animate={{ x: animate }}
-        transition={{ duration: durationSec, ease: 'linear', repeat: Infinity, delay: startDelaySec }}
+        transition={{ duration: durationSec, ease: 'linear', repeat: Infinity, repeatType: 'loop', repeatDelay: 0, delay: startDelaySec }}
       >
         {track.map((l, idx) => (
           <div key={`${l.src}-${idx}`} className="flex items-center justify-center shrink-0">
