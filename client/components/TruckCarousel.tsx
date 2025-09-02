@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import * as React from 'react';
 import { chunk, LOGOS_12, type LogoItem } from './data/logos';
 
 type Direction = 'ltr' | 'rtl';
