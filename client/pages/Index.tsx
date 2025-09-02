@@ -17,8 +17,14 @@ import {
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import LogoCarouselsSection from "@/components/LogoCarouselsSection";
+import { useRef } from "react";
 
 export default function Index() {
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  const scrollToMap = () => {
+    mapRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
   return (
     <Layout>
       {/* Hero Section */}
@@ -67,7 +73,7 @@ export default function Index() {
                 <h3 className="font-semibold mb-2">Fecha</h3>
                 <p className="text-lg">15 de Noviembre 2025</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 cursor-pointer hover:bg-white/50 transition-all duration-300" onClick={scrollToMap}>
                 <FiMapPin className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
                 <h3 className="font-semibold mb-2">Ubicación</h3>
                 <p className="text-lg">
@@ -246,6 +252,63 @@ export default function Index() {
           </Link>
         </div>
       </section>
+
+      {/* Mapa Section */}
+      <section ref={mapRef} className="py-16 bg-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              ¿Cómo llegar?
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              El congreso se realizará en el Campus de la Universidad Nacional Guillermo Brown,
+              ubicado en Blas Parera 132. Te esperamos!
+            </p>
+          </div>
+
+          <div className="flex justify-center">
+            <div className="w-full max-w-4xl rounded-lg overflow-hidden shadow-lg">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3274.70762014795!2d-58.38742082408727!3d-34.838443069932694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcd5aebf3ce8ad%3A0x61e0dc504088584!2sUniversidad%20Nacional%20Guillermo%20Brown%20(UNAB)!5e0!3m2!1ses-419!2sar!4v1756827211940!5m2!1ses-419!2sar"
+                width="100%"
+                height="450"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Ubicación del Congreso - Universidad Nacional Guillermo Brown"
+                className="rounded-lg"
+              ></iframe>
+            </div>
+          </div>
+
+          <div className="max-w-4xl mx-auto mt-8 text-center">
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-semibold text-congress-blue mb-4">Dirección</h3>
+              <p className="text-lg text-gray-700 mb-2">
+                <strong>Universidad Nacional Guillermo Brown</strong>
+              </p>
+              <p className="text-lg text-gray-700 mb-4">
+                Blas Parera 132, Adrogué, Buenos Aires
+              </p>
+              <Button
+                className="bg-congress-blue hover:bg-congress-blue-dark"
+                asChild
+              >
+                <a
+                  href="https://maps.google.com/?q=Universidad+Nacional+Guillermo+Brown+Blas+Parera+132+Adrogué+Buenos+Aires"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Abrir en Google Maps
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
     </Layout>
   );
 }
