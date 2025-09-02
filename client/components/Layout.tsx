@@ -67,6 +67,14 @@ export default function Layout({ children }: LayoutProps) {
                   Empresas
                 </Button>
               </Link>
+              <Link to="/sobre-el-congreso">
+                <Button
+                  variant={isActive('/sobre-el-congreso') ? 'secondary' : 'ghost'}
+                  className={isActive('/sobre-el-congreso') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
+                >
+                  Sobre el Congreso
+                </Button>
+              </Link>
               <Link to="/generar-qrs">
                 <Button
                   variant={isActive('/generar-qrs') ? 'secondary' : 'ghost'}

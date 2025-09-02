@@ -20,6 +20,8 @@ import RegistroRapido from "./pages/RegistroRapido";
 import GenerarQRs from "./pages/GenerarQRs";
 import HistoriaCampus from "./pages/HistoriaCampus";
 
+import SobreElCongreso from "./pages/SobreElCongreso";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -41,6 +43,7 @@ const App = () => (
           <Route path="/verificar-dni" element={<VerificarDNI />} />
           <Route path="/registro-rapido" element={<RegistroRapido />} />
           <Route path="/generar-qrs" element={<GenerarQRs />} />
+          <Route path="/sobre-el-congreso" element={<SobreElCongreso />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

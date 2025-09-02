@@ -92,6 +92,7 @@ export default function Programa() {
             Descubre el cronograma de charlas, talleres y eventos de networking.
           </p>
         </div>
+        
 
         {loading ? (
           renderSkeletons()
@@ -142,6 +143,74 @@ export default function Programa() {
           </div>
         )}
       </div>
+      {/* Topics Section */}
+      <section className="py-16 bg-section">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto justify-items-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
+              Temas del Congreso
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-congress-cyan mb-4">
+                  Logística
+                </h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li className="flex items-start text-white">
+                    <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Gestión de cadenas de suministro
+                  </li>
+                  <li className="flex items-start text-white">
+                    <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Logística 4.0 y transformación digital
+                  </li>
+                  <li className="flex items-start text-white">
+                    <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Automatización de almacenes
+                  </li>
+                  <li className="flex items-start text-white">
+                    <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Sostenibilidad en la logística
+                  </li>
+                  <li className="flex items-start text-white">
+                    <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    E-commerce y última milla
+                  </li>
+                </ul>
+              </div>
+
+              <div className="space-y-4 ml-20">
+                <h3 className="text-xl font-semibold text-congress-cyan mb-4">
+                  Transporte
+                </h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li className="flex items-start text-white">
+                    <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Movilidad urbana sostenible
+                  </li>
+                  <li className="flex items-start text-white">
+                    <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Transporte multimodal
+                  </li>
+                  <li className="flex items-start text-white">
+                    <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Vehículos autónomos
+                  </li>
+                  <li className="flex items-start text-white">
+                    <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Infraestructura inteligente
+                  </li>
+                  <li className="flex items-start text-white">
+                    <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    Políticas públicas de transporte
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </Layout>
   );
 }
