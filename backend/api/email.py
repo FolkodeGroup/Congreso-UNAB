@@ -52,24 +52,45 @@ def send_certificate_email(certificado_instance):
         'fecha_emision': date.today().strftime("%d de %B de %Y"),
     }
 
-    # Renderizar la plantilla HTML del certificado
-    html_string = render_to_string('api/certificate/asistencia.html', context)
+    try:
+        # Renderizar la plantilla HTML del certificado
+        html_string = render_to_string('api/certificate/asistencia.html', context)
 
-    # Generar el PDF con xhtml2pdf
-    pdf_file_buffer = io.BytesIO()
-    pisa.CreatePDF(html_string, dest=pdf_file_buffer)
-    pdf_file = pdf_file_buffer.getvalue()
+        # Generar el PDF con xhtml2pdf
+        pdf_file_buffer = io.BytesIO()
+        result = pisa.CreatePDF(html_string, dest=pdf_file_buffer)
+        
+        if result.err:
+            raise Exception(f"Error generando PDF: {result.err}")
+        
+        pdf_file = pdf_file_buffer.getvalue()
 
-    # Crear el email
-    email = EmailMultiAlternatives(
-        subject='Certificado de Asistencia al Congreso de Logística UNAB',
-        body='Adjuntamos tu certificado de asistencia al Congreso de Logística UNAB.',
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[asistente.email],
-    )
-    email.attach(
-        f'Certificado_{asistente.nombre_completo.replace(" ", "_")}.pdf',
-        pdf_file,
-        'application/pdf'
-    )
-    email.send()
+        # Guardar el PDF en el modelo Certificado
+        from django.core.files.base import ContentFile
+        certificado_instance.pdf_generado.save(
+            f'certificado_{asistente.nombre_completo.replace(" ", "_")}_{asistente.dni}.pdf',
+            ContentFile(pdf_file),
+            save=True
+        )
+
+        # Crear el email
+        email = EmailMultiAlternatives(
+            subject='Certificado de Asistencia al Congreso de Logística UNAB',
+            body='Adjuntamos tu certificado de asistencia al Congreso de Logística UNAB.',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[asistente.email],
+        )
+        email.attach(
+            f'Certificado_{asistente.nombre_completo.replace(" ", "_")}.pdf',
+            pdf_file,
+            'application/pdf'
+        )
+        
+        # Enviar el email
+        email.send(fail_silently=False)
+        print(f"✅ Certificado enviado exitosamente a {asistente.email}")
+        
+    except Exception as e:
+        print(f"❌ Error enviando certificado a {asistente.email}: {e}")
+        # Re-raise para que el error se propague
+        raise Exception(f"Error enviando certificado: {e}")

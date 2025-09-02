@@ -21,7 +21,7 @@
         .certificate {
             width: 29.7cm; /* A4 landscape width */
             height: 21cm;  /* A4 landscape height */
-            background: url('https://via.placeholder.com/2970x2100.png?text=Fondo+Certificado') no-repeat center center / cover;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border: 10px solid #0056b3; /* Color del congreso */
             box-sizing: border-box;
             display: flex;
@@ -85,29 +85,32 @@
             left: 2cm;
             max-width: 150px;
             height: auto;
+            background: #0056b3;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="certificate">
-        <img src="https://via.placeholder.com/150x80.png?text=Logo+UNAB" alt="Logo UNAB" class="logo">
+        <div class="logo">UNaB</div>
         <div class="certificate-content">
             <h1>Certificado de Asistencia</h1>
             <p>Se otorga el presente certificado a:</p>
             <p class="name">{{ asistente_nombre }}</p>
             <p>Por su valiosa participación en el</p>
-            <h2>Congreso de Logística UNAB</h2>
-            <p>Realizado del 25 al 27 de Agosto de 2025</p>
+            <h2>Congreso de Logística y Transporte</h2>
+            <p>Realizado el 15 de Noviembre de 2025</p>
         </div>
         <div class="signature-section">
             <div class="signature">
-                <img src="https://via.placeholder.com/200x100.png?text=Firma+1" alt="Firma Director">
-                <p>_________________________</p>
+                <p style="margin-top: 50px;">_________________________</p>
                 <p>Director del Congreso</p>
             </div>
             <div class="signature">
-                <img src="https://via.placeholder.com/200x100.png?text=Firma+2" alt="Firma Decano">
-                <p>_________________________</p>
+                <p style="margin-top: 50px;">_________________________</p>
                 <p>Decano de la Facultad</p>
             </div>
         </div>
