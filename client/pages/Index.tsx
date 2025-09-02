@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FiCalendar, FiMapPin, FiMail, FiUsers, FiClock, FiAward } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import LogoCarouselsSection from '@/components/LogoCarouselsSection';
 
 export default function Index() {
   return (
@@ -64,6 +65,8 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      <LogoCarouselsSection />
 
       {/* Statistics Section */}
       <section className="py-16 bg-white">
