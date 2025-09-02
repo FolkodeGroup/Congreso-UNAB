@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as React from 'react';
 import type { LogoItem } from '@/components/data/logos';
 
 type Direction = 'ltr' | 'rtl';
