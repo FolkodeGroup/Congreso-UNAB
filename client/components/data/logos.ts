@@ -48,6 +48,22 @@ export const SECOND_CAROUSEL_LOGOS: LogoItem[] = [
   { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F43674f51cd7d41d5865218ac02526921?format=webp&width=800", alt: "Muvon", heightClass: "h-14" }
 ];
 
+// Third carousel explicit set (first 12 of provided)
+export const THIRD_CAROUSEL_LOGOS: LogoItem[] = [
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Ff7ce3047f5314a7bb84f6da1beffbcfc?format=webp&width=800", alt: "Traden", heightClass: "h-16" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fa2416637723e4ed7aaad437b6fae8a04?format=webp&width=800", alt: "Transporte Dominguez", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fe87110819bd64e04a33cfecbb2dd6c82?format=webp&width=800", alt: "UNLaM", heightClass: "h-16" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fac9154e2dc384057958d4235af63cda7?format=webp&width=800", alt: "UNLP", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F68f8f4b6530b4535a5b45b97530ba6fb?format=webp&width=800", alt: "UNLZ", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F3ebc652058d141e89f765fcae46f7b8c?format=webp&width=800", alt: "UPE", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F80a1dcd274574464bfddf9104e9e40aa?format=webp&width=800", alt: "UTN", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F6ce10b5621ff41fb9cf69ec5f6428129?format=webp&width=800", alt: "VDM Logistics", heightClass: "h-12" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fa393f94347a14398a324933674d5993e?format=webp&width=800", alt: "VIMA", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F9092f09f721c4c2884aedc72bc148199?format=webp&width=800", alt: "VOS", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2Fab0b7789ede447ad8164ee07487f48d6?format=webp&width=800", alt: "Xperts", heightClass: "h-14" },
+  { src: "https://cdn.builder.io/api/v1/image/assets%2Fcb0ed83df0f64e19ade6613b03046b1b%2F04a56782c3e04fb49756a94255d3fc24?format=webp&width=800", alt: "StarGPS", heightClass: "h-12" }
+];
+
 export function chunk<T>(arr: T[], size: number): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
