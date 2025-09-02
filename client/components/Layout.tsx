@@ -124,6 +124,9 @@ export default function Layout({ children }: LayoutProps) {
                   Historia del Campus
                 </Button>
               </Link>
+              <div className="flex items-center justify-end space-x-3 mb-4">
+                <img src="/images/folkode-blanco.jpeg" alt="Logo de Folkode" className="h-24 w-auto bg-white p-2 rounded" />
+              </div>
             </nav>
           </div>
         </div>
