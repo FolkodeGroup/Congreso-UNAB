@@ -1,8 +1,22 @@
-import Layout from '@/components/Layout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FiCalendar, FiMapPin, FiMail, FiUsers, FiClock, FiAward } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import Layout from "@/components/Layout";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  FiCalendar,
+  FiMapPin,
+  FiMail,
+  FiUsers,
+  FiClock,
+  FiAward,
+} from "react-icons/fi";
+import { Link } from "react-router-dom";
+import LogoCarouselsSection from "@/components/LogoCarouselsSection";
 
 export default function Index() {
   return (
@@ -25,9 +39,15 @@ export default function Index() {
               </p>
               <div className="flex items-center justify-center space-x-3 opacity-80 mb-10">
                 <div className="mb-4 lg:mb-0">
-                  <img src="/images/Logo_unab2.png" alt="UNaB Logo" className="h-28 w-auto" />
+                  <img
+                    src="/images/Logo_unab2.png"
+                    alt="UNaB Logo"
+                    className="h-28 w-auto"
+                  />
                 </div>
-                <span className="text-lg font-medium">Universidad Nacional Guillermo Brown</span>
+                <span className="text-lg font-medium">
+                  Universidad Nacional Guillermo Brown
+                </span>
               </div>
             </div>
 
@@ -40,23 +60,35 @@ export default function Index() {
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
                 <FiMapPin className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
                 <h3 className="font-semibold mb-2">Ubicación</h3>
-                <p className="text-lg">Campus UNaB<br />Blas Parera 132</p>
+                <p className="text-lg">
+                  Campus UNaB
+                  <br />
+                  Blas Parera 132
+                </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
                 <FiMail className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
                 <h3 className="font-semibold mb-2">Contacto</h3>
-                <p className="text-sm break-all">congresologisticaytransporte@unab.edu.ar</p>
+                <p className="text-sm break-all">
+                  congresologisticaytransporte@unab.edu.ar
+                </p>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/registro">
-                <Button size="lg" className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3">
+                <Button
+                  size="lg"
+                  className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3"
+                >
                   Registrarse Ahora
                 </Button>
               </Link>
               <Link to="/programa">
-                <Button size="lg" className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3">
+                <Button
+                  size="lg"
+                  className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3"
+                >
                   Ver Programa
                 </Button>
               </Link>
@@ -64,6 +96,8 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      <LogoCarouselsSection />
 
       {/* Statistics Section */}
       <section className="py-16 bg-white">
@@ -73,8 +107,10 @@ export default function Index() {
               Un Evento de Alto Nivel
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Este congreso reunirá a los principales actores del sector logístico y de transporte
-              para reflexionar y debatir sobre los desafíos y oportunidades tanto a nivel nacional como internacional.
+              Este congreso reunirá a los principales actores del sector
+              logístico y de transporte para reflexionar y debatir sobre los
+              desafíos y oportunidades tanto a nivel nacional como
+              internacional.
             </p>
           </div>
 
@@ -83,23 +119,33 @@ export default function Index() {
               <div className="bg-congress-blue text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold">30+</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Empresas</h3>
-              <p className="text-gray-600">Empresas líderes del sector participando</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Empresas
+              </h3>
+              <p className="text-gray-600">
+                Empresas líderes del sector participando
+              </p>
             </div>
 
             <div className="text-center">
               <div className="bg-congress-cyan text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold">25+</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Disertantes</h3>
-              <p className="text-gray-600">Especialistas y académicos de primer nivel</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Disertantes
+              </h3>
+              <p className="text-gray-600">
+                Especialistas y académicos de primer nivel
+              </p>
             </div>
 
             <div className="text-center">
               <div className="bg-congress-blue text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold">2</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Alcances</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Alcances
+              </h3>
               <p className="text-gray-600">Nacional e internacional</p>
             </div>
 
@@ -107,7 +153,9 @@ export default function Index() {
               <div className="bg-congress-cyan text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold">0</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Costo</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Costo
+              </h3>
               <p className="text-gray-600">Participación gratuita</p>
             </div>
           </div>
@@ -122,12 +170,14 @@ export default function Index() {
               Sobre el Congreso
             </h2>
             <p className="text-lg text-white leading-relaxed">
-              El Congreso de Logística y Transporte 2025 de la Universidad Nacional Guillermo Brown
-              es un evento académico de alcance nacional e internacional que reúne a más de 30 empresas
-              del sector y más de 25 disertantes de primer nivel. Nuestro objetivo es crear un espacio
-              de reflexión y debate sobre los principales desafíos y oportunidades en la logística y
-              el transporte, promoviendo el intercambio de conocimientos entre especialistas,
-              profesionales y académicos.
+              El Congreso de Logística y Transporte 2025 de la Universidad
+              Nacional Guillermo Brown es un evento académico de alcance
+              nacional e internacional que reúne a más de 30 empresas del sector
+              y más de 25 disertantes de primer nivel. Nuestro objetivo es crear
+              un espacio de reflexión y debate sobre los principales desafíos y
+              oportunidades en la logística y el transporte, promoviendo el
+              intercambio de conocimientos entre especialistas, profesionales y
+              académicos.
             </p>
           </div>
 
@@ -139,7 +189,8 @@ export default function Index() {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-center">
-                  Conecta con profesionales, académicos y líderes de la industria logística y de transporte
+                  Conecta con profesionales, académicos y líderes de la
+                  industria logística y de transporte
                 </CardDescription>
               </CardContent>
             </Card>
@@ -151,7 +202,8 @@ export default function Index() {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-center">
-                  Descubre las últimas tecnologías y metodologías que están transformando el sector
+                  Descubre las últimas tecnologías y metodologías que están
+                  transformando el sector
                 </CardDescription>
               </CardContent>
             </Card>
@@ -163,79 +215,9 @@ export default function Index() {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-center">
-                  Participa en conferencias magistrales y talleres dirigidos por expertos reconocidos
+                  Participa en conferencias magistrales y talleres dirigidos por
+                  expertos reconocidos
                 </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* QR Information Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Asistencia al Congreso
-            </h2>
-            <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              Hemos implementado un sistema de QR códigos para facilitar tu participación en el evento.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <Card className="border-2 border-blue-200">
-              <CardHeader className="text-center bg-blue-50">
-                <div className="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">✓</span>
-                </div>
-                <CardTitle className="text-blue-700">¿Ya estás registrado?</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center space-y-4 pt-6">
-                <p className="text-gray-600">
-                  Si ya te registraste previamente, escanea el QR azul en el evento para confirmar tu asistencia y recibir tu certificado.
-                </p>
-                <Link to="/verificar-dni">
-                  <Button className="bg-blue-500 hover:bg-blue-600">
-                    Confirmar Asistencia
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-green-200">
-              <CardHeader className="text-center bg-green-50">
-                <div className="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">+</span>
-                </div>
-                <CardTitle className="text-green-700">¿Vienes sin registro?</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center space-y-4 pt-6">
-                <p className="text-gray-600">
-                  No te preocupes. Escanea el QR verde en el evento para registrarte al momento y confirmar tu asistencia automáticamente.
-                </p>
-                <Link to="/registro-rapido">
-                  <Button className="bg-green-500 hover:bg-green-600">
-                    Registro Rápido
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="text-center">
-            <Card className="max-w-2xl mx-auto border-2 border-yellow-200 bg-yellow-50">
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-center mb-4">
-                  <div className="w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center mr-3">
-                    <span className="text-sm">!</span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-yellow-800">Importante</h3>
-                </div>
-                <p className="text-yellow-700">
-                  En ambos casos recibirás tu certificado de asistencia por email automáticamente.
-                  Solo necesitas tu DNI para confirmar tu participación.
-                </p>
               </CardContent>
             </Card>
           </div>
@@ -252,7 +234,9 @@ export default function Index() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-congress-cyan mb-4">Logística</h3>
+                <h3 className="text-xl font-semibold text-congress-cyan mb-4">
+                  Logística
+                </h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
@@ -278,7 +262,9 @@ export default function Index() {
               </div>
 
               <div className="space-y-4 ml-20">
-                <h3 className="text-xl font-semibold text-congress-cyan mb-4">Transporte</h3>
+                <h3 className="text-xl font-semibold text-congress-cyan mb-4">
+                  Transporte
+                </h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start text-white">
                     <span className="w-2 h-2 bg-congress-cyan rounded-full mt-2 mr-3 flex-shrink-0"></span>
@@ -317,7 +303,10 @@ export default function Index() {
               </h2>
               <p className="text-lg text-gray-600">
                 Te invitamos a participar en la modalidad que prefieras.
-                <span className="font-semibold text-congress-blue"> Todas las modalidades son sin costo</span>
+                <span className="font-semibold text-congress-blue">
+                  {" "}
+                  Todas las modalidades son sin costo
+                </span>
                 para instituciones y empresas que deseen sumarse.
               </p>
             </div>
@@ -332,9 +321,9 @@ export default function Index() {
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-base">
-                    Presenta tu empresa, servicios o proyectos en un espacio dedicado.
-                    Conecta directamente con profesionales del sector y genera nuevas
-                    oportunidades de negocio.
+                    Presenta tu empresa, servicios o proyectos en un espacio
+                    dedicado. Conecta directamente con profesionales del sector
+                    y genera nuevas oportunidades de negocio.
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -344,7 +333,9 @@ export default function Index() {
                   <div className="w-12 h-12 bg-congress-cyan rounded-lg flex items-center justify-center mb-4">
                     <FiAward className="w-6 h-6 text-white" />
                   </div>
-                  <CardTitle className="text-xl">Presentador de Tecnología</CardTitle>
+                  <CardTitle className="text-xl">
+                    Presentador de Tecnología
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-base">
@@ -360,13 +351,15 @@ export default function Index() {
                   <div className="w-12 h-12 bg-congress-blue rounded-lg flex items-center justify-center mb-4">
                     <FiClock className="w-6 h-6 text-white" />
                   </div>
-                  <CardTitle className="text-xl">Coordinador de Taller</CardTitle>
+                  <CardTitle className="text-xl">
+                    Coordinador de Taller
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-base">
-                    Lidera un taller práctico o instancia demostrativa.
-                    Comparte tu expertise y conocimientos prácticos con
-                    otros profesionales del sector.
+                    Lidera un taller práctico o instancia demostrativa. Comparte
+                    tu expertise y conocimientos prácticos con otros
+                    profesionales del sector.
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -394,8 +387,9 @@ export default function Index() {
                   💡 ¿Interesado en Participar como Empresa?
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Únete a las más de 30 empresas que ya confirmaron su participación.
-                  Es una excelente oportunidad para networking, visibilidad y desarrollo de negocio.
+                  Únete a las más de 30 empresas que ya confirmaron su
+                  participación. Es una excelente oportunidad para networking,
+                  visibilidad y desarrollo de negocio.
                 </p>
                 <Link to="/contacto">
                   <Button className="bg-congress-blue hover:bg-congress-blue-dark mr-4">
@@ -403,7 +397,10 @@ export default function Index() {
                   </Button>
                 </Link>
                 <Link to="/registro">
-                  <Button variant="outline" className="border-congress-blue text-congress-blue hover:bg-congress-blue hover:text-white">
+                  <Button
+                    variant="outline"
+                    className="border-congress-blue text-congress-blue hover:bg-congress-blue hover:text-white"
+                  >
                     Registro Individual
                   </Button>
                 </Link>
@@ -420,11 +417,14 @@ export default function Index() {
             ¿Listo para ser parte del futuro?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto text-congress-cyan-light">
-            Únete a nosotros en este importante evento que marcará el rumbo
-            de la logística y el transporte en Argentina y Latinoamérica.
+            Únete a nosotros en este importante evento que marcará el rumbo de
+            la logística y el transporte en Argentina y Latinoamérica.
           </p>
           <Link to="/registro">
-            <Button size="lg" className="bg-congress-cyan hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3">
+            <Button
+              size="lg"
+              className="bg-congress-cyan hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3"
+            >
               Registrarse Gratis
             </Button>
           </Link>
