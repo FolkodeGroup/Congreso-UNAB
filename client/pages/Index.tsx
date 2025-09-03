@@ -56,7 +56,7 @@ export default function Index() {
                 <Link to="/historia-campus">
                   <Button
                     variant="secondary"
-                    className="bg-congress-cyan text-white font-semibold px-6 py-2 rounded shadow hover:bg-congress-cyan-dark transition-colors text-lg"
+                    className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3"
                   >
                     Conocé la historia del campus y la casona
                   </Button>
@@ -100,7 +100,7 @@ export default function Index() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/registro">
                 <Button
                   size="lg"
@@ -117,7 +117,7 @@ export default function Index() {
                   Ver Programa
                 </Button>
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -223,18 +223,18 @@ export default function Index() {
                   visibilidad y desarrollo de negocio.
                 </p>
                 <Link to="/contacto">
-                  <Button className="bg-congress-blue hover:bg-congress-blue-dark mr-4">
+                  <Button className="bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3">
                     Contactar para Participar
                   </Button>
                 </Link>
-                <Link to="/registro">
+                {/* <Link to="/registro">
                   <Button
                     variant="outline"
                     className="border-congress-blue text-congress-blue hover:bg-congress-blue hover:text-white"
                   >
                     Registro Individual
                   </Button>
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>
@@ -247,14 +247,14 @@ export default function Index() {
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             ¿Listo para ser parte del futuro?
           </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto text-congress-cyan-light">
+          <p className="text-xl mb-8 max-w-2xl mx-auto text-congress-white">
             Únete a nosotros en este importante evento que marcará el rumbo de
             la logística y el transporte en Argentina y Latinoamérica.
           </p>
           <Link to="/registro">
             <Button
               size="lg"
-              className="bg-congress-cyan hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3"
+              className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3"
             >
               Registrarse Gratis
             </Button>
@@ -330,7 +330,7 @@ export default function Index() {
                 Blas Parera 132, Adrogué, Buenos Aires
               </p>
               <Button
-                className="bg-congress-blue hover:bg-congress-blue-dark"
+                className="bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3"
                 asChild
               >
                 <a

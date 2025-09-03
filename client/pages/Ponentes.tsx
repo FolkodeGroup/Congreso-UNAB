@@ -61,7 +61,7 @@ export default function Ponentes() {
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Ponentes del Congreso
+            Disertantes del Congreso
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Conoce a los expertos en logística y transporte que compartirán sus conocimientos y experiencia.
