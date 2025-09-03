@@ -12,7 +12,6 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const isSobreElCongresoActive = () => {
@@ -21,6 +20,19 @@ export default function Layout({ children }: LayoutProps) {
 
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setIsDropdownOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setIsDropdownOpen(false);
+    }, 200);
   };
 
   return (
@@ -40,7 +52,7 @@ export default function Layout({ children }: LayoutProps) {
               <Link to="/">
                 <Button
                   variant={isActive('/') ? 'secondary' : 'ghost'}
-                  className={isActive('/') ? 'bg-white text-congress-blue' : 'hover:bg-congress-blue-dark text-congress-white'}
+                  className={isActive('/') ? 'bg-white text-congress-blue' : 'hover:bg-congress-blue-dark text-white'}
                 >
                   Inicio
                 </Button>
@@ -48,8 +60,8 @@ export default function Layout({ children }: LayoutProps) {
               {/* Dropdown para "Sobre el Congreso" */}
               <div
                 className="relative"
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
               >
                 <Button
                   variant={isSobreElCongresoActive() ? 'secondary' : 'ghost'}
