@@ -1,6 +1,6 @@
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Instagram, MapPin } from 'lucide-react';
 
 export default function Contacto() {
   return (
@@ -22,19 +22,18 @@ export default function Contacto() {
               <CardTitle>Correo Electrónico</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-lg text-gray-700">info@congresounab.cl</p>
-              <p className="text-sm text-gray-500">Respondemos en 24-48 horas hábiles.</p>
+              <a href="mailto:congresologisticaytransporte@unab.edu.ar" className="text-lg text-blue-500 hover:underline">congresologisticaytransporte@unab.edu.ar</a>
             </CardContent>
           </Card>
 
           <Card className="text-center">
             <CardHeader>
-              <Phone className="mx-auto h-12 w-12 text-congress-blue mb-4" />
-              <CardTitle>Teléfono</CardTitle>
+              <Instagram className="mx-auto h-12 w-12 text-congress-blue mb-4" />
+              <CardTitle>Instagram</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-lg text-gray-700">+56 2 2XXX XXXX</p>
-              <p className="text-sm text-gray-500">Lunes a Viernes, 9:00 - 17:00 hrs.</p>
+              <p className="text-lg text-gray-700"></p>
+                <a href="https://www.instagram.com/congresologisticounab/" className="text-lg text-blue-500 hover:underline">@congresologisticounab</a>
             </CardContent>
           </Card>
 
@@ -44,8 +43,10 @@ export default function Contacto() {
               <CardTitle>Ubicación</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-lg text-gray-700">Av. Bellavista 0121, Providencia, Región Metropolitana, Chile</p>
-              <p className="text-sm text-gray-500">Campus Bellavista, Universidad Andrés Bello</p>
+              <p className="text-lg text-gray-700">
+                <a href="/#mapa" className="text-lg text-gray-700">Universidad Nacional Guillermo Brown</a>
+              </p>
+              <a href="/#mapa" className="text-sm text-gray-500">Blas Parera 132, Adrogué, Buenos Aires</a>
             </CardContent>
           </Card>
         </div>
