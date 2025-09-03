@@ -10,7 +10,7 @@ class Disertante(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     nombre = models.CharField(max_length=200)
     bio = models.TextField(verbose_name="Biografía")
-    foto_url = models.URLField(max_length=300, blank=True, verbose_name="URL de la Foto")
+    foto_url = models.CharField(max_length=300, blank=True, verbose_name="URL de la Foto")
     tema_presentacion = models.CharField(max_length=255, verbose_name="Título de la Presentación")
 
     def __str__(self):
