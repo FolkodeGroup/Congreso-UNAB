@@ -8,28 +8,50 @@ type ActividadCalendar = {
   aula: string;
   titulo: string;
   disertante: string;
+  descripcion?: string;
   inicio: string; // 'HH:MM'
   fin: string;    // 'HH:MM'
   color: string;  // color de fondo
 };
 
-// Aulas de ejemplo (incluyendo Auditorio/Aula Magna y 4 aulas)
+// Aulas de ejemplo (incluyendo Aula Magna y 4 aulas)
 const AULAS = [
-  'Auditorio',
+  'Aula Magna',
   'Aula 1',
   'Aula 2',
   'Aula 3',
   'Aula 4',
+  'Aula 5',
+  'Aula 6',
+  'Aula 7',
+  'Aula 8',
+  'Aula 9',
+  'Aula 10',
+  'Aula 11',
+  'Aula 12',
+  'Aula 13',
+  'Aula 14',
 ];
 
-// Horarios de 10 a 18 hs (cada hora)
-const HORARIOS = [
-  '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00',
-];
+// Generar horarios fijos cada 30 minutos de 10:00 a 19:00
+function getHorariosFijos() {
+  const horarios: string[] = [];
+  let h = 10, m = 0;
+  while (h < 19 || (h === 19 && m === 0)) {
+    const hora = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    horarios.push(hora);
+    m += 30;
+    if (m === 60) {
+      m = 0;
+      h++;
+    }
+  }
+  return horarios;
+}
 
 // Paleta institucional (ejemplo, puedes ajustar los valores a tu branding)
 const AULA_COLORS: Record<string, { border: string; bg: string; text: string }> = {
-  'Auditorio': { border: '#2563eb', bg: '#eaf1fb', text: '#2563eb' }, // azul UNAB
+  'Aula Magna': { border: '#2563eb', bg: '#eaf1fb', text: '#2563eb' }, // azul UNAB
   'Aula 1': { border: '#0ea5e9', bg: '#e0f7fa', text: '#0ea5e9' },   // cyan
   'Aula 2': { border: '#f59e42', bg: '#fff7e6', text: '#b45309' },   // naranja
   'Aula 3': { border: '#a21caf', bg: '#f3e8ff', text: '#a21caf' },   // violeta
@@ -52,15 +74,26 @@ export default function Programa() {
         if (!response.ok) throw new Error('No se pudo cargar la agenda desde el backend.');
         const data = await response.json();
         // Mapear los datos del backend al formato visual
-        // Suponiendo que cada item tiene: aula, titulo, disertante, hora_inicio, hora_fin
-        const mapped: ActividadCalendar[] = data.map((item: any) => ({
-          aula: item.aula || item.sala || 'Auditorio',
-          titulo: item.titulo,
-          disertante: item.disertante,
-          inicio: item.hora_inicio.substring(0,5),
-          fin: item.hora_fin.substring(0,5),
-          color: AULA_COLORS[item.aula || item.sala] ? (item.aula || item.sala) : 'Auditorio',
-        }));
+        const mapped: ActividadCalendar[] = data.map((item: any) => {
+          // Extraer nombre del disertante si es objeto
+          let disertante = '';
+          if (typeof item.disertante === 'string') {
+            disertante = item.disertante;
+          } else if (item.disertante && typeof item.disertante === 'object') {
+            disertante = item.disertante.nombre || '';
+          }
+          // Usar el campo correcto para aula
+          const aula = item.aula || item.sala || 'Aula Magna';
+          return {
+            aula,
+            titulo: item.titulo,
+            disertante,
+            descripcion: item.descripcion || '',
+            inicio: item.hora_inicio.substring(0,5),
+            fin: item.hora_fin.substring(0,5),
+            color: AULA_COLORS[aula] ? aula : 'Aula Magna',
+          };
+        });
         setActividades(mapped);
       } catch (err) {
         setError('No se pudo cargar la agenda desde el backend. Mostrando ejemplo.');
@@ -81,10 +114,10 @@ export default function Programa() {
 
   // Usar datos reales si existen, si no, usar mock
   const actividadesToShow = actividades ?? [
-    { aula: 'Auditorio', titulo: 'Apertura y bienvenida', disertante: 'Comité Organizador', inicio: '10:00', fin: '10:30', color: 'Auditorio' },
-    { aula: 'Auditorio', titulo: 'Tendencias en Logística 4.0', disertante: 'Ing. Laura Pérez', inicio: '10:30', fin: '11:30', color: 'Auditorio' },
-    { aula: 'Auditorio', titulo: 'Panel: Desafíos del e-commerce', disertante: 'Varios', inicio: '12:00', fin: '13:00', color: 'Auditorio' },
-    { aula: 'Auditorio', titulo: 'Casos de éxito en supply chain', disertante: 'Ing. Pablo Ruiz', inicio: '15:00', fin: '16:00', color: 'Auditorio' },
+    { aula: 'Aula Magna', titulo: 'Apertura y bienvenida', disertante: 'Comité Organizador', descripcion: 'Bienvenida y apertura general', inicio: '10:00', fin: '10:30', color: 'Aula Magna' },
+    { aula: 'Aula Magna', titulo: 'Tendencias en Logística 4.0', disertante: 'Ing. Laura Pérez', inicio: '10:30', fin: '11:30', color: 'Aula Magna' },
+    { aula: 'Aula Magna', titulo: 'Panel: Desafíos del e-commerce', disertante: 'Varios', inicio: '12:00', fin: '13:00', color: 'Aula Magna' },
+    { aula: 'Aula Magna', titulo: 'Casos de éxito en supply chain', disertante: 'Ing. Pablo Ruiz', inicio: '15:00', fin: '16:00', color: 'Aula Magna' },
     { aula: 'Aula 1', titulo: 'Movilidad urbana sostenible', disertante: 'Lic. Sofía Ramírez', inicio: '10:00', fin: '11:00', color: 'Aula 1' },
     { aula: 'Aula 1', titulo: 'Transporte multimodal', disertante: 'Ing. Diego Fernández', inicio: '11:00', fin: '12:30', color: 'Aula 1' },
     { aula: 'Aula 1', titulo: 'Vehículos autónomos', disertante: 'Dr. Javier López', inicio: '13:00', fin: '14:00', color: 'Aula 1' },
@@ -97,6 +130,9 @@ export default function Programa() {
     { aula: 'Aula 4', titulo: 'Panel: Mujeres en logística', disertante: 'Varios', inicio: '16:00', fin: '17:00', color: 'Aula 4' },
   ];
 
+  // Usar horarios fijos cada 30 minutos de 10:00 a 19:00
+  const HORARIOS = getHorariosFijos();
+
   // Mapeo de actividades por aula y hora para renderizado
   const grid: { [aula: string]: { [hora: string]: ActividadCalendar | null } } = {};
   for (const aula of AULAS) {
@@ -106,7 +142,10 @@ export default function Programa() {
     }
   }
   for (const act of actividadesToShow) {
-    grid[act.aula][act.inicio] = act;
+    // Solo agregar si el aula está definida en la grilla
+    if (AULAS.includes(act.aula)) {
+      grid[act.aula][act.inicio] = act;
+    }
   }
 
   // Para saber si una celda debe renderizarse (solo la de inicio de actividad)
@@ -116,8 +155,10 @@ export default function Programa() {
 
   // Para saber si una celda está ocupada por una actividad que empezó antes
   function isCellCovered(aula: string, hora: string) {
+    // Solo cubre si la celda está estrictamente dentro del rango de una actividad previa
+    // Es decir, si la actividad empieza antes y termina después del horario actual
     const actividad = actividadesToShow.find(
-      (a) => a.aula === aula && a.inicio !== hora && a.inicio < hora && a.fin > hora
+      (a) => a.aula === aula && a.inicio < hora && a.fin > hora
     );
     return !!actividad;
   }
@@ -172,7 +213,12 @@ export default function Programa() {
                             style={{ borderColor: color.border }}
                           >
                             <div className="font-bold text-base mb-1 px-3 pt-2" style={{ color: color.text }}>{actividad.titulo}</div>
-                            <div className="text-xs font-semibold mb-2 px-3 pb-2" style={{ color: color.text }}>{actividad.disertante}</div>
+                            <div className="text-xs font-semibold mb-1 px-3 pb-1" style={{ color: color.text }}>{actividad.disertante}</div>
+                            {actividad.descripcion && (
+                              <div className="text-xs px-3 pb-2 text-gray-600 italic truncate" title={actividad.descripcion}>
+                                {actividad.descripcion}
+                              </div>
+                            )}
                           </div>
                         </td>
                       );

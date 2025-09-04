@@ -17,12 +17,26 @@ class Disertante(models.Model):
         return self.nombre
 
 class Programa(models.Model):
+    AULA_CHOICES = [
+        ("Aula Magna", "Aula Magna"),
+        ("Aula 1", "Aula 1"),
+        ("Aula 2", "Aula 2"),
+        ("Aula 3", "Aula 3"),
+        ("Aula 4", "Aula 4"),
+        ("Aula 5", "Aula 5"),
+        ("Aula 6", "Aula 6"),
+        ("Aula 7", "Aula 7"),
+        ("Aula 8", "Aula 8"),
+        ("Aula 9", "Aula 9"),
+        ("Aula 10", "Aula 10"),
+    ]
     titulo = models.CharField(max_length=255, verbose_name="Título del Evento")
     disertante = models.ForeignKey(Disertante, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Disertante")
     hora_inicio = models.TimeField(verbose_name="Hora de Inicio")
     hora_fin = models.TimeField(verbose_name="Hora de Fin")
     dia = models.DateField(verbose_name="Día del Evento")
     descripcion = models.TextField(blank=True, verbose_name="Descripción")
+    aula = models.CharField(max_length=30, choices=AULA_CHOICES, verbose_name="Aula")
 
     def __str__(self):
         return f"{self.titulo} - {self.dia} {self.hora_inicio}"
