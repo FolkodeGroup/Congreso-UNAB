@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { ChevronDown } from 'lucide-react';
 import CongressLogo from './CongressLogo';
+import MobileNav from './MobileNav';
 
 interface LayoutProps {
   children: ReactNode;
@@ -27,14 +28,15 @@ export default function Layout({ children }: LayoutProps) {
       {/* Header */}
       <header className="bg-congress-blue text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex justify-between items-center">
             {/* Logo and Title */}
-            <div className="mb-4 lg:mb-0">
+            <div className="flex-shrink-0">
               <img src="/images/LogoUnab.png" alt="UNaB Logo" className="h-20 w-auto" />
             </div>
 
             {/* Navigation */}
-            <nav className="flex flex-wrap gap-2 lg:gap-4">
+            {/* Navegación de escritorio (visible en pantallas grandes) */}
+            <nav className="hidden lg:flex flex-wrap gap-2 lg:gap-4 items-center">
               <Link to="/">
                 <Button
                   variant={isActive('/') ? 'secondary' : 'ghost'}
@@ -56,7 +58,6 @@ export default function Layout({ children }: LayoutProps) {
                   Sobre el Congreso
                   <ChevronDown className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                 </Button>
-
                 {isDropdownOpen && (
                   <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
                     <Link
@@ -90,7 +91,6 @@ export default function Layout({ children }: LayoutProps) {
                   </div>
                 )}
               </div>
-
               <Link to="/registro">
                 <Button
                   variant={isActive('/registro') ? 'secondary' : 'ghost'}
@@ -99,7 +99,6 @@ export default function Layout({ children }: LayoutProps) {
                   Registro
                 </Button>
               </Link>
-
               <Link to="/generar-qrs">
                 <Button
                   variant={isActive('/generar-qrs') ? 'secondary' : 'ghost'}
@@ -125,8 +124,10 @@ export default function Layout({ children }: LayoutProps) {
                 </Button>
               </Link>
             </nav>
-            <div className="flex items-center justify-end space-x-3 bg-transparent h-full">
-                <img src="/images/logos/Folkode_Group.webp" alt="Logo de Folkode Group" className="h-20 w-auto p-2 rounded" />
+
+            {/* Navigation (Mobile) - Solo visible en móviles, alineado a la derecha */}
+            <div className="lg:hidden">
+              <MobileNav />
             </div>
           </div>
         </div>

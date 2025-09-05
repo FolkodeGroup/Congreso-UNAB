@@ -1,3 +1,5 @@
+import { useEffect} from 'react';
+import { useLocation } from 'react-router-dom';
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +22,14 @@ import LogoCarouselsSection from "@/components/LogoCarouselsSection";
 import { useRef } from "react";
 
 export default function Index() {
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#mapa' && mapRef.current) {
+      mapRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location]);
 
   const scrollToMap = () => {
     mapRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -254,7 +263,7 @@ export default function Index() {
       </section>
 
       {/* Mapa Section */}
-      <section ref={mapRef} className="py-16 bg-gray-100">
+      <section id="mapa" ref={mapRef} className="py-16 bg-gray-100">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
@@ -341,3 +350,4 @@ export default function Index() {
     </Layout>
   );
 }
+
