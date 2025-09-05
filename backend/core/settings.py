@@ -179,5 +179,4 @@ CORS_ALLOW_ALL_ORIGINS = True # For development, consider refining in production
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Email settings for development
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
