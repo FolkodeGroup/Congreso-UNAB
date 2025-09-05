@@ -14,10 +14,10 @@ export default function SeleccionRegistro() {
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
               <Link to="/registro/individual">
-                <Button className="w-full" size="lg">Registro Individual</Button>
+                <Button className="w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3" size="lg">Registro Individual</Button>
               </Link>
               <Link to="/registro-grupal">
-                <Button className="w-full" size="lg" variant="outline">Registro Grupal (Empresa)</Button>
+                <Button className="w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3" size="lg" variant="outline">Registro Grupal (Empresa)</Button>
               </Link>
             </CardContent>
           </Card>

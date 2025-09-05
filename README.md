@@ -19,7 +19,7 @@ Este proyecto es una plataforma web para la gestión y difusión del Congreso de
    ```
 2. Aplica migraciones:
    ```bash
-   python manage.py migrate
+   python manage.py migrate ###(no correr ya esta la BBDD integrada)
    ```
 3. Inicia el servidor:
    ```bash

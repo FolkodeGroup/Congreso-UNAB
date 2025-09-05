@@ -72,7 +72,7 @@ export default function Layout({ children }: LayoutProps) {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-congress-blue hover:text-white"
                       onClick={() => setIsDropdownOpen(false)}
                     >
-                      Ponentes
+                      Disertantes
                     </Link>
                     <Link
                       to="/empresas"
@@ -123,9 +123,6 @@ export default function Layout({ children }: LayoutProps) {
                   Historia del Campus
                 </Button>
               </Link>
-              <div className="flex items-center justify-end space-x-3 mb-4">
-                <img src="/images/folkode-blanco.jpeg" alt="Logo de Folkode" className="h-24 w-auto bg-white p-2 rounded" />
-              </div>
             </nav>
 
             {/* Navigation (Mobile) - Solo visible en móviles, alineado a la derecha */}
@@ -172,7 +169,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 Universidad Nacional Guillermo Brown. Todos los derechos reservados.</p>
+            <p>&copy; 2025 Universidad Nacional Guillermo Brown. Todos los derechos reservados. Desarrollado por <a href="http://folkode.vercel.app" target="_blank" rel="noopener noreferrer"><span className='text-white underline' >Folkode</span></a></p>
           </div>
         </div>
       </footer>

@@ -118,12 +118,12 @@ export default function GenerarQRs() {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="mb-6 text-center">
-            <Button onClick={generateQRs} disabled={loading}>
+          {/* <div className="mb-6 text-center">
+            <Button onClick={generateQRs} disabled={loading} className='bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3'>
               <QrCode className="mr-2 h-4 w-4" />
               {loading ? 'Generando...' : 'Generar QRs'}
             </Button>
-          </div>
+          </div> */}
 
           {qrData && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -148,17 +148,19 @@ export default function GenerarQRs() {
                   <p className="text-xs text-gray-500 font-mono break-all">
                     {qrData.checkin_qr.url}
                   </p>
-                  <div className="flex gap-2 justify-center">
+                  <div className="flex gap-2 justify-center ">
                     <Button
                       variant="outline"
+                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3'
                       size="sm"
                       onClick={() => downloadQR(qrData.checkin_qr.image_base64, 'QR-Confirmar-Asistencia.png')}
                     >
-                      <Download className="mr-2 h-4 w-4" />
+                      <Download className="mr-2 h-4 w-4 " />
                       Descargar
                     </Button>
                     <Button
                       variant="outline"
+                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3'
                       size="sm"
                       onClick={() => printQR(qrData.checkin_qr.image_base64, 'QR para Confirmar Asistencia')}
                     >
@@ -171,7 +173,7 @@ export default function GenerarQRs() {
               {/* QR para registro in-situ */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-center text-green-600">
+                  <CardTitle className="text-center text-blue-600">
                     QR para Registro in-situ
                   </CardTitle>
                 </CardHeader>
@@ -192,6 +194,7 @@ export default function GenerarQRs() {
                   <div className="flex gap-2 justify-center">
                     <Button
                       variant="outline"
+                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3'
                       size="sm"
                       onClick={() => downloadQR(qrData.registro_qr.image_base64, 'QR-Registro-Rapido.png')}
                     >
@@ -201,6 +204,8 @@ export default function GenerarQRs() {
                     <Button
                       variant="outline"
                       size="sm"
+
+                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3'
                       onClick={() => printQR(qrData.registro_qr.image_base64, 'QR para Registro in-situ')}
                     >
                       Imprimir
@@ -211,7 +216,7 @@ export default function GenerarQRs() {
             </div>
           )}
 
-          <div className="mt-8 p-6 bg-yellow-50 rounded-lg">
+          {/* <div className="mt-8 p-6 bg-yellow-50 rounded-lg">
             <h3 className="text-lg font-semibold text-yellow-800 mb-2">
               Instrucciones de uso:
             </h3>
@@ -221,7 +226,7 @@ export default function GenerarQRs() {
               <li>Imprime ambos QRs en tamaño grande y colócalos en ubicaciones visibles del evento.</li>
               <li>Los asistentes pueden escanear con cualquier app de QR de su teléfono.</li>
             </ul>
-          </div>
+          </div> */}
         </div>
       </div>
     </Layout>

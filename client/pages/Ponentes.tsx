@@ -61,7 +61,7 @@ export default function Ponentes() {
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Ponentes del Congreso
+            Disertantes del Congreso
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Conoce a los expertos en logística y transporte que compartirán sus conocimientos y experiencia.
@@ -78,26 +78,47 @@ export default function Ponentes() {
             <p>Asegúrate de que el servidor backend de Django esté corriendo en http://127.0.0.1:8000</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {disertantes.map((disertante) => (
-              <Card key={disertante.id} className="overflow-hidden transform hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-xl">
-                <CardHeader className="flex flex-row items-center gap-4 p-6 bg-gray-50">
-                  <Avatar className="h-20 w-20 border-2 border-white shadow-md">
-                    <AvatarImage src={disertante.foto_url} alt={disertante.nombre} />
-                    <AvatarFallback>{disertante.nombre.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-xl font-bold text-congress-blue">{disertante.nombre}</CardTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {disertantes.map((disertante, idx) => {
+              // Rotación aleatoria para efecto "polaroid"
+              const rotations = ['-rotate-3', 'rotate-2', '-rotate-2', 'rotate-1', '-rotate-1'];
+              const rotation = rotations[idx % rotations.length];
+              return (
+                <div
+                  key={disertante.id}
+                  className="flex flex-col items-center group"
+                >
+                  {/* Polaroid-style image card */}
+                  <div
+                    className={`bg-white border-2 border-gray-300 shadow-lg p-2 mb-4 w-56 h-64 flex flex-col items-center justify-center ${rotation} group-hover:scale-105 group-hover:shadow-2xl transition-transform duration-300 relative`}
+                  >
+                    <img
+                      src={disertante.foto_url}
+                      alt={disertante.nombre}
+                      className="w-48 h-48 object-cover object-center bg-gray-100 rounded-md"
+                      style={{ aspectRatio: '1/1' }}
+                    />
+                    {/* Tornillos decorativos */}
+                    <span className="absolute top-1 left-1 w-3 h-3 bg-gray-300 rounded-full border border-gray-400"></span>
+                    <span className="absolute top-1 right-1 w-3 h-3 bg-gray-300 rounded-full border border-gray-400"></span>
+                    <span className="absolute bottom-1 left-1 w-3 h-3 bg-gray-300 rounded-full border border-gray-400"></span>
+                    <span className="absolute bottom-1 right-1 w-3 h-3 bg-gray-300 rounded-full border border-gray-400"></span>
                   </div>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-gray-800 mb-2">Tema de Presentación:</h3>
-                  <p className="text-gray-600 mb-4">{disertante.tema_presentacion}</p>
-                  <h3 className="font-semibold text-gray-800 mb-2">Biografía:</h3>
-                  <p className="text-gray-600 text-sm text-justify">{disertante.bio}</p>
-                </CardContent>
-              </Card>
-            ))}
+                  {/* Tarjeta de datos */}
+                  <div className="bg-white border-2 border-gray-400 rounded-lg shadow-md px-4 py-4 w-56 text-center flex flex-col items-center">
+                    <h2 className="text-lg font-black text-congress-blue tracking-wide mb-1 uppercase">
+                      {disertante.nombre}
+                    </h2>
+                    <div className="text-gray-800 font-semibold text-sm mb-1">
+                      {disertante.tema_presentacion}
+                    </div>
+                    <div className="text-gray-600 text-xs mb-1">
+                      {disertante.bio}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
