@@ -20,8 +20,8 @@ export default function Empresas() {
               Únete a las más de 30 empresas líderes del sector que ya confirmaron su participación 
               en el congreso más importante de logística y transporte del país.
             </p>
-            <Badge className="bg-congress-cyan text-congress-blue text-lg px-4 py-2">
-              🎉 Participación 100% Gratuita
+            <Badge className="bg-congress-cyan text-congress-white text-lg px-4 py-2">
+              Participación 100% Gratuita
             </Badge>
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function Empresas() {
       </section>
 
       {/* Participation Modalities */}
-      <section className="py-16 bg-gray-50">
+      {/* <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
@@ -267,7 +267,7 @@ export default function Empresas() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Call to Action */}
       <section className="py-16 bg-congress-blue text-white">
@@ -281,12 +281,12 @@ export default function Empresas() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/contacto">
-              <Button size="lg" className="bg-congress-cyan hover:bg-congress-cyan-light text-congress-blue font-semibold px-8 py-3">
+              <Button size="lg" variant="outline" className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3">
                 Contactar para Participar
               </Button>
             </Link>
             <Link to="/registro">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-congress-blue px-8 py-3">
+              <Button size="lg" variant="outline" className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3">
                 Registro Individual
               </Button>
             </Link>
@@ -295,7 +295,7 @@ export default function Empresas() {
           <div className="mt-12 max-w-2xl mx-auto">
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
               <h3 className="text-lg font-semibold mb-4">Información de Contacto</h3>
-              <div className="text-congress-cyan-light">
+              <div className="text-congress-white-light">
                 <p className="mb-2">📧 congresologisticaytransporte@unab.edu.ar</p>
                 <p className="mb-2">📍 Campus UNaB, Blas Parera 132</p>
                 <p>📅 15 de Noviembre 2025</p>
