@@ -33,7 +33,7 @@ export default function MobileNav() {
       isDropdown: true,
       subItems: [
         { name: 'Programa', path: '/programa' },
-        { name: 'Ponentes', path: '/ponentes' },
+        { name: 'Disertantes', path: '/ponentes' },
         { name: 'Empresas', path: '/empresas' },
         { name: 'Información General', path: '/sobre-el-congreso' },
       ],
@@ -45,13 +45,13 @@ export default function MobileNav() {
   ];
 
   return (
-    <div className="md:hidden">
-      {/* Botón de hamburguesa */}
+    <div className="lg:hidden">
+      {/* Hamburger Button */}
       <button onClick={toggleMenu} className="text-white p-2 focus:outline-none">
         {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
       </button>
 
-      {/* Menú móvil (superposición) */}
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 bg-congress-blue z-50 flex flex-col items-center justify-center space-y-6">
           <button onClick={closeMenu} className="absolute top-4 right-4 text-white p-2">

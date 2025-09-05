@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny
 from .models import Disertante, Inscripcion, Programa, Certificado, Asistente
 from .serializers import DisertanteSerializer, InscripcionSerializer, AsistenteSerializer, ProgramaSerializer
 from django.utils import timezone
-from .email import send_certificate_email
+from .email import send_certificate_email, send_confirmation_email
 
 class DisertanteViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -36,13 +36,16 @@ class InscripcionViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         serializer = self.get_serializer(data=request.data)
         try:
             serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
+            inscripcion = serializer.save()
+            send_confirmation_email(inscripcion)
             headers = self.get_success_headers(serializer.data)
-            return Response({'status': 'success', 'message': 'Inscripción realizada correctamente.'}, status=status.HTTP_201_CREATED, headers=headers)
+            return Response({'status': 'success', 'message': 'Inscripción realizada correctamente. Se ha enviado un email de confirmación.'}, status=status.HTTP_201_CREATED, headers=headers)
         except serializers.ValidationError as e:
             # Corregido para acceder al detalle del error correctamente
             error_detail = e.detail.get('error', ['Error desconocido'])[0]
             return Response({'status': 'error', 'message': error_detail}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'status': 'error', 'message': f'Ha ocurrido un error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class VerificarDNIView(views.APIView):
     """

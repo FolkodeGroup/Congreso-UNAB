@@ -18,19 +18,19 @@ export default function LogoCarouselsSection() {
             direction="rtl"
             logos={FIRST_CAROUSEL_LOGOS}
             startDelaySec={0}
-            durationSec={16.8}
+            durationSec={25.2}
           />
           <LogoMarquee
             direction="ltr"
             logos={SECOND_CAROUSEL_LOGOS}
             startDelaySec={1.2}
-            durationSec={14.5}
+            durationSec={21.75}
           />
           <LogoMarquee
             direction="rtl"
             logos={THIRD_CAROUSEL_LOGOS}
             startDelaySec={2.4}
-            durationSec={12}
+            durationSec={18}
           />
         </div>
       </div>
