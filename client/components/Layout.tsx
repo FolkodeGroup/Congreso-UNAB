@@ -36,7 +36,7 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" lang="es" translate="no">
       {/* Header */}
       <header className="bg-congress-blue text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">

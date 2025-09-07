@@ -139,7 +139,7 @@ export default function Index() {
                   {" "}
                   Todas las modalidades son sin costo
                 </span>
-                para instituciones y empresas que deseen sumarse.
+                 para instituciones y empresas que deseen sumarse.
               </p>
             </div>
 
@@ -290,7 +290,7 @@ export default function Index() {
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <ul className="space-y-2 text-gray-600">
-                    <li><strong>Transporte Público:</strong> Tomar Subte hasta Constitución, luego Tren Roca (ramales A. Korn, Glew o Ezeiza) hasta la estación Burzaco. Desde allí, colectivos locales o 15 min a pie.</li>
+                    <li><strong>Transporte Público:</strong> Tomar Subte hasta Constitución, luego Tren Roca (ramales A. Korn, Glew) hasta la estación Burzaco. Desde allí, colectivos locales o 15 min a pie.</li>
                     <li><strong>En Auto:</strong> Tomar Au. 25 de Mayo, luego Au. Riccheri y Camino de Cintura (Ruta 4) hasta Av. Espora. El viaje dura aprox. 45-60 min.</li>
                   </ul>
                 </CardContent>

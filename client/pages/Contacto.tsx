@@ -1,6 +1,6 @@
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Instagram, MapPin } from 'lucide-react';
+import { Mail, Instagram, MapPin, Linkedin } from 'lucide-react';
 
 export default function Contacto() {
   return (
@@ -15,7 +15,7 @@ export default function Contacto() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <Card className="text-center">
             <CardHeader>
               <Mail className="mx-auto h-12 w-12 text-congress-blue mb-4" />
@@ -47,6 +47,16 @@ export default function Contacto() {
                 <a href="/#mapa" className="text-lg text-gray-700">Universidad Nacional Guillermo Brown</a>
               </p>
               <a href="/#mapa" className="text-sm text-gray-500">Blas Parera 132, Adrogué, Buenos Aires</a>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center">
+            <CardHeader>
+              <Linkedin className="mx-auto h-12 w-12 text-congress-blue mb-4" />
+              <CardTitle>LinkedIn</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <a href="https://www.linkedin.com/company/congresologisticounab/" className="text-lg text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">@congresologisticounab</a>
             </CardContent>
           </Card>
         </div>
