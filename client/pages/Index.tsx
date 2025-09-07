@@ -17,6 +17,7 @@ import {
   FiClock,
   FiAward,
 } from "react-icons/fi";
+import { FaTrain, FaCar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import LogoCarouselsSection from "@/components/LogoCarouselsSection";
 import { useRef } from "react";
@@ -273,38 +274,129 @@ export default function Index() {
               El congreso se realizará en el Campus de la Universidad Nacional Guillermo Brown,
               ubicado en Blas Parera 132. Te esperamos!
             </p>
-            <h4 className="text-2xl md:text-2xl font-bold text-gray-900 mb-6">
-              Desde Adrogue
-            </h4>
-            <p className="text-lg text-gray-600 mb-8">
-              506 (Gendarmeria - Por Bynnon) - Av Espora - esq. Ricardo Rojas
-              <br />
-              79 (Constitucion - San Vicente) - Av Espora (Colegio Nacional de Adrogue)
-              <br />
-              74 (A) - Av Espora (Colegio Nacional de Adrogue)
-            </p>
-            <h4 className="text-2xl md:text-2xl font-bold text-gray-900 mb-6">
-              Desde Burzaco
-            </h4>
-            <p className="text-lg text-gray-600 mb-8">
-              506 (Gendarmeria - Por Bynnon) - Av Espora - esq. Ricardo Rojas
-              <br />
-              266 (4) - Estacion Burzaco
-              <br />
-              74 (A) - Av Espora - esq. Ricardo Rojas
-            </p>
-            <h4 className="text-2xl md:text-2xl font-bold text-gray-900 mb-6">
-              Desde Longchamps
-            </h4>
-            <p className="text-lg text-gray-600 mb-8">
-              79 (San Vicente) - Constitucion (Chiesa y Francia)
-              <br />
-              506  (San Jose, Por Bynnon) - Alsina y Magdalena Motti de Tieghi
-              <br />
-            </p>
           </div>
 
-          <div className="flex justify-center">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
+              {/* Desde CABA (Obelisco) */}
+              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
+                <CardHeader>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-congress-blue-dark rounded-lg flex items-center justify-center">
+                      <FiMapPin className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-xl">Desde CABA (Obelisco)</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <ul className="space-y-2 text-gray-600">
+                    <li><strong>Transporte Público:</strong> Tomar Subte hasta Constitución, luego Tren Roca (ramales A. Korn, Glew o Ezeiza) hasta la estación Burzaco. Desde allí, colectivos locales o 15 min a pie.</li>
+                    <li><strong>En Auto:</strong> Tomar Au. 25 de Mayo, luego Au. Riccheri y Camino de Cintura (Ruta 4) hasta Av. Espora. El viaje dura aprox. 45-60 min.</li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Desde Adrogue */}
+              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
+                <CardHeader>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-congress-blue rounded-lg flex items-center justify-center">
+                      <FiMapPin className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-xl">Desde Adrogué</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <ul className="space-y-2 text-gray-600">
+                    <li><strong>506 (Gendarmeria - Por Bynnon):</strong> Av Espora - esq. Ricardo Rojas</li>
+                    <li><strong>79 (Constitucion - San Vicente):</strong> Av Espora (Colegio Nacional de Adrogue)</li>
+                    <li><strong>74 (A):</strong> Av Espora (Colegio Nacional de Adrogue)</li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Desde Burzaco */}
+              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
+                <CardHeader>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-congress-cyan rounded-lg flex items-center justify-center">
+                      <FiMapPin className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-xl">Desde Burzaco</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <ul className="space-y-2 text-gray-600">
+                    <li><strong>506 (Gendarmeria - Por Bynnon):</strong> Av Espora - esq. Ricardo Rojas</li>
+                    <li><strong>266 (4):</strong> Estacion Burzaco</li>
+                    <li><strong>74 (A):</strong> Av Espora - esq. Ricardo Rojas</li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Desde Longchamps */}
+              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
+                <CardHeader>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-congress-blue rounded-lg flex items-center justify-center">
+                      <FiMapPin className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-xl">Desde Longchamps</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <ul className="space-y-2 text-gray-600">
+                    <li><strong>79 (San Vicente):</strong> Constitucion (Chiesa y Francia)</li>
+                    <li><strong>506 (San Jose, Por Bynnon):</strong> Alsina y Magdalena Motti de Tieghi</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          <div className="max-w-5xl mx-auto mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+              {/* En Tren */}
+              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
+                <CardHeader>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-congress-blue rounded-lg flex items-center justify-center">
+                      <FaTrain className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-xl">En Tren (Línea Roca)</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <ul className="space-y-2 text-gray-600">
+                    <li>Las estaciones más cercanas son <strong>Adrogué</strong>, <strong>Burzaco</strong> y <strong>Longchamps</strong>.</li>
+                    <li>Desde ambas, puedes tomar un colectivo o servicio de auto hasta el campus.</li>
+                    <li className="pt-2"><em>Nota: Se está construyendo la nueva estación "Universidad Guillermo Brown". Verifica su estado para la fecha del evento.</em></li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* En Auto */}
+              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
+                <CardHeader>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-congress-cyan rounded-lg flex items-center justify-center">
+                      <FaCar className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-xl">En Auto</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <ul className="space-y-2 text-gray-600">
+                    <li><strong>Acceso principal:</strong> Por Av. Espora, a 3 cuadras de la Ruta Provincial 4 (Camino de Cintura).</li>
+                    <li><strong>GPS:</strong> Blas Parera 132, Burzaco.</li>
+                    <li className="pt-2"><strong>Estacionamiento:</strong> Habrá estacionamiento disponible en un predio aledaño para los asistentes al congreso.</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          <div className="flex justify-center mt-12">
             <div className="w-full max-w-4xl rounded-lg overflow-hidden shadow-lg">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3274.70762014795!2d-58.38742082408727!3d-34.838443069932694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcd5aebf3ce8ad%3A0x61e0dc504088584!2sUniversidad%20Nacional%20Guillermo%20Brown%20(UNAB)!5e0!3m2!1ses-419!2sar!4v1756827211940!5m2!1ses-419!2sar"
@@ -327,7 +419,7 @@ export default function Index() {
                 <strong>Universidad Nacional Guillermo Brown</strong>
               </p>
               <p className="text-lg text-gray-700 mb-4">
-                Blas Parera 132, Adrogué, Buenos Aires
+                Blas Parera 132, Burzaco, Buenos Aires
               </p>
               <Button
                 className="bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3"
