@@ -14,6 +14,7 @@ export const DEFAULT_LOGOS: LogoItem[] = [
   { src: "/images/logos/GLI.jpg", alt: "GLI", heightClass: "h-16" },
   { src: "/images/logos/GRUAS-GOLISANO.png", alt: "Gruas Golisano", heightClass: "h-14" },
   { src: "/images/logos/KMD.png", alt: "KMD Logística", heightClass: "h-14" },
+  { src: "/images/logos/SURFRIGO.jpeg", alt: "Surfrigo", heightClass: "h-14" },
 ];
 
 // First carousel explicit set (user-provided)
@@ -30,12 +31,14 @@ export const FIRST_CAROUSEL_LOGOS: LogoItem[] = [
   { src: "/images/logos/CITYONE.png", alt: "CityOne", heightClass: "h-14" },
   { src: "/images/logos/CONWORK.jpg", alt: "Conwork", heightClass: "h-14" },
   { src: "/images/logos/ELECE-LOGISTICA.png", alt: "Logística E-LECE", heightClass: "h-18" },
+  { src: "/images/logos/EAL-GREEN.png", alt: "EAL Green", heightClass: "h-14" },
+  { src: "/images/logos/GENBA-KAIZEN.jpeg", alt: "Genba Kaizen", heightClass: "h-20" },
 ];
 
 // Second carousel explicit set (user-provided)
 export const SECOND_CAROUSEL_LOGOS: LogoItem[] = [
   { src: "/images/logos/NUCLEO-LOGISTICO.jpeg", alt: "Núcleo Logístico", heightClass: "h-16" },
-  { src: "/images/logos/NYG-TRANSPORTES.png", alt: "N&G Transportes", heightClass: "h-16" },
+  { src: "/images/logos/NYG-TRANSPORTES.PNG", alt: "N&G Transportes", heightClass: "h-16" },
   { src: "/images/logos/PERFORMANCE-LUBE.png", alt: "Performance Lube", heightClass: "h-14" },
   { src: "/images/logos/RASTA.png", alt: "Rasta", heightClass: "h-14" },
   { src: "/images/logos/RED-LOGISTICA.webp", alt: "Red Logística", heightClass: "h-14" },
@@ -63,6 +66,8 @@ export const THIRD_CAROUSEL_LOGOS: LogoItem[] = [
   { src: "/images/logos/VOS.jpeg", alt: "VOS", heightClass: "h-14" },
   { src: "/images/logos/XPERTS.jpeg", alt: "Xperts", heightClass: "h-14" },
   { src: "/images/logos/STARGPS.png", alt: "StarGPS", heightClass: "h-12" },
+  { src: "/images/logos/M-RRHH.jpeg", alt: "M-RRHH", heightClass: "h-14" },
+  { src: "/images/logos/PYB.jpg", alt: "PYB", heightClass: "h-20" },
 ];
 
 export function chunk<T>(arr: T[], size: number): T[][] {

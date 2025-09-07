@@ -1,28 +1,36 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FiMenu, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { Link, useLocation } from 'react-router-dom';
+import { FiMenu, FiX } from 'react-icons/fi';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function MobileNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+    if (isMenuOpen) {
+      setIsSubMenuOpen(false);
+    }
   };
 
   const closeMenu = () => {
     setIsMenuOpen(false);
-    setIsDropdownOpen(false);
+    setIsSubMenuOpen(false);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const toggleSubMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsSubMenuOpen(!isSubMenuOpen);
   };
 
   const menuItems = [
-    { name: 'Inicio', path: '/' },
+    { name: 'Inicio', path: '/', isDropdown: false },
     {
       name: 'Sobre el Congreso',
+      path: '/sobre-el-congreso',
+      isDropdown: true,
       subItems: [
         { name: 'Programa', path: '/programa' },
         { name: 'Disertantes', path: '/ponentes' },
@@ -30,10 +38,10 @@ export default function MobileNav() {
         { name: 'Información General', path: '/sobre-el-congreso' },
       ],
     },
-    { name: 'Registro', path: '/registro' },
-    { name: 'Generar QRs', path: '/generar-qrs' },
-    { name: 'Contacto', path: '/contacto' },
-    { name: 'Historia del Campus', path: '/historia-campus' },
+    { name: 'Registro', path: '/registro', isDropdown: false },
+    { name: 'Generar QRs', path: '/generar-qrs', isDropdown: false },
+    { name: 'Contacto', path: '/contacto', isDropdown: false },
+    { name: 'Historia del Campus', path: '/historia-campus', isDropdown: false },
   ];
 
   return (
@@ -45,40 +53,45 @@ export default function MobileNav() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-congress-blue z-50 flex flex-col items-center justify-center space-y-6 animate-fade-in-down">
+        <div className="fixed inset-0 bg-congress-blue z-50 flex flex-col items-center justify-center space-y-6">
           <button onClick={closeMenu} className="absolute top-4 right-4 text-white p-2">
             <FiX size={24} />
           </button>
-          <nav className="flex flex-col space-y-4 text-2xl font-semibold text-center">
-            {menuItems.map((item) => (
-              <div key={item.name}>
-                {item.subItems ? (
-                  <div>
+          <nav className="flex flex-col space-y-4 text-2xl font-semibold w-full px-8">
+            {menuItems.map((item, index) => (
+              <div
+                key={item.name}
+                className="animate-fade-in-down"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                {item.isDropdown ? (
+                  <>
                     <button
-                      onClick={toggleDropdown}
-                      className="flex items-center justify-center w-full text-white hover:text-congress-cyan transition-colors"
+                      onClick={toggleSubMenu}
+                      className="w-full text-left text-white hover:text-congress-cyan transition-colors flex items-center justify-between"
                     >
                       {item.name}
-                      {isDropdownOpen ? <FiChevronUp className="ml-2" /> : <FiChevronDown className="ml-2" />}
+                      {isSubMenuOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
                     </button>
-                    {isDropdownOpen && (
-                      <div className="flex flex-col items-center space-y-2 mt-2">
-                        {item.subItems.map((subItem) => (
+                    {isSubMenuOpen && (
+                      <div className="flex flex-col space-y-2 mt-2 pl-4 animate-fade-in-down">
+                        {item.subItems?.map((subItem, subIndex) => (
                           <Link
                             key={subItem.name}
                             to={subItem.path}
                             onClick={closeMenu}
-                            className="text-white text-xl hover:text-congress-cyan transition-colors"
+                            className="text-base font-normal text-white hover:text-congress-cyan transition-colors"
+                            style={{ animationDelay: `${subIndex * 0.1}s` }}
                           >
                             {subItem.name}
                           </Link>
                         ))}
                       </div>
                     )}
-                  </div>
+                  </>
                 ) : (
                   <Link
-                    to={item.path!}
+                    to={item.path}
                     onClick={closeMenu}
                     className="text-white hover:text-congress-cyan transition-colors"
                   >

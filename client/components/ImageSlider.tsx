@@ -44,7 +44,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images, interval = 4000 }) =>
   return (
     <div className="relative w-full flex flex-col items-center">
       <div
-        className="w-full md:w-2/3 flex flex-col items-center"
+        className="relative w-full flex flex-col items-center"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
@@ -53,37 +53,39 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images, interval = 4000 }) =>
           alt={images[current].alt}
           className="rounded shadow-lg w-full h-auto object-contain"
         />
-        <figcaption className="text-sm text-gray-600 text-center mt-2">
+        <figcaption className="absolute bottom-0 left-0 right-0 text-sm text-center bg-black bg-opacity-75 text-white p-2">
           {images[current].caption}
         </figcaption>
       </div>
       {/* Controles */}
-      <div className="flex items-center gap-4 mt-2">
-        <button
-          aria-label="Anterior"
-          onClick={prev}
-          className="p-2 rounded-full bg-gray-200 hover:bg-gray-300"
-        >
-          &#8592;
-        </button>
-        <div className="flex gap-1">
-          {images.map((_, idx) => (
-            <button
-              key={idx}
-              className={`w-2 h-2 rounded-full ${idx === current ? "bg-congress-cyan" : "bg-gray-300"}`}
-              onClick={() => goTo(idx)}
-              aria-label={`Ir a la imagen ${idx + 1}`}
-            />
-          ))}
+      {images.length > 1 && (
+        <div className="flex items-center gap-4 mt-2">
+          <button
+            aria-label="Anterior"
+            onClick={prev}
+            className="p-2 rounded-full bg-congress-blue hover:bg-congress-blue-dark text-white"
+          >
+            &#8592;
+          </button>
+          <div className="flex gap-1">
+            {images.map((_, idx) => (
+              <button
+                key={idx}
+                className={`w-2 h-2 rounded-full ${idx === current ? "bg-congress-cyan" : "bg-gray-300"}`}
+                onClick={() => goTo(idx)}
+                aria-label={`Ir a la imagen ${idx + 1}`}
+              />
+            ))}
+          </div>
+          <button
+            aria-label="Siguiente"
+            onClick={next}
+            className="p-2 rounded-full bg-congress-blue hover:bg-congress-blue-dark text-white"
+          >
+            &#8594;
+          </button>
         </div>
-        <button
-          aria-label="Siguiente"
-          onClick={next}
-          className="p-2 rounded-full bg-gray-200 hover:bg-gray-300"
-        >
-          &#8594;
-        </button>
-      </div>
+      )}
     </div>
   );
 };

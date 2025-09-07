@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { FiCheckCircle, FiUsers, FiAward, FiClock, FiHome, FiTrendingUp, FiStar } from 'react-icons/fi';
 import { FaBuilding, FaHandshake } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import LargeLogoCarousel from '@/components/LargeLogoCarousel';
 
 export default function Empresas() {
   return (
@@ -26,6 +27,9 @@ export default function Empresas() {
           </div>
         </div>
       </section>
+
+      {/* Large Logo Carousel Section */}
+      <LargeLogoCarousel />
 
       {/* Benefits Section */}
       <section className="py-16">
