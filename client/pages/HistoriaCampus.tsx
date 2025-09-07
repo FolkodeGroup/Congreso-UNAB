@@ -17,16 +17,19 @@ export default function HistoriaCampus() {
         </section>
 
         {/* Sección 1: El Esplendor */}
-        <section className="py-16 md:py-24 bg-gray-50">
+        <section className="py-16 md:py-24 bg-congress-blue text-white">
           <div className="container mx-auto px-4 max-w-5xl">
             <div className="flex flex-col md:flex-row gap-12 items-center">
               <div className="md:w-1/2 animate-fade-in-left">
-                <img
-                  src="/images/casona-fachada-trasera.avif"
-                  alt="La mansión vista desde el parque trasero"
-                  className="w-full h-auto rounded-lg shadow-lg"
+                <ImageSlider
+                  images={[
+                    {
+                      src: "/images/casona-fachada-trasera.avif",
+                      alt: "La mansión vista desde el parque trasero",
+                      caption: "La mansión vista desde el parque trasero. Fuente: La Nación"
+                    }
+                  ]}
                 />
-                <figcaption className="text-sm text-gray-600 text-center mt-2">La mansión vista desde el parque trasero. Fuente: La Nación</figcaption>
               </div>
               <div className="md:w-1/2 animate-fade-in-right">
                 <p className="text-lg leading-relaxed mb-4">
@@ -47,6 +50,14 @@ export default function HistoriaCampus() {
               Un vistazo a la historia
             </h2>
             <div className="flex flex-col md:flex-row gap-12 items-center">
+              <div className="md:w-1/2 animate-fade-in-right">
+                <p className="text-lg leading-relaxed mb-4">
+                  Las fiestas familiares, los paseos en bote por la laguna, los baños en la pileta y las noches en la terraza bajo las estrellas marcaron la vida de cuatro generaciones. Incluso, en el estanque había peces de la familia de las pirañas, a los que alimentaban con carne, y en el jardín sevillano se celebraban reuniones multitudinarias.
+                </p>
+                <p className="text-lg leading-relaxed">
+                  Con el paso de los años y las crisis, la mansión fue perdiendo su esplendor. El abandono, los robos y la falta de mantenimiento la dejaron en ruinas: se llevaron picaportes, balaustres, faroles y hasta los angelitos de la fuente. El último habitante, Charly, vivió solo allí durante 17 años hasta su fallecimiento en 2006. Finalmente, en 2007 la familia vendió la propiedad al municipio de Almirante Brown, que la destinó a la creación de la universidad.
+                </p>
+              </div>
               <div className="md:w-1/2 animate-fade-in-left">
                 <ImageSlider
                   images={[
@@ -79,47 +90,39 @@ export default function HistoriaCampus() {
                   interval={4000}
                 />
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Sección 3: Imágenes de Abandono y Renacimiento */}
+        <section className="py-16 md:py-24 bg-congress-blue text-white">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <div className="flex flex-col md:flex-row gap-12 items-center">
+              <div className="md:w-1/2 animate-fade-in-left">
+                <div className="flex flex-col gap-4">
+                    <img src="https://resizer.glanacion.com/resizer/v2/durante-anos-el-predio-estuvo-en-estado-de-2I64GINC5FHMLE35HR4OGDXRTM.png?auth=8701c2f55e1f072b2ec9c4106cc95019813643bd8eca563b9952ddd69f1b37f0&width=780&height=520&quality=70&smart=true" alt="Predio en estado de abandono" className="rounded shadow-lg w-full" />
+                    <img src="https://resizer.glanacion.com/resizer/v2/durante-anos-la-casona-estuvo-abandonada-se-MPNVHQSZIRAI7LZYQFEZZBR2ZA.jpg?auth=a5676788d470ec81e19985f8e82509fe2e41f16f297a296563020d01dad2473a&width=780&height=520&quality=70&smart=true" alt="Casona abandonada y vandalizada" className="rounded shadow-lg w-full" />
+                </div>
+              </div>
               <div className="md:w-1/2 animate-fade-in-right">
-                <p className="text-lg leading-relaxed mb-4">
-                  Las fiestas familiares, los paseos en bote por la laguna, los baños en la pileta y las noches en la terraza bajo las estrellas marcaron la vida de cuatro generaciones. Incluso, en el estanque había peces de la familia de las pirañas, a los que alimentaban con carne, y en el jardín sevillano se celebraban reuniones multitudinarias.
-                </p>
-                <p className="text-lg leading-relaxed">
-                  Con el paso de los años y las crisis, la mansión fue perdiendo su esplendor. El abandono, los robos y la falta de mantenimiento la dejaron en ruinas: se llevaron picaportes, balaustres, faroles y hasta los angelitos de la fuente. El último habitante, Charly, vivió solo allí durante 17 años hasta su fallecimiento en 2006. Finalmente, en 2007 la familia vendió la propiedad al municipio de Almirante Brown, que la destinó a la creación de la universidad.
+                <h2 className="text-3xl md:text-4xl font-bold mb-8 text-congress-cyan animate-fade-in-up text-outline">
+                    El lento declive y el renacimiento
+                </h2>
+                <p className="text-lg leading-relaxed animate-fade-in-up">
+                  Hoy, la UNaB trabaja en la recuperación y puesta en valor de este patrimonio histórico, renovando su legado como espacio de educación y cultura para la comunidad.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Sección 3: Imágenes de Abandono y Renacimiento */}
-        <section className="py-16 md:py-24 bg-gray-50">
-          <div className="container mx-auto px-4 max-w-5xl text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-congress-cyan animate-fade-in-up">
-              El lento declive y el renacimiento
-            </h2>
-            <div className="flex flex-col md:flex-row gap-4 my-2 items-start justify-center animate-fade-in-up">
-              <figure className="flex flex-col items-center w-full md:w-1/2">
-                <img src="https://resizer.glanacion.com/resizer/v2/durante-anos-el-predio-estuvo-en-estado-de-2I64GINC5FHMLE35HR4OGDXRTM.png?auth=8701c2f55e1f072b2ec9c4106cc95019813643bd8eca563b9952ddd69f1b37f0&width=780&height=520&quality=70&smart=true" alt="Predio en estado de abandono" className="rounded shadow-lg w-full" />
-                <figcaption className="text-sm text-gray-600 text-center mt-1">Predio en estado de abandono. Fuente: La Nación</figcaption>
-              </figure>
-              <figure className="flex flex-col items-center w-full md:w-1/2">
-                <img src="https://resizer.glanacion.com/resizer/v2/durante-anos-la-casona-estuvo-abandonada-se-MPNVHQSZIRAI7LZYQFEZZBR2ZA.jpg?auth=a5676788d470ec81e19985f8e82509fe2e41f16f297a296563020d01dad2473a&width=780&height=520&quality=70&smart=true" alt="Casona abandonada y vandalizada" className="rounded shadow-lg w-full" />
-                <figcaption className="text-sm text-gray-600 text-center mt-1">Casona abandonada y vandalizada. Fuente: La Nación</figcaption>
-              </figure>
-            </div>
-            <p className="mt-8 text-lg leading-relaxed animate-fade-in-up max-w-3xl mx-auto">
-              Hoy, la UNaB trabaja en la recuperación y puesta en valor de este patrimonio histórico, renovando su legado como espacio de educación y cultura para la comunidad.
-            </p>
-          </div>
-        </section>
-
         {/* Sección 4: El predio en la actualidad */}
         <section className="py-16 md:py-24 bg-white">
-          <div className="container mx-auto px-4 max-w-5xl text-center">
+          <div className="container mx-auto px-4 max-w-7xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-8 text-congress-cyan animate-fade-in-up">
               El predio en la actualidad
             </h2>
-            <div className="w-full animate-fade-in-up">
+            <div className="animate-fade-in-up mx-auto">
               <ModernFadeSlider
                 images={[
                   {
@@ -141,11 +144,6 @@ export default function HistoriaCampus() {
                     src: "/images/Universidad.webp",
                     alt: "Fachada de la UNaB",
                     caption: "Fachada de la UNaB"
-                  },
-                  {
-                    src: "/images/Universidad2.webp",
-                    alt: "Otra vista del campus y la casona",
-                    caption: "Otra vista del campus y la casona"
                   }
                 ]}
                 interval={2000}

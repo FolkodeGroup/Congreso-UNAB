@@ -62,9 +62,9 @@ const ModernFadeSlider: React.FC<ModernFadeSliderProps> = ({ images, interval = 
   };
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto flex flex-col items-center select-none">
+    <div className="relative w-full flex flex-col items-center select-none">
       <div
-        className="w-full h-[380px] md:h-[480px] flex flex-col items-center justify-center overflow-hidden bg-white rounded-xl shadow-lg relative"
+        className="w-full h-[500px] flex flex-col items-center justify-center overflow-hidden bg-white rounded-xl shadow-lg relative"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
@@ -91,7 +91,7 @@ const ModernFadeSlider: React.FC<ModernFadeSliderProps> = ({ images, interval = 
         <button
           aria-label="Anterior"
           onClick={prev}
-          className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 text-2xl"
+          className="p-2 rounded-full bg-congress-blue hover:bg-congress-blue-dark text-white text-2xl"
         >
           &#8592;
         </button>
@@ -99,7 +99,7 @@ const ModernFadeSlider: React.FC<ModernFadeSliderProps> = ({ images, interval = 
           {images.map((_, idx) => (
             <button
               key={idx}
-              className={`w-3 h-3 rounded-full border-2 ${idx === current ? "bg-congress-cyan border-congress-cyan" : "bg-gray-300 border-gray-300"}`}
+              className={`w-3 h-3 rounded-full ${idx === current ? "bg-congress-cyan" : "bg-gray-300"}`}
               onClick={() => goTo(idx)}
               aria-label={`Ir a la imagen ${idx + 1}`}
             />
@@ -108,7 +108,7 @@ const ModernFadeSlider: React.FC<ModernFadeSliderProps> = ({ images, interval = 
         <button
           aria-label="Siguiente"
           onClick={next}
-          className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 text-2xl"
+          className="p-2 rounded-full bg-congress-blue hover:bg-congress-blue-dark text-white text-2xl"
         >
           &#8594;
         </button>

@@ -155,18 +155,15 @@ export default function Layout({ children }: LayoutProps) {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-lg font-bold mb-4">Congreso de Logística y Transporte</h3>
-              <p className="text-gray-300">
-                Moviendo el futuro - Innovación y desafíos en la logística y el transporte
-              </p>
+              <h3 className="text-lg font-bold mb-4">Moviendo el futuro - Innovación y desafíos en la logística y el transporte</h3>
             </div>
             <div>
               <h3 className="text-lg font-bold mb-4">Información del Evento</h3>
-              <p className="text-gray-300 mb-2">📅 15 de Noviembre 2025</p>
-              <p className="text-gray-300 mb-2">📍 Campus UNaB, Blas Parera 132</p>
-              <p className="text-gray-300">✉️ congresologisticaytransporte@unab.edu.ar</p>
+              <p className="text-gray-300 mb-2">📅 15 de Noviembre de 2025</p>
+              <p className="text-gray-300 mb-2 notranslate">📍 Campus UNaB, Blas Parera 132</p>
+              <p className="text-gray-300 notranslate">✉️ congresologisticaytransporte@unab.edu.ar</p>
             </div>
-            <div>
+            <div className="notranslate">
               <h3 className="text-lg font-bold mb-4">Universidad Nacional Guillermo Brown</h3>
               <div className="flex items-center space-x-3 mb-4">
                 <img src="/images/LogoUnab.png" alt="UNaB Logo" className="h-16 w-auto" />
@@ -180,7 +177,7 @@ export default function Layout({ children }: LayoutProps) {
               </p>
             </div>
           </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 notranslate">
             <p>&copy; 2025 Universidad Nacional Guillermo Brown. Todos los derechos reservados. Desarrollado por <a href="http://folkode.vercel.app" target="_blank" rel="noopener noreferrer"><span className='text-white underline' >Folkode</span></a></p>
           </div>
         </div>

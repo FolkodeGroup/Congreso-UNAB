@@ -35,7 +35,7 @@ export const FIRST_CAROUSEL_LOGOS: LogoItem[] = [
 // Second carousel explicit set (user-provided)
 export const SECOND_CAROUSEL_LOGOS: LogoItem[] = [
   { src: "/images/logos/NUCLEO-LOGISTICO.jpeg", alt: "Núcleo Logístico", heightClass: "h-16" },
-  { src: "/images/logos/NYG-TRANSPORTES.png", alt: "N&G Transportes", heightClass: "h-16" },
+  { src: "/images/logos/NYG-TRANSPORTES.PNG", alt: "N&G Transportes", heightClass: "h-16" },
   { src: "/images/logos/PERFORMANCE-LUBE.png", alt: "Performance Lube", heightClass: "h-14" },
   { src: "/images/logos/RASTA.png", alt: "Rasta", heightClass: "h-14" },
   { src: "/images/logos/RED-LOGISTICA.webp", alt: "Red Logística", heightClass: "h-14" },

@@ -101,10 +101,11 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* Congress brand colors */
-    --congress-blue: 202 91% 35%;
-    --congress-blue-dark: 202 91% 25%;
-    --congress-cyan: 185 78% 57%;
-    --congress-cyan-light: 185 78% 75%;
+    --congress-blue: 202 91% 25%;
+    --congress-blue-dark: 202 91% 15%;
+    --congress-cyan: 197 88% 44%;
+    --congress-cyan-light: 197 81% 50%;
+    --congress-white: 0 0% 100%;
   }
 }
 
