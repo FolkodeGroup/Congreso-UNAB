@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { inscribirIndividual, inscribirGrupal } from '../lib/api'; // Importar funciones de la API
 
 const participantSchema = z.object({
   firstName: z.string().min(1, "El nombre es requerido"),
@@ -51,7 +52,7 @@ type FormData = z.infer<typeof formSchema>;
 const RegistroParticipantes: React.FC = () => {
   const [profileType, setProfileType] = useState<FormData["profileType"]>("visitor");
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, control, formState: { errors }, reset } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: { profileType: "visitor", groupMembers: [{ firstName: "", lastName: "", dni: "", email: "" }] },
   });
@@ -61,10 +62,22 @@ const RegistroParticipantes: React.FC = () => {
     name: "groupMembers",
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log("Formulario de Participante Enviado:", data);
-    // Placeholder for API call
-    alert("Formulario de participante enviado. (Simulado)");
+  const onSubmit = async (data: FormData) => {
+    try {
+      let response;
+      if (data.profileType === "groupRepresentative") {
+        response = await inscribirGrupal(data);
+      } else {
+        response = await inscribirIndividual(data);
+      }
+
+      console.log("Respuesta del servidor:", response);
+      alert("¡Inscripción exitosa!");
+      reset(); // Limpia el formulario después de un envío exitoso
+    } catch (error) {
+      console.error("Error en la inscripción:", error);
+      alert("Hubo un error al procesar la inscripción. Por favor, inténtalo de nuevo.");
+    }
   };
 
   return (
