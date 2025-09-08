@@ -4,14 +4,14 @@ from .models import Disertante, Empresa, Asistente, Inscripcion, Certificado, Pr
 from .email import send_certificate_email
 
 class InscripcionAdmin(admin.ModelAdmin):
-    list_display = ('asistente', 'tipo_inscripcion', 'empresa', 'fecha_inscripcion')
-    list_filter = ('tipo_inscripcion', 'fecha_inscripcion')
-    search_fields = ('asistente__nombre_completo', 'asistente__email', 'empresa__razon_social')
+    list_display = ('asistente', 'empresa', 'fecha_inscripcion')
+    list_filter = ('fecha_inscripcion',)
+    search_fields = ('asistente__first_name', 'asistente__last_name', 'asistente__email', 'empresa__razon_social')
 
 class AsistenteAdmin(admin.ModelAdmin):
-    list_display = ('nombre_completo', 'email', 'dni', 'asistencia_confirmada', 'fecha_confirmacion')
+    list_display = ('first_name', 'last_name', 'email', 'dni', 'asistencia_confirmada', 'fecha_confirmacion')
     list_filter = ('asistencia_confirmada', 'fecha_confirmacion')
-    search_fields = ('nombre_completo', 'email', 'dni')
+    search_fields = ('first_name', 'last_name', 'email', 'dni')
     actions = ['confirmar_asistencia', 'enviar_certificados']
 
     def confirmar_asistencia(self, request, queryset):
@@ -51,7 +51,7 @@ class AsistenteAdmin(admin.ModelAdmin):
 class CertificadoAdmin(admin.ModelAdmin):
     list_display = ('asistente', 'tipo_certificado', 'fecha_generacion')
     list_filter = ('tipo_certificado', 'fecha_generacion')
-    search_fields = ('asistente__nombre_completo', 'asistente__email')
+    search_fields = ('asistente__first_name', 'asistente__last_name', 'asistente__email')
 
 class ProgramaAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'disertante', 'dia', 'hora_inicio', 'hora_fin')

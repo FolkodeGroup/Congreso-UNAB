@@ -46,7 +46,7 @@ export default function Contacto() {
               <p className="text-lg text-gray-700">
                 <a href="/#mapa" className="text-lg text-gray-700">Universidad Nacional Guillermo Brown</a>
               </p>
-              <a href="/#mapa" className="text-sm text-gray-500">Blas Parera 132, Adrogué, Buenos Aires</a>
+              <a href="/#mapa" className="text-sm text-gray-500">Blas Parera 132, Burzaco, Buenos Aires</a>
             </CardContent>
           </Card>
 

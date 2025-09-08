@@ -10,8 +10,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Programa from "./pages/Programa";
 import SeleccionRegistro from "./pages/SeleccionRegistro";
-import Registro from "./pages/Registro";
-import RegistroGrupal from "./pages/RegistroGrupal";
+import RegistroEmpresas from "./pages/RegistroEmpresas";
+import RegistroParticipantes from "./pages/RegistroParticipantes";
 import Ponentes from "./pages/Ponentes";
 import Contacto from "././pages/Contacto";
 import Empresas from "./pages/Empresas";
@@ -34,8 +34,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/programa" element={<Programa />} />
           <Route path="/registro" element={<SeleccionRegistro />} />
-          <Route path="/registro/individual" element={<Registro />} />
-          <Route path="/registro-grupal" element={<RegistroGrupal />} />
+          <Route path="/registro-participantes" element={<RegistroParticipantes />} />
+          <Route path="/registro-empresas" element={<RegistroEmpresas />} />
           <Route path="/ponentes" element={<Ponentes />} />
           <Route path="/empresas" element={<Empresas />} />
           <Route path="/contacto" element={<Contacto />} />

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-2zba+jiuh_gqthifa5*y7illxqrj8oz03yv005)g0-wfpi@o1d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.101']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.101', 'folkode.pythonanywhere.com']
 
 
 
@@ -41,12 +41,7 @@ if os.path.exists(dotenv_path):
 else:
     print(f"[WARNING] No se encontró el archivo .env en {dotenv_path}")
 
-# Configuración CORS para permitir peticiones del frontend
-CORS_ALLOW_ALL_ORIGINS = True  # Para desarrollo, permite cualquier origen
-# Para producción, usa:
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',  # Cambia por la URL de tu frontend
-# ]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -172,8 +167,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173', # Vite development server
+    'https://congresologisticaytransporteunab.netlify.app',
 ]
-CORS_ALLOW_ALL_ORIGINS = True # For development, consider refining in production
+CORS_ALLOW_ALL_ORIGINS = False
 
 # Media files (PDFs, imágenes, etc)
 MEDIA_URL = '/media/'
