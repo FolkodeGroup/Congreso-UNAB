@@ -4,6 +4,7 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from django.utils import timezone
 
 
 class Disertante(models.Model):
@@ -42,18 +43,23 @@ class Programa(models.Model):
         return f"{self.titulo} - {self.dia} {self.hora_inicio}"
 
 class Empresa(models.Model):
-    razon_social = models.CharField(max_length=255, verbose_name="Razón Social")
-    cuit = models.CharField(max_length=13, unique=True)
-    logo_url = models.URLField(max_length=300, blank=True, verbose_name="URL del Logo")
-    address = models.CharField(max_length=255, blank=True, null=True, verbose_name="Dirección")
-    phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
-    contact_person_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nombre Persona de Contacto")
-    contact_person_email = models.EmailField(blank=True, null=True, verbose_name="Email Persona de Contacto")
-    contact_person_phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono Persona de Contacto")
-    participation_options = models.JSONField(blank=True, null=True, verbose_name="Opciones de Participación")
+    # Main Info
+    nombre_empresa = models.CharField(max_length=255, verbose_name="Nombre de la empresa o institución")
+
+    # Contact Person
+    nombre_contacto = models.CharField(max_length=255, verbose_name="Nombre completo de la persona de contacto")
+    email_contacto = models.EmailField(unique=True, verbose_name="Correo electrónico de la persona de contacto")
+    celular_contacto = models.CharField(max_length=20, verbose_name="Número de celular de contacto")
+    cargo_contacto = models.CharField(max_length=255, verbose_name="Cargo que cumple en la empresa / institución")
+
+    # Participation
+    participacion_opciones = models.JSONField(default=list, verbose_name="¿Cómo les gustaría participar?")
+    participacion_otra = models.CharField(max_length=255, blank=True, null=True, verbose_name="Otra forma de participación")
 
     def __str__(self):
-        return self.razon_social
+        if self.nombre_empresa:
+            return self.nombre_empresa
+        return f"Empresa sin nombre (ID: {self.id})"
 
 class Asistente(models.Model):
     class ProfileType(models.TextChoices):
@@ -63,49 +69,45 @@ class Asistente(models.Model):
         PROFESSIONAL = 'PROFESSIONAL', 'Profesional'
         GROUP_REPRESENTATIVE = 'GROUP_REPRESENTATIVE', 'Representante de Grupo'
 
-    email = models.EmailField(unique=True)
+    # --- Información Principal (Común a todos) ---
     first_name = models.CharField(max_length=100, verbose_name="Nombre")
     last_name = models.CharField(max_length=100, verbose_name="Apellido")
-    dni = models.CharField(max_length=10, unique=True)
-    phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
-    profile_type = models.CharField(
-        max_length=30,
-        choices=ProfileType.choices,
-        default=ProfileType.VISITOR,
-        verbose_name="Tipo de Perfil"
-    )
+    email = models.EmailField(unique=True, verbose_name="Correo electrónico")
+    phone = models.CharField(max_length=20, verbose_name="Número de celular")
+    dni = models.CharField(max_length=10, unique=True, verbose_name="DNI")
+    profile_type = models.CharField(max_length=30, choices=ProfileType.choices, verbose_name="Tipo de Perfil")
 
-    # Conditional fields based on profile_type
-    university = models.CharField(max_length=255, blank=True, null=True, verbose_name="Universidad")
-    student_id = models.CharField(max_length=50, blank=True, null=True, verbose_name="Número de Estudiante")
-    institution = models.CharField(max_length=255, blank=True, null=True, verbose_name="Institución")
-    occupation = models.CharField(max_length=255, blank=True, null=True, verbose_name="Ocupación")
-    company_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nombre de la Empresa (Profesional)")
+    # --- Campos Condicionales ---
+    is_unab_student = models.BooleanField(null=True, blank=True, verbose_name="¿Perteneces a la UNaB?")
+    institution = models.CharField(max_length=255, blank=True, null=True, verbose_name="Institución (estudio o trabajo)")
+    career = models.CharField(max_length=255, blank=True, null=True, verbose_name="Carrera que cursas")
+    year_of_study = models.IntegerField(null=True, blank=True, verbose_name="Año que cursas")
+    career_taught = models.CharField(max_length=255, blank=True, null=True, verbose_name="Carrera que dictas")
+    work_area = models.CharField(max_length=255, blank=True, null=True, verbose_name="Área de trabajo")
+    occupation = models.CharField(max_length=255, blank=True, null=True, verbose_name="Cargo")
+    company_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nombre de la Empresa")
+    group_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nombre de la institución o grupo")
+    group_municipality = models.CharField(max_length=255, blank=True, null=True, verbose_name="Partido al que pertenece la institución")
+    group_size = models.IntegerField(null=True, blank=True, verbose_name="Cantidad de personas en el grupo")
 
+    # --- Campos de Estado para QR y Certificados ---
     asistencia_confirmada = models.BooleanField(default=False, verbose_name="Asistencia Confirmada")
     fecha_confirmacion = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Confirmación")
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} ({self.email})"
+        return f"{self.first_name} {self.last_name}"
 
-class Inscripcion(models.Model):
-    asistente = models.ForeignKey(Asistente, on_delete=models.CASCADE)
-    empresa = models.ForeignKey(Empresa, on_delete=models.SET_NULL, null=True, blank=True)
-    nombre_grupo = models.CharField(max_length=100, blank=True, verbose_name="Nombre del Grupo")
-    fecha_inscripcion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Inscripción")
-
-    def __str__(self):
-        return f"Inscripción de {self.asistente.first_name} {self.asistente.last_name}"
+    @property
+    def nombre_completo(self):
+        return f"{self.first_name} {self.last_name}"
 
 class MiembroGrupo(models.Model):
-    inscripcion = models.ForeignKey(Inscripcion, on_delete=models.CASCADE, related_name='miembros_grupo')
-    first_name = models.CharField(max_length=100, verbose_name="Nombre")
-    last_name = models.CharField(max_length=100, verbose_name="Apellido")
+    representante = models.ForeignKey(Asistente, on_delete=models.CASCADE, related_name='miembros_grupo')
+    full_name = models.CharField(max_length=200, verbose_name="Nombre completo")
     dni = models.CharField(max_length=10, verbose_name="DNI")
-    email = models.EmailField(verbose_name="Email")
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} (Grupo: {self.inscripcion.nombre_grupo})"
+        return f"{self.full_name} (Grupo de {self.representante})"
 
 class Certificado(models.Model):
     class TipoCertificado(models.TextChoices):
@@ -122,12 +124,8 @@ class Certificado(models.Model):
         return f"Certificado de {self.get_tipo_certificado_display()} para {self.asistente.first_name} {self.asistente.last_name}"
 
     def generar_pdf(self, save=True):
-        """
-        Genera un PDF de certificado y lo guarda en el campo 'pdf_generado'.
-        """
         buffer = BytesIO()
         c = canvas.Canvas(buffer, pagesize=letter)
-        
         c.setFont("Helvetica-Bold", 20)
         c.drawCentredString(300, 700, "Certificado de Asistencia")
         c.setFont("Helvetica", 14)
@@ -136,10 +134,16 @@ class Certificado(models.Model):
         c.drawCentredString(300, 610, f"Fecha de emisión: {self.fecha_generacion.strftime('%d/%m/%Y')}")
         c.setFont("Helvetica", 10)
         c.drawCentredString(300, 570, "Folkode Group - UNaB 2025")
-        
         c.showPage()
         c.save()
         buffer.seek(0)
-        
         file_name = f"certificado_{self.asistente.email}.pdf"
         self.pdf_generado.save(file_name, ContentFile(buffer.getvalue()), save=save)
+
+class Inscripcion(models.Model):
+    asistente = models.ForeignKey(Asistente, on_delete=models.CASCADE)
+    empresa = models.ForeignKey(Empresa, on_delete=models.SET_NULL, null=True, blank=True)
+    fecha_inscripcion = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Inscripción de {self.asistente} - {self.fecha_inscripcion.strftime('%Y-%m-%d')}"
