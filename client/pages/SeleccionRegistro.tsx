@@ -13,11 +13,11 @@ export default function SeleccionRegistro() {
               <CardTitle>¿Cómo deseas registrarte?</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
-              <Link to="/registro/individual">
-                <Button className="w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3" size="lg">Registro Individual</Button>
+              <Link to="/registro-participantes">
+                <Button className="w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3" size="lg">Registro de Participantes</Button>
               </Link>
-              <Link to="/registro-grupal">
-                <Button className="w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3" size="lg" variant="outline">Registro Grupal (Empresa)</Button>
+              <Link to="/registro-empresas">
+                <Button className="w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3" size="lg" variant="outline">Registro de Empresas</Button>
               </Link>
             </CardContent>
           </Card>

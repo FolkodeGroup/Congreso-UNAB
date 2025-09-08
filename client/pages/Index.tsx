@@ -89,16 +89,18 @@ export default function Index() {
                 <p className="text-lg">
                   Campus UNaB
                   <br />
-                  Blas Parera 132
+                  Blas Parera 132, Burzaco
                 </p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                <FiMail className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
-                <h3 className="font-semibold mb-2">Contacto</h3>
-                <p className="text-sm break-all">
-                  congresologisticaytransporte@unab.edu.ar
-                </p>
-              </div>
+              <Link to="/contacto" className="block">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/50 transition-all duration-300">
+                  <FiMail className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
+                  <h3 className="font-semibold mb-2">Contacto</h3>
+                  <p className="text-sm break-all">
+                    congresologisticaytransporte@unab.edu.ar
+                  </p>
+                </div>
+              </Link>
             </div>
 
             {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -1,8 +1,9 @@
 from rest_framework import viewsets, mixins, status, views, serializers
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .models import Disertante, Inscripcion, Programa, Certificado, Asistente
-from .serializers import DisertanteSerializer, InscripcionSerializer, AsistenteSerializer, ProgramaSerializer
+from django.db import transaction
+from .models import Disertante, Inscripcion, Programa, Certificado, Asistente, Empresa, MiembroGrupo
+from .serializers import DisertanteSerializer, InscripcionSerializer, AsistenteSerializer, ProgramaSerializer, EmpresaSerializer, MiembroGrupoSerializer
 from django.utils import timezone
 from .email import send_certificate_email, send_confirmation_email
 
@@ -21,6 +22,65 @@ class ProgramaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Programa.objects.all().order_by('dia', 'hora_inicio')
     serializer_class = ProgramaSerializer
     permission_classes = [AllowAny]
+
+class RegistroEmpresasView(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    """
+    Vista para el registro de empresas.
+    """
+    queryset = Empresa.objects.all()
+    serializer_class = EmpresaSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            empresa = serializer.save()
+            return Response({'status': 'success', 'message': 'Registro de empresa realizado correctamente.', 'id': empresa.id}, status=status.HTTP_201_CREATED)
+        except serializers.ValidationError as e:
+            return Response({'status': 'error', 'message': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'status': 'error', 'message': f'Ha ocurrido un error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class RegistroParticipantesView(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    """
+    Vista para el registro de participantes individuales y grupales.
+    """
+    queryset = Asistente.objects.all()
+    serializer_class = AsistenteSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        try:
+            with transaction.atomic():
+                profile_type = request.data.get('profile_type')
+                miembros_grupo_data = request.data.get('miembros_grupo', [])
+
+                # Handle Asistente (main participant)
+                asistente_serializer = self.get_serializer(data=request.data)
+                try:
+                    asistente_serializer.is_valid(raise_exception=True)
+                    asistente = asistente_serializer.save()
+                except serializers.ValidationError as e:
+                    return Response({'status': 'error', 'message': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+
+                # Handle group members if profile_type is GROUP_REPRESENTATIVE
+                if profile_type == Asistente.ProfileType.GROUP_REPRESENTATIVE:
+                    if not miembros_grupo_data:
+                        return Response({'status': 'error', 'message': 'Se requieren miembros del grupo para un representante de grupo.'}, status=status.HTTP_400_BAD_REQUEST)
+                    
+                    for miembro_data in miembros_grupo_data:
+                        miembro_data['grupo_representante'] = asistente.id # Link to the group representative
+                        miembro_serializer = MiembroGrupoSerializer(data=miembro_data)
+                        try:
+                            miembro_serializer.is_valid(raise_exception=True)
+                            miembro_serializer.save()
+                        except serializers.ValidationError as e:
+                            return Response({'status': 'error', 'message': {'miembros_grupo': e.detail}}, status=status.HTTP_400_BAD_REQUEST)
+
+                return Response({'status': 'success', 'message': 'Registro de participante realizado correctamente.', 'id': asistente.id}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'status': 'error', 'message': f'Ha ocurrido un error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class InscripcionViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """

@@ -103,10 +103,10 @@ export default function Layout({ children }: LayoutProps) {
                   </div>
                 )}
               </div>
-              <Link to="/registro">
+              <Link to="/seleccion-registro">
                 <Button
-                  variant={isActive('/registro') ? 'secondary' : 'ghost'}
-                  className={isActive('/registro') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
+                  variant={isActive('/seleccion-registro') ? 'secondary' : 'ghost'}
+                  className={isActive('/seleccion-registro') ? 'bg-white text-congress-blue' : 'text-white hover:bg-congress-blue-dark'}
                 >
                   Registro
                 </Button>
@@ -160,8 +160,12 @@ export default function Layout({ children }: LayoutProps) {
             <div>
               <h3 className="text-lg font-bold mb-4">Información del Evento</h3>
               <p className="text-gray-300 mb-2">📅 15 de Noviembre de 2025</p>
-              <p className="text-gray-300 mb-2 notranslate">📍 Campus UNaB, Blas Parera 132</p>
-              <p className="text-gray-300 notranslate">✉️ congresologisticaytransporte@unab.edu.ar</p>
+              <p className="text-gray-300 mb-2 notranslate">📍 Campus UNaB, Blas Parera 132, Burzaco</p>
+              <p className="text-gray-300 notranslate">
+                <a href="https://congresologisticaytransporteunab.netlify.app/contacto" className="text-gray-300 hover:underline">
+                  ✉️ congresologisticaytransporte@unab.edu.ar
+                </a>
+              </p>
             </div>
             <div className="notranslate">
               <h3 className="text-lg font-bold mb-4">Universidad Nacional Guillermo Brown</h3>

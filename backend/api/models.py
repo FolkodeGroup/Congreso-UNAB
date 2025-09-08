@@ -45,34 +45,67 @@ class Empresa(models.Model):
     razon_social = models.CharField(max_length=255, verbose_name="Razón Social")
     cuit = models.CharField(max_length=13, unique=True)
     logo_url = models.URLField(max_length=300, blank=True, verbose_name="URL del Logo")
+    address = models.CharField(max_length=255, blank=True, null=True, verbose_name="Dirección")
+    phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
+    contact_person_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nombre Persona de Contacto")
+    contact_person_email = models.EmailField(blank=True, null=True, verbose_name="Email Persona de Contacto")
+    contact_person_phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono Persona de Contacto")
+    participation_options = models.JSONField(blank=True, null=True, verbose_name="Opciones de Participación")
 
     def __str__(self):
         return self.razon_social
 
 class Asistente(models.Model):
+    class ProfileType(models.TextChoices):
+        VISITOR = 'VISITOR', 'Visitante'
+        STUDENT = 'STUDENT', 'Estudiante'
+        TEACHER = 'TEACHER', 'Docente'
+        PROFESSIONAL = 'PROFESSIONAL', 'Profesional'
+        GROUP_REPRESENTATIVE = 'GROUP_REPRESENTATIVE', 'Representante de Grupo'
+
     email = models.EmailField(unique=True)
-    nombre_completo = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=100, verbose_name="Nombre")
+    last_name = models.CharField(max_length=100, verbose_name="Apellido")
     dni = models.CharField(max_length=10, unique=True)
+    phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
+    profile_type = models.CharField(
+        max_length=30,
+        choices=ProfileType.choices,
+        default=ProfileType.VISITOR,
+        verbose_name="Tipo de Perfil"
+    )
+
+    # Conditional fields based on profile_type
+    university = models.CharField(max_length=255, blank=True, null=True, verbose_name="Universidad")
+    student_id = models.CharField(max_length=50, blank=True, null=True, verbose_name="Número de Estudiante")
+    institution = models.CharField(max_length=255, blank=True, null=True, verbose_name="Institución")
+    occupation = models.CharField(max_length=255, blank=True, null=True, verbose_name="Ocupación")
+    company_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nombre de la Empresa (Profesional)")
+
     asistencia_confirmada = models.BooleanField(default=False, verbose_name="Asistencia Confirmada")
     fecha_confirmacion = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Confirmación")
 
     def __str__(self):
-        return f"{self.nombre_completo} ({self.email})"
+        return f"{self.first_name} {self.last_name} ({self.email})"
 
 class Inscripcion(models.Model):
-    class Tipo(models.TextChoices):
-        INDIVIDUAL = 'INDIVIDUAL', 'Individual'
-        EMPRESA = 'EMPRESA', 'Empresa'
-        GRUPO = 'GRUPO', 'Grupo'
-
-    tipo_inscripcion = models.CharField(max_length=10, choices=Tipo.choices, default=Tipo.INDIVIDUAL, verbose_name="Tipo de Inscripción")
     asistente = models.ForeignKey(Asistente, on_delete=models.CASCADE)
     empresa = models.ForeignKey(Empresa, on_delete=models.SET_NULL, null=True, blank=True)
     nombre_grupo = models.CharField(max_length=100, blank=True, verbose_name="Nombre del Grupo")
     fecha_inscripcion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Inscripción")
 
     def __str__(self):
-        return f"Inscripción de {self.asistente.nombre_completo} ({self.get_tipo_inscripcion_display()})"
+        return f"Inscripción de {self.asistente.first_name} {self.asistente.last_name}"
+
+class MiembroGrupo(models.Model):
+    inscripcion = models.ForeignKey(Inscripcion, on_delete=models.CASCADE, related_name='miembros_grupo')
+    first_name = models.CharField(max_length=100, verbose_name="Nombre")
+    last_name = models.CharField(max_length=100, verbose_name="Apellido")
+    dni = models.CharField(max_length=10, verbose_name="DNI")
+    email = models.EmailField(verbose_name="Email")
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} (Grupo: {self.inscripcion.nombre_grupo})"
 
 class Certificado(models.Model):
     class TipoCertificado(models.TextChoices):
@@ -86,7 +119,7 @@ class Certificado(models.Model):
     fecha_generacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Generación")
 
     def __str__(self):
-        return f"Certificado de {self.get_tipo_certificado_display()} para {self.asistente.nombre_completo}"
+        return f"Certificado de {self.get_tipo_certificado_display()} para {self.asistente.first_name} {self.asistente.last_name}"
 
     def generar_pdf(self, save=True):
         """
@@ -98,7 +131,7 @@ class Certificado(models.Model):
         c.setFont("Helvetica-Bold", 20)
         c.drawCentredString(300, 700, "Certificado de Asistencia")
         c.setFont("Helvetica", 14)
-        c.drawCentredString(300, 650, f"Se certifica que {self.asistente.nombre_completo}")
+        c.drawCentredString(300, 650, f"Se certifica que {self.asistente.first_name} {self.asistente.last_name}")
         c.drawCentredString(300, 630, f"asistió a la Convención de Logística UNaB")
         c.drawCentredString(300, 610, f"Fecha de emisión: {self.fecha_generacion.strftime('%d/%m/%Y')}")
         c.setFont("Helvetica", 10)
