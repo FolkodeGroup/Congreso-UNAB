@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from .models import Disertante, Empresa, Programa, Asistente, MiembroGrupo, Inscripcion
+from .models import (
+    Disertante, Empresa, Programa, Perfil, MiembroGrupo, Inscripcion, 
+    Institucion, DetallePerfil
+)
 
 class DisertanteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,88 +32,69 @@ class EmpresaSerializer(serializers.ModelSerializer):
 class MiembroGrupoSerializer(serializers.ModelSerializer):
     class Meta:
         model = MiembroGrupo
-        fields = ['full_name', 'dni']
+        fields = ['nombre_miembro', 'dni_miembro']
 
-class AsistenteSerializer(serializers.ModelSerializer):
+class DetallePerfilSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetallePerfil
+        exclude = ['perfil']
+
+class PerfilSerializer(serializers.ModelSerializer):
+    detalles = DetallePerfilSerializer(required=False)
     miembros_grupo = MiembroGrupoSerializer(many=True, required=False)
+    institucion_nombre = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
-        model = Asistente
+        model = Perfil
         fields = [
-            'id', 'first_name', 'last_name', 'email', 'phone', 'dni', 'profile_type',
-            'is_unab_student', 'institution', 'career', 'year_of_study',
-            'career_taught', 'work_area', 'occupation', 'company_name',
-            'group_name', 'group_municipality', 'group_size',
-            'miembros_grupo'
+            'id', 'nombre', 'apellido', 'email', 'celular', 'dni', 'tipo_perfil',
+            'institucion', 'institucion_nombre', 'detalles', 'miembros_grupo'
         ]
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'institucion']
 
     def create(self, validated_data):
+        detalles_data = validated_data.pop('detalles', None)
         miembros_data = validated_data.pop('miembros_grupo', [])
-        asistente = Asistente.objects.create(**validated_data)
-        if asistente.profile_type == Asistente.ProfileType.GROUP_REPRESENTATIVE:
+        institucion_nombre = validated_data.pop('institucion_nombre', None)
+
+        institucion = None
+        if institucion_nombre:
+            institucion, _ = Institucion.objects.get_or_create(nombre_institucion=institucion_nombre)
+            validated_data['institucion'] = institucion
+
+        perfil = Perfil.objects.create(**validated_data)
+
+        if detalles_data:
+            DetallePerfil.objects.create(perfil=perfil, **detalles_data)
+
+        if perfil.tipo_perfil == 'Representante':
             for miembro_data in miembros_data:
-                MiembroGrupo.objects.create(representante=asistente, **miembro_data)
-        return asistente
-
-    def validate(self, data):
-        profile_type = data.get('profile_type')
-
-        if profile_type == Asistente.ProfileType.STUDENT:
-            if data.get('is_unab_student') is None:
-                raise serializers.ValidationError({"is_unab_student": "Este campo es requerido para estudiantes."})
-            if data.get('is_unab_student') is False and not data.get('institution'):
-                raise serializers.ValidationError({"institution": "La institución es requerida si no perteneces a la UNaB."})
-            if not data.get('career'):
-                raise serializers.ValidationError({"career": "La carrera es requerida para estudiantes."})
-            if not data.get('year_of_study'):
-                raise serializers.ValidationError({"year_of_study": "El año de cursada es requerido para estudiantes."})
-
-        elif profile_type == Asistente.ProfileType.TEACHER:
-            if not data.get('institution'):
-                raise serializers.ValidationError({"institution": "La institución es requerida para docentes."})
-            if not data.get('career_taught'):
-                raise serializers.ValidationError({"career_taught": "La carrera que dicta es requerida para docentes."})
-
-        elif profile_type == Asistente.ProfileType.PROFESSIONAL:
-            if not data.get('work_area'):
-                raise serializers.ValidationError({"work_area": "El área de trabajo es requerida para profesionales."})
-            if not data.get('occupation'):
-                raise serializers.ValidationError({"occupation": "El cargo es requerido para profesionales."})
-
-        elif profile_type == Asistente.ProfileType.GROUP_REPRESENTATIVE:
-            if not data.get('group_name'):
-                raise serializers.ValidationError({"group_name": "El nombre del grupo o institución es requerido."})
-            if not data.get('group_size'):
-                raise serializers.ValidationError({"group_size": "La cantidad de personas es requerida."})
-            if not data.get('miembros_grupo'):
-                raise serializers.ValidationError({"miembros_grupo": "La lista de miembros del grupo es requerida."})
+                MiembroGrupo.objects.create(representante=perfil, **miembro_data)
         
-        return data
+        return perfil
 
 class InscripcionSerializer(serializers.ModelSerializer):
-    asistente = AsistenteSerializer() # Nested AsistenteSerializer
+    asistente = PerfilSerializer()
 
     class Meta:
         model = Inscripcion
-        fields = ['asistente', 'empresa', 'fecha_inscripcion'] # Explicitly list fields
-        read_only_fields = ['fecha_inscripcion'] # fecha_inscripcion is auto-generated
+        fields = ['asistente', 'empresa', 'fecha_inscripcion']
+        read_only_fields = ['fecha_inscripcion']
 
     def create(self, validated_data):
-        asistente_data = validated_data.pop('asistente')
-        # Check for duplicate DNI or email before creating Asistente
-        dni = asistente_data.get('dni')
-        email = asistente_data.get('email')
+        perfil_data = validated_data.pop('asistente')
+        
+        dni = perfil_data.get('dni')
+        email = perfil_data.get('email')
 
-        if dni and Asistente.objects.filter(dni=dni).exists():
-            raise serializers.ValidationError({'dni': ['Ya existe un asistente con este DNI.']})
-        if email and Asistente.objects.filter(email=email).exists():
-            raise serializers.ValidationError({'email': ['Ya existe un asistente con este email.']})
+        if dni and Perfil.objects.filter(dni=dni).exists():
+            raise serializers.ValidationError({'dni': ['Ya existe un perfil con este DNI.']})
+        if email and perfil_data.get('email') and Perfil.objects.filter(email=email).exists():
+            raise serializers.ValidationError({'email': ['Ya existe un perfil con este email.']})
 
-        asistente = Asistente.objects.create(**asistente_data)
-        inscripcion = Inscripcion.objects.create(asistente=asistente, **validated_data)
-        return inscripcion
-
-    # No need for a separate validate method if validation is done in create or AsistenteSerializer
-    # def validate(self, data):
-    #     return data
+        perfil_serializer = PerfilSerializer(data=perfil_data)
+        if perfil_serializer.is_valid(raise_exception=True):
+            perfil = perfil_serializer.save()
+            inscripcion = Inscripcion.objects.create(asistente=perfil, **validated_data)
+            return inscripcion
+        return None

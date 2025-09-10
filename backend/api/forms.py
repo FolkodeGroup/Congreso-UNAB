@@ -1,29 +1,17 @@
 from django import forms
-from .models import Attendee, Company
+from .models import Perfil, DetallePerfil, MiembroGrupo, Institucion
 
-class CompanyForm(forms.ModelForm):
+class PerfilForm(forms.ModelForm):
     class Meta:
-        model = Company
-        fields = ['name', 'contact_email', 'contact_phone']
+        model = Perfil
+        fields = ['nombre', 'apellido', 'email', 'celular', 'dni', 'tipo_perfil', 'institucion']
 
-
-class AttendeeForm(forms.ModelForm):
+class DetallePerfilForm(forms.ModelForm):
     class Meta:
-        model = Attendee
-        fields = [
-            'first_name',
-            'last_name',
-            'email',
-            'phone',
-            'company',
-            'position',
-            'participant_type',
-        ]
+        model = DetallePerfil
+        exclude = ['perfil']
 
-# Formulario para inscripción grupal (varios asistentes para una empresa)
-AttendeeFormSet = forms.modelformset_factory(
-    Attendee,
-    form=AttendeeForm,
-    extra=3,  # Por defecto, 3 asistentes, se puede ajustar
-    can_delete=True
-)
+class MiembroGrupoForm(forms.ModelForm):
+    class Meta:
+        model = MiembroGrupo
+        fields = ['nombre_miembro', 'dni_miembro']
