@@ -170,7 +170,7 @@ export default function Ponentes() {
               }
               return (
                 <div
-                  key={disertante.id}
+                  key={`${disertante.nombre}-${idx}`}
                   className="flex flex-col items-center group"
                 >
                   {/* Polaroid-style image card */}
