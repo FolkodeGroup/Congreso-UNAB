@@ -27,14 +27,92 @@ export default function Ponentes() {
           throw new Error('Error al cargar los datos de los ponentes.');
         }
         const data = await response.json();
-        setDisertantes(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setDisertantes(data);
+        } else {
+          // Si no hay datos, generar disertantes desde los archivos locales
+          const archivos = [
+            'agustin_varamo.jpeg',
+            'alexander_machado.jpeg',
+            'ana_gaude.jpeg',
+            'argenis_soto.jpeg',
+            'claudia_freed.jpg',
+            'cristian_ruiz.jpeg',
+            'delfina_salgado.jpeg',
+            'diego_plumaris.jpeg',
+            'ezequiel_grillo.jpg',
+            'federico_carlos.jpeg',
+            'felipe_rios.jpg',
+            'gabriel_luchessi.jfif',
+            'jorge_golfieri.jpeg',
+            'jorge_metz.jpg',
+            'juan_sanchez.png',
+            'mariano_caiban.jpeg',
+            'martin_boris.jpeg',
+            'natalia_gonzalez.jpeg',
+          ];
+          const ejemploTema = 'Título de la Presentación';
+          const ejemploBio = 'Descripción de ejemplo del disertante.';
+          const disertantesAuto = archivos.map((archivo, idx) => {
+            const nombreBase = archivo.replace(/\.[^/.]+$/, '');
+            const nombre = nombreBase
+              .split('_')
+              .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+              .join(' ');
+            return {
+              id: idx + 1,
+              nombre,
+              bio: ejemploBio,
+              foto_url: `http://127.0.0.1:8000/media/ponencias/${archivo}`,
+              tema_presentacion: ejemploTema,
+            };
+          });
+          setDisertantes(disertantesAuto);
+        }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Un error desconocido ocurrió');
+        // Si hay error, mostrar los disertantes de ejemplo
+        const archivos = [
+          'agustin_varamo.jpeg',
+          'alexander_machado.jpeg',
+          'ana_gaude.jpeg',
+          'argenis_soto.jpeg',
+          'claudia_freed.jpg',
+          'cristian_ruiz.jpeg',
+          'delfina_salgado.jpeg',
+          'diego_plumaris.jpeg',
+          'ezequiel_grillo.jpg',
+          'federico_carlos.jpeg',
+          'felipe_rios.jpg',
+          'gabriel_luchessi.jfif',
+          'jorge_golfieri.jpeg',
+          'jorge_metz.jpg',
+          'juan_sanchez.png',
+          'mariano_caiban.jpeg',
+          'martin_boris.jpeg',
+          'natalia_gonzalez.jpeg',
+        ];
+        const ejemploTema = 'Título de la Presentación';
+        const ejemploBio = 'Descripción de ejemplo del disertante.';
+        const disertantesAuto = archivos.map((archivo, idx) => {
+          const nombreBase = archivo.replace(/\.[^/.]+$/, '');
+          const nombre = nombreBase
+            .split('_')
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' ');
+          return {
+            id: idx + 1,
+            nombre,
+            bio: ejemploBio,
+            foto_url: `http://127.0.0.1:8000/media/ponencias/${archivo}`,
+            tema_presentacion: ejemploTema,
+          };
+        });
+        setDisertantes(disertantesAuto);
+        setError(null);
       } finally {
         setLoading(false);
       }
     };
-
     fetchDisertantes();
   }, []);
 
@@ -83,6 +161,13 @@ export default function Ponentes() {
               // Rotación aleatoria para efecto "polaroid"
               const rotations = ['-rotate-3', 'rotate-2', '-rotate-2', 'rotate-1', '-rotate-1'];
               const rotation = rotations[idx % rotations.length];
+              // Construir la URL pública de la imagen
+              let fotoUrl = disertante.foto_url;
+              if (fotoUrl && !fotoUrl.startsWith('http')) {
+                // Elimina prefijos innecesarios y construye la URL absoluta
+                const cleanPath = fotoUrl.replace(/^.*media\//, '');
+                fotoUrl = `http://127.0.0.1:8000/media/${cleanPath}`;
+              }
               return (
                 <div
                   key={disertante.id}
@@ -93,7 +178,7 @@ export default function Ponentes() {
                     className={`bg-white border-2 border-gray-300 shadow-lg p-2 mb-4 w-56 h-64 flex flex-col items-center justify-center ${rotation} group-hover:scale-105 group-hover:shadow-2xl transition-transform duration-300 relative`}
                   >
                     <img
-                      src={disertante.foto_url}
+                      src={fotoUrl}
                       alt={disertante.nombre}
                       className="w-48 h-48 object-cover object-center bg-gray-100 rounded-md"
                       style={{ aspectRatio: '1/1' }}

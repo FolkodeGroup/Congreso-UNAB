@@ -165,12 +165,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # CORS settings
+import socket
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173', # Vite development server
+    'http://localhost:5173',
     'https://congresologisticaytransporteunab.netlify.app',
-    'http://localhost:8080', # Permitir frontend local en puerto 8080
+    'http://localhost:8080',
+    f'http://{socket.gethostbyname(socket.gethostname())}:8080',
 ]
 CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 # Media files (PDFs, imágenes, etc)
 MEDIA_URL = '/media/'
