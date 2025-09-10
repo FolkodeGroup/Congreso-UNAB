@@ -168,6 +168,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173', # Vite development server
     'https://congresologisticaytransporteunab.netlify.app',
+    'http://localhost:8080', # Permitir frontend local en puerto 8080
 ]
 CORS_ALLOW_ALL_ORIGINS = False
 
