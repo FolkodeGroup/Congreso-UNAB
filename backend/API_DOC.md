@@ -5,12 +5,15 @@
 Permite marcar la asistencia de un participante usando su email o ID (por ejemplo, tras escanear el QR).
 
 #### Body (JSON)
+
 ```json
 {
   "email": "juan@correo.com"
 }
 ```
+
 O bien:
+
 ```json
 {
   "attendee_id": 1
@@ -18,6 +21,7 @@ O bien:
 ```
 
 #### Respuesta exitosa
+
 ```json
 {
   "message": "Asistencia registrada",
@@ -26,6 +30,7 @@ O bien:
 ```
 
 #### Si ya estaba registrada
+
 ```json
 {
   "message": "Asistencia ya registrada",
@@ -34,15 +39,21 @@ O bien:
 ```
 
 #### Errores posibles
+
 - Asistente no encontrado:
+
 ```json
 { "error": "Asistente no encontrado" }
 ```
+
 - Registro de inscripción no encontrado:
+
 ```json
 { "error": "Registro de inscripción no encontrado" }
 ```
+
 - Faltan datos:
+
 ```json
 { "error": "Debe enviar email o attendee_id" }
 ```
@@ -70,6 +81,7 @@ O bien:
 ```
 
 #### Respuesta exitosa
+
 ```json
 {
   "message": "Inscripción exitosa",
@@ -79,8 +91,8 @@ O bien:
     "last_name": "Pérez",
     "email": "juan@correo.com",
     "phone": "+54 11 1234 5678",
-  "company": null,
-  "company_name": "Empresa S.A.",
+    "company": null,
+    "company_name": "Empresa S.A.",
     "position": "Estudiante",
     "participant_type": "estudiante",
     "registered_at": "2025-08-24T12:34:56Z",
@@ -90,14 +102,18 @@ O bien:
 ```
 
 #### Errores posibles
+
 - Faltan campos obligatorios:
+
 ```json
 {
   "error": "Faltan campos obligatorios",
   "missing_fields": ["first_name", "participant_type"]
 }
 ```
+
 - Datos inválidos:
+
 ```json
 {
   "error": "Datos inválidos",
@@ -112,6 +128,7 @@ O bien:
 **POST** `/api/inscripcion-grupal/`
 
 #### Body (JSON)
+
 ```json
 {
   "company": {
@@ -134,6 +151,7 @@ O bien:
 ```
 
 #### Respuesta exitosa
+
 ```json
 {
   "message": "Inscripción grupal exitosa",
@@ -162,23 +180,36 @@ O bien:
 ```
 
 #### Errores posibles
+
 - Faltan datos de empresa:
+
 ```json
 { "error": "Faltan los datos de la empresa (company)" }
 ```
+
 - Faltan campos en empresa:
+
 ```json
-{ "error": "Faltan campos obligatorios en la empresa", "missing_fields": ["name"] }
+{
+  "error": "Faltan campos obligatorios en la empresa",
+  "missing_fields": ["name"]
+}
 ```
+
 - Faltan asistentes:
+
 ```json
 { "error": "Debe enviar una lista de asistentes (attendees)" }
 ```
+
 - Faltan campos en asistente:
+
 ```json
 { "error": "Faltan campos en asistente #1", "missing_fields": ["email"] }
 ```
+
 - Datos inválidos:
+
 ```json
 { "error": "Datos inválidos en la empresa", "details": { ... } }
 ```
@@ -186,6 +217,7 @@ O bien:
 ---
 
 ## Notas
+
 - Todos los campos deben enviarse en formato JSON.
 - El campo `company` en inscripción individual puede ser `null` o el id de una empresa existente.
 - El campo `participant_type` debe ser uno de: `estudiante`, `profesor`, `gerente`, `ponente`, `otro`.

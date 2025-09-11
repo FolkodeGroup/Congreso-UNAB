@@ -14,6 +14,7 @@ Se ha modificado completamente la lógica del sistema según los requerimientos 
 ### QRs Estáticos del Sistema
 
 #### 1. QR Azul - Confirmar Asistencia (para personas ya registradas)
+
 - **URL**: `http://localhost:5173/verificar-dni`
 - **Propósito**: Verificar DNI y confirmar asistencia
 - **Proceso**:
@@ -23,6 +24,7 @@ Se ha modificado completamente la lógica del sistema según los requerimientos 
   4. Se confirma la asistencia y se envía el certificado por email
 
 #### 2. QR Verde - Registro in-situ (para personas no registradas)
+
 - **URL**: `http://localhost:5173/registro-rapido`
 - **Propósito**: Registro rápido en el momento del evento
 - **Proceso**:
@@ -57,7 +59,7 @@ Los modelos fueron actualizados:
 
 1. **Generar QRs**: Ir a `/generar-qrs` para obtener los dos QRs estáticos
 2. **Imprimir QRs**: Descargar e imprimir en tamaño grande
-3. **Colocar en el evento**: 
+3. **Colocar en el evento**:
    - QR Azul: "Confirmar Asistencia" - para registrados
    - QR Verde: "Registro in-situ" - para no registrados
 
@@ -94,6 +96,7 @@ python manage.py createsuperuser
 ### Certificados
 
 Los certificados se envían automáticamente por email cuando:
+
 - Se confirma asistencia mediante verificación de DNI
 - Se completa un registro rápido in-situ
 

@@ -50,7 +50,7 @@
 ---
 
 > **Priorizar:**
+>
 > 1. Mejorar PDF y experiencia de descarga.
 > 2. Documentar y proteger la API.
 > 3. Panel de administración y experiencia de usuario.
-

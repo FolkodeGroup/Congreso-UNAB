@@ -12,6 +12,7 @@ Este proyecto es una plataforma web para la gestión y difusión del Congreso de
 ## Instalación y ejecución
 
 ### Backend (Django)
+
 1. Instala las dependencias:
    ```bash
    cd backend
@@ -27,6 +28,7 @@ Este proyecto es una plataforma web para la gestión y difusión del Congreso de
    ```
 
 ### Frontend (React)
+
 1. Instala las dependencias:
    ```bash
    pnpm install

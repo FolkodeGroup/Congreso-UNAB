@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import Layout from '@/components/Layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Download, QrCode } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import Layout from "@/components/Layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Download, QrCode } from "lucide-react";
+import { toast } from "sonner";
 
 interface QRData {
   url: string;
@@ -23,24 +23,24 @@ export default function GenerarQRs() {
   const generateQRs = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/generar-qrs/');
+      const response = await fetch("http://127.0.0.1:8000/api/generar-qrs/");
       const data = await response.json();
-      
+
       if (response.ok) {
         setQrData(data);
-        toast.success('QRs generados exitosamente');
+        toast.success("QRs generados exitosamente");
       } else {
-        toast.error('Error al generar los QRs');
+        toast.error("Error al generar los QRs");
       }
     } catch (error) {
-      toast.error('Error de conexión');
+      toast.error("Error de conexión");
     } finally {
       setLoading(false);
     }
   };
 
   const downloadQR = (imageBase64: string, filename: string) => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = imageBase64;
     link.download = filename;
     document.body.appendChild(link);
@@ -49,7 +49,7 @@ export default function GenerarQRs() {
   };
 
   const printQR = (imageBase64: string, title: string) => {
-    const printWindow = window.open('', '_blank');
+    const printWindow = window.open("", "_blank");
     if (printWindow) {
       printWindow.document.write(`
         <html>
@@ -136,8 +136,8 @@ export default function GenerarQRs() {
                 </CardHeader>
                 <CardContent className="text-center space-y-4">
                   <div className="bg-white p-4 rounded-lg inline-block">
-                    <img 
-                      src={qrData.checkin_qr.image_base64} 
+                    <img
+                      src={qrData.checkin_qr.image_base64}
                       alt="QR Confirmar Asistencia"
                       className="w-64 h-64 mx-auto"
                     />
@@ -151,18 +151,28 @@ export default function GenerarQRs() {
                   <div className="flex gap-3 justify-center">
                     <Button
                       variant="outline"
-                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300'
+                      className="w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                       size="lg"
-                      onClick={() => downloadQR(qrData.checkin_qr.image_base64, 'QR-Confirmar-Asistencia.png')}
+                      onClick={() =>
+                        downloadQR(
+                          qrData.checkin_qr.image_base64,
+                          "QR-Confirmar-Asistencia.png",
+                        )
+                      }
                     >
                       <Download className="mr-2 h-5 w-5" />
                       Descargar
                     </Button>
                     <Button
                       variant="outline"
-                      className='w-full bg-congress-cyan hover:bg-congress-blue-dark text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300'
+                      className="w-full bg-congress-cyan hover:bg-congress-blue-dark text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                       size="lg"
-                      onClick={() => printQR(qrData.checkin_qr.image_base64, 'QR para Confirmar Asistencia')}
+                      onClick={() =>
+                        printQR(
+                          qrData.checkin_qr.image_base64,
+                          "QR para Confirmar Asistencia",
+                        )
+                      }
                     >
                       Imprimir
                     </Button>
@@ -179,8 +189,8 @@ export default function GenerarQRs() {
                 </CardHeader>
                 <CardContent className="text-center space-y-4">
                   <div className="bg-white p-4 rounded-lg inline-block">
-                    <img 
-                      src={qrData.registro_qr.image_base64} 
+                    <img
+                      src={qrData.registro_qr.image_base64}
                       alt="QR Registro Rápido"
                       className="w-64 h-64 mx-auto"
                     />
@@ -194,9 +204,14 @@ export default function GenerarQRs() {
                   <div className="flex gap-3 justify-center">
                     <Button
                       variant="outline"
-                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300'
+                      className="w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                       size="lg"
-                      onClick={() => downloadQR(qrData.registro_qr.image_base64, 'QR-Registro-Rapido.png')}
+                      onClick={() =>
+                        downloadQR(
+                          qrData.registro_qr.image_base64,
+                          "QR-Registro-Rapido.png",
+                        )
+                      }
                     >
                       <Download className="mr-2 h-5 w-5" />
                       Descargar
@@ -204,8 +219,13 @@ export default function GenerarQRs() {
                     <Button
                       variant="outline"
                       size="lg"
-                      className='w-full bg-congress-cyan hover:bg-congress-blue-dark text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300'
-                      onClick={() => printQR(qrData.registro_qr.image_base64, 'QR para Registro in-situ')}
+                      className="w-full bg-congress-cyan hover:bg-congress-blue-dark text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      onClick={() =>
+                        printQR(
+                          qrData.registro_qr.image_base64,
+                          "QR para Registro in-situ",
+                        )
+                      }
                     >
                       Imprimir
                     </Button>

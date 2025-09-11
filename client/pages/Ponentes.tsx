@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import Layout from '@/components/Layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect, useState } from "react";
+import Layout from "@/components/Layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Definimos el tipo de dato para un disertante, basado en el modelo de Django
 type Disertante = {
@@ -22,9 +22,9 @@ export default function Ponentes() {
     const fetchDisertantes = async () => {
       try {
         // Apuntamos a la URL de la API de Django
-        const response = await fetch('http://127.0.0.1:8000/api/disertantes/');
+        const response = await fetch("http://127.0.0.1:8000/api/disertantes/");
         if (!response.ok) {
-          throw new Error('Error al cargar los datos de los ponentes.');
+          throw new Error("Error al cargar los datos de los ponentes.");
         }
         const data = await response.json();
         if (Array.isArray(data) && data.length > 0) {
@@ -32,33 +32,33 @@ export default function Ponentes() {
         } else {
           // Si no hay datos, generar disertantes desde los archivos locales
           const archivos = [
-            'agustin_varamo.jpeg',
-            'alexander_machado.jpeg',
-            'ana_gaude.jpeg',
-            'argenis_soto.jpeg',
-            'claudia_freed.jpg',
-            'cristian_ruiz.jpeg',
-            'delfina_salgado.jpeg',
-            'diego_plumaris.jpeg',
-            'ezequiel_grillo.jpg',
-            'federico_carlos.jpeg',
-            'felipe_rios.jpg',
-            'gabriel_luchessi.jfif',
-            'jorge_golfieri.jpeg',
-            'jorge_metz.jpg',
-            'juan_sanchez.png',
-            'mariano_caiban.jpeg',
-            'martin_boris.jpeg',
-            'natalia_gonzalez.jpeg',
+            "agustin_varamo.jpeg",
+            "alexander_machado.jpeg",
+            "ana_gaude.jpeg",
+            "argenis_soto.jpeg",
+            "claudia_freed.jpg",
+            "cristian_ruiz.jpeg",
+            "delfina_salgado.jpeg",
+            "diego_plumaris.jpeg",
+            "ezequiel_grillo.jpg",
+            "federico_carlos.jpeg",
+            "felipe_rios.jpg",
+            "gabriel_luchessi.jfif",
+            "jorge_golfieri.jpeg",
+            "jorge_metz.jpg",
+            "juan_sanchez.png",
+            "mariano_caiban.jpeg",
+            "martin_boris.jpeg",
+            "natalia_gonzalez.jpeg",
           ];
-          const ejemploTema = 'Título de la Presentación';
-          const ejemploBio = 'Descripción de ejemplo del disertante.';
+          const ejemploTema = "Título de la Presentación";
+          const ejemploBio = "Descripción de ejemplo del disertante.";
           const disertantesAuto = archivos.map((archivo, idx) => {
-            const nombreBase = archivo.replace(/\.[^/.]+$/, '');
+            const nombreBase = archivo.replace(/\.[^/.]+$/, "");
             const nombre = nombreBase
-              .split('_')
+              .split("_")
               .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-              .join(' ');
+              .join(" ");
             return {
               id: idx + 1,
               nombre,
@@ -72,33 +72,33 @@ export default function Ponentes() {
       } catch (err) {
         // Si hay error, mostrar los disertantes de ejemplo
         const archivos = [
-          'agustin_varamo.jpeg',
-          'alexander_machado.jpeg',
-          'ana_gaude.jpeg',
-          'argenis_soto.jpeg',
-          'claudia_freed.jpg',
-          'cristian_ruiz.jpeg',
-          'delfina_salgado.jpeg',
-          'diego_plumaris.jpeg',
-          'ezequiel_grillo.jpg',
-          'federico_carlos.jpeg',
-          'felipe_rios.jpg',
-          'gabriel_luchessi.jfif',
-          'jorge_golfieri.jpeg',
-          'jorge_metz.jpg',
-          'juan_sanchez.png',
-          'mariano_caiban.jpeg',
-          'martin_boris.jpeg',
-          'natalia_gonzalez.jpeg',
+          "agustin_varamo.jpeg",
+          "alexander_machado.jpeg",
+          "ana_gaude.jpeg",
+          "argenis_soto.jpeg",
+          "claudia_freed.jpg",
+          "cristian_ruiz.jpeg",
+          "delfina_salgado.jpeg",
+          "diego_plumaris.jpeg",
+          "ezequiel_grillo.jpg",
+          "federico_carlos.jpeg",
+          "felipe_rios.jpg",
+          "gabriel_luchessi.jfif",
+          "jorge_golfieri.jpeg",
+          "jorge_metz.jpg",
+          "juan_sanchez.png",
+          "mariano_caiban.jpeg",
+          "martin_boris.jpeg",
+          "natalia_gonzalez.jpeg",
         ];
-        const ejemploTema = 'Título de la Presentación';
-        const ejemploBio = 'Descripción de ejemplo del disertante.';
+        const ejemploTema = "Título de la Presentación";
+        const ejemploBio = "Descripción de ejemplo del disertante.";
         const disertantesAuto = archivos.map((archivo, idx) => {
-          const nombreBase = archivo.replace(/\.[^/.]+$/, '');
+          const nombreBase = archivo.replace(/\.[^/.]+$/, "");
           const nombre = nombreBase
-            .split('_')
+            .split("_")
             .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' ');
+            .join(" ");
           return {
             id: idx + 1,
             nombre,
@@ -116,9 +116,12 @@ export default function Ponentes() {
     fetchDisertantes();
   }, []);
 
-  const renderSkeletons = () => (
+  const renderSkeletons = () =>
     Array.from({ length: 3 }).map((_, index) => (
-      <Card key={index} className="overflow-hidden transform hover:scale-105 transition-transform duration-300">
+      <Card
+        key={index}
+        className="overflow-hidden transform hover:scale-105 transition-transform duration-300"
+      >
         <CardHeader className="flex flex-row items-center gap-4 p-4">
           <Skeleton className="h-16 w-16 rounded-full" />
           <div className="flex-1 space-y-2">
@@ -131,8 +134,7 @@ export default function Ponentes() {
           <Skeleton className="h-4 w-5/6" />
         </CardContent>
       </Card>
-    ))
-  );
+    ));
 
   return (
     <Layout>
@@ -142,7 +144,8 @@ export default function Ponentes() {
             Disertantes del Congreso
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Conoce a los expertos en logística y transporte que compartirán sus conocimientos y experiencia.
+            Conoce a los expertos en logística y transporte que compartirán sus
+            conocimientos y experiencia.
           </p>
         </div>
 
@@ -152,20 +155,31 @@ export default function Ponentes() {
           </div>
         ) : error ? (
           <div className="text-center text-red-500 bg-red-100 p-4 rounded-lg">
-            <p><strong>Error:</strong> {error}</p>
-            <p>Asegúrate de que el servidor backend de Django esté corriendo en http://127.0.0.1:8000</p>
+            <p>
+              <strong>Error:</strong> {error}
+            </p>
+            <p>
+              Asegúrate de que el servidor backend de Django esté corriendo en
+              http://127.0.0.1:8000
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {disertantes.map((disertante, idx) => {
               // Rotación aleatoria para efecto "polaroid"
-              const rotations = ['-rotate-3', 'rotate-2', '-rotate-2', 'rotate-1', '-rotate-1'];
+              const rotations = [
+                "-rotate-3",
+                "rotate-2",
+                "-rotate-2",
+                "rotate-1",
+                "-rotate-1",
+              ];
               const rotation = rotations[idx % rotations.length];
               // Construir la URL pública de la imagen
               let fotoUrl = disertante.foto_url;
-              if (fotoUrl && !fotoUrl.startsWith('http')) {
+              if (fotoUrl && !fotoUrl.startsWith("http")) {
                 // Elimina prefijos innecesarios y construye la URL absoluta
-                const cleanPath = fotoUrl.replace(/^.*media\//, '');
+                const cleanPath = fotoUrl.replace(/^.*media\//, "");
                 fotoUrl = `http://127.0.0.1:8000/media/${cleanPath}`;
               }
               return (
@@ -181,7 +195,7 @@ export default function Ponentes() {
                       src={fotoUrl}
                       alt={disertante.nombre}
                       className="w-48 h-48 object-cover object-center bg-gray-100 rounded-md"
-                      style={{ aspectRatio: '1/1' }}
+                      style={{ aspectRatio: "1/1" }}
                     />
                     {/* Tornillos decorativos */}
                     <span className="absolute top-1 left-1 w-3 h-3 bg-gray-300 rounded-full border border-gray-400"></span>

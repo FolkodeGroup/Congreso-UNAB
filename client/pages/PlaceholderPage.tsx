@@ -1,11 +1,14 @@
-import Layout from '@/components/Layout';
+import Layout from "@/components/Layout";
 
 interface PlaceholderPageProps {
   title: string;
   description: string;
 }
 
-export default function PlaceholderPage({ title, description }: PlaceholderPageProps) {
+export default function PlaceholderPage({
+  title,
+  description,
+}: PlaceholderPageProps) {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-16">
@@ -18,8 +21,9 @@ export default function PlaceholderPage({ title, description }: PlaceholderPageP
                 🚧 Página en construcción
               </h2>
               <p className="text-gray-600 text-sm">
-                Esta sección estará disponible próximamente. Para completar esta página, 
-                continúa conversando con el asistente para definir el contenido específico.
+                Esta sección estará disponible próximamente. Para completar esta
+                página, continúa conversando con el asistente para definir el
+                contenido específico.
               </p>
             </div>
           </div>

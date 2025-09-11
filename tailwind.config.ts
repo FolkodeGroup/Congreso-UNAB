@@ -70,7 +70,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       height: {
-        '18': '4.5rem', // 72px
+        "18": "4.5rem", // 72px
       },
       keyframes: {
         "accordion-down": {
@@ -91,23 +91,23 @@ export default {
         },
         // NEW: Keyframes for fade animations
         "fade-in-down": {
-          '0%': {
-            opacity: '0',
-            transform: 'translateY(-20px)',
+          "0%": {
+            opacity: "0",
+            transform: "translateY(-20px)",
           },
-          '100%': {
-            opacity: '1',
-            transform: 'translateY(0)',
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)",
           },
         },
         "fade-in-up": {
-          '0%': {
-            opacity: '0',
-            transform: 'translateY(20px)',
+          "0%": {
+            opacity: "0",
+            transform: "translateY(20px)",
           },
-          '100%': {
-            opacity: '1',
-            transform: 'translateY(0)',
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)",
           },
         },
       },

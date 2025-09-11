@@ -1,5 +1,11 @@
 import Layout from "@/components/Layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { FiUsers, FiClock, FiAward } from "react-icons/fi";
 
 export default function SobreElCongreso() {
@@ -22,7 +28,6 @@ export default function SobreElCongreso() {
               académicos.
             </p>
           </div>
-
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <Card>

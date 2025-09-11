@@ -1,17 +1,17 @@
-import Layout from '@/components/Layout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import React, { useState } from 'react';
-import { useZxing } from 'react-zxing';
-import { registrarAsistencia } from '../lib/api';
+import Layout from "@/components/Layout";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import React, { useState } from "react";
+import { useZxing } from "react-zxing";
+import { registrarAsistencia } from "../lib/api";
 
 export default function EscaneoQR() {
-  const [valor, setValor] = useState('');
-  const [mensaje, setMensaje] = useState<string|null>(null);
-  const [error, setError] = useState<string|null>(null);
+  const [valor, setValor] = useState("");
+  const [mensaje, setMensaje] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [asistencia, setAsistencia] = useState<any>(null);
-  const [certId, setCertId] = useState<number|null>(null);
+  const [certId, setCertId] = useState<number | null>(null);
   const [showScanner, setShowScanner] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,8 +22,8 @@ export default function EscaneoQR() {
     let payload: any = {};
     let cleanValor = valor;
     // Si el valor viene en formato 'asistente:<id>:<email>', extraer solo el email
-    if (cleanValor.startsWith('asistente:')) {
-      const partes = cleanValor.split(':');
+    if (cleanValor.startsWith("asistente:")) {
+      const partes = cleanValor.split(":");
       if (partes.length === 3) {
         cleanValor = partes[2];
       } else if (partes.length === 2) {
@@ -32,10 +32,10 @@ export default function EscaneoQR() {
     }
     if (/^\d+$/.test(cleanValor)) {
       payload.attendee_id = Number(cleanValor);
-    } else if (cleanValor.includes('@')) {
+    } else if (cleanValor.includes("@")) {
       payload.email = cleanValor;
     } else {
-      setError('Debes ingresar un email o ID válido.');
+      setError("Debes ingresar un email o ID válido.");
       return;
     }
     try {
@@ -52,11 +52,11 @@ export default function EscaneoQR() {
         setError(resp.error);
         setCertId(null);
       } else {
-        setError('Error desconocido.');
+        setError("Error desconocido.");
         setCertId(null);
       }
     } catch (err) {
-      setError('No se pudo conectar con el servidor.');
+      setError("No se pudo conectar con el servidor.");
       setCertId(null);
     }
   };
@@ -67,11 +67,11 @@ export default function EscaneoQR() {
       setShowScanner(false);
     },
     onError() {
-      setError('No se pudo acceder a la cámara.');
+      setError("No se pudo acceder a la cámara.");
       setShowScanner(false);
     },
     paused: !showScanner,
-    constraints: { video: { facingMode: 'environment' }, audio: false },
+    constraints: { video: { facingMode: "environment" }, audio: false },
   });
 
   return (
@@ -89,28 +89,50 @@ export default function EscaneoQR() {
                     type="text"
                     placeholder="Escanea el QR o ingresa email/ID"
                     value={valor}
-                    onChange={e => setValor(e.target.value)}
+                    onChange={(e) => setValor(e.target.value)}
                     required
                   />
-                  <Button type="button" variant="outline" onClick={() => {
-                    setError(null);
-                    setShowScanner(true);
-                  }}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setError(null);
+                      setShowScanner(true);
+                    }}
+                  >
                     Usar cámara
                   </Button>
                 </div>
-                <Button type="submit" className="w-full">Registrar Asistencia</Button>
+                <Button type="submit" className="w-full">
+                  Registrar Asistencia
+                </Button>
               </form>
               {showScanner && (
                 <div className="mt-4 flex flex-col items-center">
-                  <video ref={ref} style={{ width: '100%', maxWidth: 400 }} />
-                  <Button className="mt-2" variant="outline" onClick={() => setShowScanner(false)}>Cerrar cámara</Button>
+                  <video ref={ref} style={{ width: "100%", maxWidth: 400 }} />
+                  <Button
+                    className="mt-2"
+                    variant="outline"
+                    onClick={() => setShowScanner(false)}
+                  >
+                    Cerrar cámara
+                  </Button>
                 </div>
               )}
-              {mensaje && <div className="mt-4 p-3 bg-green-100 text-green-800 rounded">{mensaje}</div>}
-              {error && <div className="mt-4 p-3 bg-red-100 text-red-800 rounded">{error}</div>}
+              {mensaje && (
+                <div className="mt-4 p-3 bg-green-100 text-green-800 rounded">
+                  {mensaje}
+                </div>
+              )}
+              {error && (
+                <div className="mt-4 p-3 bg-red-100 text-red-800 rounded">
+                  {error}
+                </div>
+              )}
               {asistencia?.attended_at && (
-                <div className="mt-2 text-sm text-gray-700">Asistió: {new Date(asistencia.attended_at).toLocaleString()}</div>
+                <div className="mt-2 text-sm text-gray-700">
+                  Asistió: {new Date(asistencia.attended_at).toLocaleString()}
+                </div>
               )}
               {certId && (
                 <Button
@@ -118,9 +140,9 @@ export default function EscaneoQR() {
                   className="mt-4 w-full"
                   onClick={() => {
                     const url = `/api/certificates/${certId}/download/`;
-                    const link = document.createElement('a');
+                    const link = document.createElement("a");
                     link.href = url;
-                    link.setAttribute('download', `certificado_${certId}.pdf`);
+                    link.setAttribute("download", `certificado_${certId}.pdf`);
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);

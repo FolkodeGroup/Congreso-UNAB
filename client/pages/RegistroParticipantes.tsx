@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useForm, useFieldArray, FieldErrors } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { inscribirIndividual, inscribirGrupal } from '../lib/api'; // Importar funciones de la API
+import React, { useState } from "react";
+import { useForm, useFieldArray, FieldErrors } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { inscribirIndividual, inscribirGrupal } from "../lib/api"; // Importar funciones de la API
 
 const participantSchema = z.object({
   firstName: z.string().min(1, "El nombre es requerido"),
@@ -23,7 +23,9 @@ const studentSchema = participantSchema.extend({
 const teacherSchema = participantSchema.extend({
   profileType: z.literal("teacher"),
   institution: z.string().min(1, "La institución es requerida"),
-  careerTaught: z.string().min(1, "La carrera que dicta es requerida para docentes."),
+  careerTaught: z
+    .string()
+    .min(1, "La carrera que dicta es requerida para docentes."),
 });
 
 const professionalSchema = participantSchema.extend({
@@ -44,51 +46,63 @@ const groupRepresentativeSchema = participantSchema.extend({
   groupName: z.string().min(1, "El nombre del grupo es requerido"),
   groupMunicipality: z.string().optional(),
   institutionOrWorkplace: z.string().optional(),
-  groupMembers: z.array(groupMemberSchema).min(1, "Debe haber al menos un integrante en el grupo"),
+  groupMembers: z
+    .array(groupMemberSchema)
+    .min(1, "Debe haber al menos un integrante en el grupo"),
 });
 
 const visitorSchema = participantSchema.extend({
   profileType: z.literal("visitor"),
 });
 
-const formSchema = z.discriminatedUnion("profileType", [
-  visitorSchema,
-  studentSchema,
-  teacherSchema,
-  professionalSchema,
-  groupRepresentativeSchema,
-]).superRefine((data, ctx) => {
-  if (data.profileType === "student") {
-    if (data.isUnabStudent === false && !data.institution) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "La institución es requerida si no perteneces a la UNaB.",
-        path: ["institution"],
-      });
+const formSchema = z
+  .discriminatedUnion("profileType", [
+    visitorSchema,
+    studentSchema,
+    teacherSchema,
+    professionalSchema,
+    groupRepresentativeSchema,
+  ])
+  .superRefine((data, ctx) => {
+    if (data.profileType === "student") {
+      if (data.isUnabStudent === false && !data.institution) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "La institución es requerida si no perteneces a la UNaB.",
+          path: ["institution"],
+        });
+      }
+      if (!data.career) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "La carrera es requerida para estudiantes.",
+          path: ["career"],
+        });
+      }
+      if (!data.yearOfStudy) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "El año de cursada es requerido para estudiantes.",
+          path: ["yearOfStudy"],
+        });
+      }
     }
-    if (!data.career) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "La carrera es requerida para estudiantes.",
-        path: ["career"],
-      });
-    }
-    if (!data.yearOfStudy) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "El año de cursada es requerido para estudiantes.",
-        path: ["yearOfStudy"],
-      });
-    }
-  }
-});
+  });
 
 type FormData = z.infer<typeof formSchema>;
 
 const RegistroParticipantes: React.FC = () => {
-  const [profileType, setProfileType] = useState<FormData["profileType"]>("visitor");
+  const [profileType, setProfileType] =
+    useState<FormData["profileType"]>("visitor");
 
-  const { register, handleSubmit, control, formState: { errors }, reset, watch } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: { profileType: "visitor" },
   });
@@ -96,7 +110,7 @@ const RegistroParticipantes: React.FC = () => {
   // Watch for profileType changes to conditionally reset fields
   React.useEffect(() => {
     const currentValues = watch();
-    
+
     if (profileType === "groupRepresentative") {
       reset({
         ...currentValues,
@@ -143,7 +157,7 @@ const RegistroParticipantes: React.FC = () => {
           student: "STUDENT",
           teacher: "TEACHER",
           professional: "PROFESSIONAL",
-          groupRepresentative: "GROUP_REPRESENTATIVE"
+          groupRepresentative: "GROUP_REPRESENTATIVE",
         };
         const dataToSend = {
           asistente: {
@@ -153,56 +167,67 @@ const RegistroParticipantes: React.FC = () => {
             email: data.email,
             phone: data.phone,
             profile_type: profileTypeMap[data.profileType] || data.profileType,
-          }
+          },
         };
         response = await inscribirIndividual(dataToSend);
       }
 
-      if (response && response.status === 'success') {
+      if (response && response.status === "success") {
         alert("¡Inscripción exitosa!");
         reset();
       } else {
         // Mostrar el error real del backend
-        let errorMsg = '';
-        if (response && typeof response === 'object') {
+        let errorMsg = "";
+        if (response && typeof response === "object") {
           errorMsg = JSON.stringify(response);
         } else {
-          errorMsg = response?.message || 'No se pudo inscribir.';
+          errorMsg = response?.message || "No se pudo inscribir.";
         }
         alert("Error: " + errorMsg);
       }
     } catch (error) {
       console.error("Error en la inscripción:", error);
-      alert("Hubo un error al procesar la inscripción. Por favor, inténtalo de nuevo.");
+      alert(
+        "Hubo un error al procesar la inscripción. Por favor, inténtalo de nuevo.",
+      );
     }
   };
 
   // Helper function to safely access error messages
   const getErrorMessage = (fieldPath: string): string | undefined => {
-    const pathArray = fieldPath.split('.');
+    const pathArray = fieldPath.split(".");
     let current: any = errors;
-    
+
     for (const key of pathArray) {
-      if (current && typeof current === 'object' && key in current) {
+      if (current && typeof current === "object" && key in current) {
         current = current[key];
       } else {
         return undefined;
       }
     }
-    
+
     return current?.message;
   };
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Inscripción para Participantes</h1>
+      <h1 className="text-2xl font-bold mb-4">
+        Inscripción para Participantes
+      </h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label htmlFor="profileType" className="block text-sm font-medium text-gray-700">Tipo de Participante</label>
+          <label
+            htmlFor="profileType"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Tipo de Participante
+          </label>
           <select
             id="profileType"
             {...register("profileType")}
-            onChange={(e) => setProfileType(e.target.value as FormData["profileType"]) }
+            onChange={(e) =>
+              setProfileType(e.target.value as FormData["profileType"])
+            }
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
           >
             <option value="visitor">Visitante</option>
@@ -215,29 +240,93 @@ const RegistroParticipantes: React.FC = () => {
 
         {/* Common Fields */}
         <div>
-          <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">Nombre</label>
-          <input type="text" id="firstName" {...register("firstName")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-          {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName?.message}</p>}
+          <label
+            htmlFor="firstName"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Nombre
+          </label>
+          <input
+            type="text"
+            id="firstName"
+            {...register("firstName")}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          />
+          {errors.firstName && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.firstName?.message}
+            </p>
+          )}
         </div>
         <div>
-          <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Apellido</label>
-          <input type="text" id="lastName" {...register("lastName")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-          {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName?.message}</p>}
+          <label
+            htmlFor="lastName"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Apellido
+          </label>
+          <input
+            type="text"
+            id="lastName"
+            {...register("lastName")}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          />
+          {errors.lastName && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.lastName?.message}
+            </p>
+          )}
         </div>
         <div>
-          <label htmlFor="dni" className="block text-sm font-medium text-gray-700">DNI</label>
-          <input type="text" id="dni" {...register("dni")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-          {errors.dni && <p className="text-red-500 text-xs mt-1">{errors.dni?.message}</p>}
+          <label
+            htmlFor="dni"
+            className="block text-sm font-medium text-gray-700"
+          >
+            DNI
+          </label>
+          <input
+            type="text"
+            id="dni"
+            {...register("dni")}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          />
+          {errors.dni && (
+            <p className="text-red-500 text-xs mt-1">{errors.dni?.message}</p>
+          )}
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-          <input type="email" id="email" {...register("email")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email?.message}</p>}
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            {...register("email")}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email?.message}</p>
+          )}
         </div>
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Teléfono</label>
-          <input type="text" id="phone" {...register("phone")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-          {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone?.message}</p>}
+          <label
+            htmlFor="phone"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Teléfono
+          </label>
+          <input
+            type="text"
+            id="phone"
+            {...register("phone")}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          />
+          {errors.phone && (
+            <p className="text-red-500 text-xs mt-1">{errors.phone?.message}</p>
+          )}
         </div>
 
         {/* Conditional Fields */}
@@ -250,26 +339,71 @@ const RegistroParticipantes: React.FC = () => {
                 {...register("isUnabStudent")}
                 className="h-4 w-4 text-blue-600 border-gray-300 rounded"
               />
-              <label htmlFor="isUnabStudent" className="ml-2 block text-sm text-gray-900">
+              <label
+                htmlFor="isUnabStudent"
+                className="ml-2 block text-sm text-gray-900"
+              >
                 ¿Perteneces a la Universidad Nacional Guillermo Brown (UNaB)?
               </label>
             </div>
             {!watch("isUnabStudent") && (
               <div>
-                <label htmlFor="institution" className="block text-sm font-medium text-gray-700">¿En qué institución estudias?</label>
-                <input type="text" id="institution" {...register("institution")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-                {getErrorMessage("institution") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("institution")}</p>}
+                <label
+                  htmlFor="institution"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  ¿En qué institución estudias?
+                </label>
+                <input
+                  type="text"
+                  id="institution"
+                  {...register("institution")}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                />
+                {getErrorMessage("institution") && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {getErrorMessage("institution")}
+                  </p>
+                )}
               </div>
             )}
             <div>
-              <label htmlFor="career" className="block text-sm font-medium text-gray-700">¿En qué carrera estás cursando actualmente?</label>
-              <input type="text" id="career" {...register("career")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-              {getErrorMessage("career") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("career")}</p>}
+              <label
+                htmlFor="career"
+                className="block text-sm font-medium text-gray-700"
+              >
+                ¿En qué carrera estás cursando actualmente?
+              </label>
+              <input
+                type="text"
+                id="career"
+                {...register("career")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("career") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("career")}
+                </p>
+              )}
             </div>
             <div>
-              <label htmlFor="yearOfStudy" className="block text-sm font-medium text-gray-700">¿En qué año te encuentras?</label>
-              <input type="number" id="yearOfStudy" {...register("yearOfStudy", { valueAsNumber: true })} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-              {getErrorMessage("yearOfStudy") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("yearOfStudy")}</p>}
+              <label
+                htmlFor="yearOfStudy"
+                className="block text-sm font-medium text-gray-700"
+              >
+                ¿En qué año te encuentras?
+              </label>
+              <input
+                type="number"
+                id="yearOfStudy"
+                {...register("yearOfStudy", { valueAsNumber: true })}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("yearOfStudy") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("yearOfStudy")}
+                </p>
+              )}
             </div>
           </>
         )}
@@ -277,14 +411,42 @@ const RegistroParticipantes: React.FC = () => {
         {profileType === "teacher" && (
           <>
             <div>
-              <label htmlFor="institution" className="block text-sm font-medium text-gray-700">Institución</label>
-              <input type="text" id="institution" {...register("institution")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-              {getErrorMessage("institution") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("institution")}</p>}
+              <label
+                htmlFor="institution"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Institución
+              </label>
+              <input
+                type="text"
+                id="institution"
+                {...register("institution")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("institution") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("institution")}
+                </p>
+              )}
             </div>
             <div>
-              <label htmlFor="careerTaught" className="block text-sm font-medium text-gray-700">Carrera que dicta</label>
-              <input type="text" id="careerTaught" {...register("careerTaught")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-              {getErrorMessage("careerTaught") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("careerTaught")}</p>}
+              <label
+                htmlFor="careerTaught"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Carrera que dicta
+              </label>
+              <input
+                type="text"
+                id="careerTaught"
+                {...register("careerTaught")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("careerTaught") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("careerTaught")}
+                </p>
+              )}
             </div>
           </>
         )}
@@ -292,14 +454,42 @@ const RegistroParticipantes: React.FC = () => {
         {profileType === "professional" && (
           <>
             <div>
-              <label htmlFor="workArea" className="block text-sm font-medium text-gray-700">Área de trabajo</label>
-              <input type="text" id="workArea" {...register("workArea")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-              {getErrorMessage("workArea") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("workArea")}</p>}
+              <label
+                htmlFor="workArea"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Área de trabajo
+              </label>
+              <input
+                type="text"
+                id="workArea"
+                {...register("workArea")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("workArea") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("workArea")}
+                </p>
+              )}
             </div>
             <div>
-              <label htmlFor="occupation" className="block text-sm font-medium text-gray-700">Cargo</label>
-              <input type="text" id="occupation" {...register("occupation")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-              {getErrorMessage("occupation") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("occupation")}</p>}
+              <label
+                htmlFor="occupation"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Cargo
+              </label>
+              <input
+                type="text"
+                id="occupation"
+                {...register("occupation")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("occupation") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("occupation")}
+                </p>
+              )}
             </div>
           </>
         )}
@@ -307,56 +497,168 @@ const RegistroParticipantes: React.FC = () => {
         {profileType === "groupRepresentative" && (
           <>
             <div>
-              <label htmlFor="groupName" className="block text-sm font-medium text-gray-700">Nombre del Grupo</label>
-              <input type="text" id="groupName" {...register("groupName")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-              {getErrorMessage("groupName") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("groupName")}</p>}
+              <label
+                htmlFor="groupName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Nombre del Grupo
+              </label>
+              <input
+                type="text"
+                id="groupName"
+                {...register("groupName")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("groupName") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("groupName")}
+                </p>
+              )}
             </div>
             <div>
-              <label htmlFor="groupMunicipality" className="block text-sm font-medium text-gray-700">¿A qué partido pertenece tu institución? (Si aplica)</label>
-              <input type="text" id="groupMunicipality" {...register("groupMunicipality")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-              {getErrorMessage("groupMunicipality") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("groupMunicipality")}</p>}
+              <label
+                htmlFor="groupMunicipality"
+                className="block text-sm font-medium text-gray-700"
+              >
+                ¿A qué partido pertenece tu institución? (Si aplica)
+              </label>
+              <input
+                type="text"
+                id="groupMunicipality"
+                {...register("groupMunicipality")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("groupMunicipality") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("groupMunicipality")}
+                </p>
+              )}
             </div>
             <div>
-              <label htmlFor="institutionOrWorkplace" className="block text-sm font-medium text-gray-700">¿En qué institución estudias o trabajas? (Si aplica)</label>
-              <input type="text" id="institutionOrWorkplace" {...register("institutionOrWorkplace")} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-              {getErrorMessage("institutionOrWorkplace") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("institutionOrWorkplace")}</p>}
+              <label
+                htmlFor="institutionOrWorkplace"
+                className="block text-sm font-medium text-gray-700"
+              >
+                ¿En qué institución estudias o trabajas? (Si aplica)
+              </label>
+              <input
+                type="text"
+                id="institutionOrWorkplace"
+                {...register("institutionOrWorkplace")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("institutionOrWorkplace") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("institutionOrWorkplace")}
+                </p>
+              )}
             </div>
 
-            <h2 className="text-xl font-semibold mt-6 mb-2">Integrantes del Grupo</h2>
+            <h2 className="text-xl font-semibold mt-6 mb-2">
+              Integrantes del Grupo
+            </h2>
             {fields.map((item, index) => (
               <div key={item.id} className="border p-4 rounded-md space-y-2">
                 <h3 className="font-medium">Integrante #{index + 1}</h3>
                 <div>
-                  <label htmlFor={`groupMembers.${index}.firstName`} className="block text-sm font-medium text-gray-700">Nombre</label>
-                  <input type="text" id={`groupMembers.${index}.firstName`} {...register(`groupMembers.${index}.firstName`)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-                  {getErrorMessage(`groupMembers.${index}.firstName`) && <p className="text-red-500 text-xs mt-1">{getErrorMessage(`groupMembers.${index}.firstName`)}</p>}
+                  <label
+                    htmlFor={`groupMembers.${index}.firstName`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Nombre
+                  </label>
+                  <input
+                    type="text"
+                    id={`groupMembers.${index}.firstName`}
+                    {...register(`groupMembers.${index}.firstName`)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                  {getErrorMessage(`groupMembers.${index}.firstName`) && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {getErrorMessage(`groupMembers.${index}.firstName`)}
+                    </p>
+                  )}
                 </div>
                 <div>
-                  <label htmlFor={`groupMembers.${index}.lastName`} className="block text-sm font-medium text-gray-700">Apellido</label>
-                  <input type="text" id={`groupMembers.${index}.lastName`} {...register(`groupMembers.${index}.lastName`)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-                  {getErrorMessage(`groupMembers.${index}.lastName`) && <p className="text-red-500 text-xs mt-1">{getErrorMessage(`groupMembers.${index}.lastName`)}</p>}
+                  <label
+                    htmlFor={`groupMembers.${index}.lastName`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Apellido
+                  </label>
+                  <input
+                    type="text"
+                    id={`groupMembers.${index}.lastName`}
+                    {...register(`groupMembers.${index}.lastName`)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                  {getErrorMessage(`groupMembers.${index}.lastName`) && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {getErrorMessage(`groupMembers.${index}.lastName`)}
+                    </p>
+                  )}
                 </div>
                 <div>
-                  <label htmlFor={`groupMembers.${index}.dni`} className="block text-sm font-medium text-gray-700">DNI</label>
-                  <input type="text" id={`groupMembers.${index}.dni`} {...register(`groupMembers.${index}.dni`)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-                  {getErrorMessage(`groupMembers.${index}.dni`) && <p className="text-red-500 text-xs mt-1">{getErrorMessage(`groupMembers.${index}.dni`)}</p>}
+                  <label
+                    htmlFor={`groupMembers.${index}.dni`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    DNI
+                  </label>
+                  <input
+                    type="text"
+                    id={`groupMembers.${index}.dni`}
+                    {...register(`groupMembers.${index}.dni`)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                  {getErrorMessage(`groupMembers.${index}.dni`) && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {getErrorMessage(`groupMembers.${index}.dni`)}
+                    </p>
+                  )}
                 </div>
                 <div>
-                  <label htmlFor={`groupMembers.${index}.email`} className="block text-sm font-medium text-gray-700">Email</label>
-                  <input type="email" id={`groupMembers.${index}.email`} {...register(`groupMembers.${index}.email`)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-                  {getErrorMessage(`groupMembers.${index}.email`) && <p className="text-red-500 text-xs mt-1">{getErrorMessage(`groupMembers.${index}.email`)}</p>}
+                  <label
+                    htmlFor={`groupMembers.${index}.email`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id={`groupMembers.${index}.email`}
+                    {...register(`groupMembers.${index}.email`)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                  {getErrorMessage(`groupMembers.${index}.email`) && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {getErrorMessage(`groupMembers.${index}.email`)}
+                    </p>
+                  )}
                 </div>
-                <button type="button" onClick={() => remove(index)} className="mt-2 px-3 py-1 bg-red-500 text-white rounded-md text-sm">Eliminar Integrante</button>
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="mt-2 px-3 py-1 bg-red-500 text-white rounded-md text-sm"
+                >
+                  Eliminar Integrante
+                </button>
               </div>
             ))}
             <button
               type="button"
-              onClick={() => append({ firstName: "", lastName: "", dni: "", email: "" })}
+              onClick={() =>
+                append({ firstName: "", lastName: "", dni: "", email: "" })
+              }
               className="mt-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700"
             >
               Agregar Integrante
             </button>
-            {getErrorMessage("groupMembers") && <p className="text-red-500 text-xs mt-1">{getErrorMessage("groupMembers")}</p>}
+            {getErrorMessage("groupMembers") && (
+              <p className="text-red-500 text-xs mt-1">
+                {getErrorMessage("groupMembers")}
+              </p>
+            )}
           </>
         )}
 
