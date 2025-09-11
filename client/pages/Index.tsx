@@ -22,6 +22,13 @@ import { Link } from "react-router-dom";
 import LogoCarouselsSection from "@/components/LogoCarouselsSection";
 import { useRef } from "react";
 
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from "@/components/ui/accordion";
+
 export default function Index() {
   const mapRef = useRef(null);
   const location = useLocation();
@@ -279,124 +286,78 @@ export default function Index() {
           </div>
 
           <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
-              {/* Desde CABA (Obelisco) */}
-              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-congress-blue-dark rounded-lg flex items-center justify-center">
-                      <FiMapPin className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle className="text-xl">Desde CABA (Obelisco)</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-2 text-gray-600">
+            {/* Acordeón para opciones de transporte con estilos personalizados */}
+            <Accordion type="single" collapsible className="w-full max-w-4xl mx-auto bg-white rounded-lg shadow border border-congress-cyan">
+              <AccordionItem value="caba" className="border-b border-congress-cyan">
+                <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
+                  Desde CABA (Obelisco)
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
+                  <ul className="space-y-2">
                     <li><strong>Transporte Público:</strong> Tomar Subte hasta Constitución, luego Tren Roca (ramales A. Korn, Glew) hasta la estación Burzaco. Desde allí, colectivos locales o 15 min a pie.</li>
                     <li><strong>En Auto:</strong> Tomar Au. 25 de Mayo, luego Au. Riccheri y Camino de Cintura (Ruta 4) hasta Av. Espora. El viaje dura aprox. 45-60 min.</li>
                   </ul>
-                </CardContent>
-              </Card>
-
-              {/* Desde Adrogue */}
-              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-congress-blue rounded-lg flex items-center justify-center">
-                      <FiMapPin className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle className="text-xl">Desde Adrogué</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-2 text-gray-600">
-                    <li><strong>506 (Gendarmeria - Por Bynnon):</strong> Av Espora - esq. Ricardo Rojas</li>
-                    <li><strong>79 (Constitucion - San Vicente):</strong> Av Espora (Colegio Nacional de Adrogue)</li>
-                    <li><strong>74 (A):</strong> Av Espora (Colegio Nacional de Adrogue)</li>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="adrogue" className="border-b border-congress-cyan">
+                <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
+                  Desde Adrogué
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
+                  <ul className="space-y-2">
+                    <li><strong>506 (Gendarmería - Por Bynnon):</strong> Av Espora - esq. Ricardo Rojas</li>
+                    <li><strong>79 (Constitución - San Vicente):</strong> Av Espora (Colegio Nacional de Adrogué)</li>
+                    <li><strong>74 (A):</strong> Av Espora (Colegio Nacional de Adrogué)</li>
                   </ul>
-                </CardContent>
-              </Card>
-
-              {/* Desde Burzaco */}
-              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-congress-cyan rounded-lg flex items-center justify-center">
-                      <FiMapPin className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle className="text-xl">Desde Burzaco</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-2 text-gray-600">
-                    <li><strong>506 (Gendarmeria - Por Bynnon):</strong> Av Espora - esq. Ricardo Rojas</li>
-                    <li><strong>266 (4):</strong> Estacion Burzaco</li>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="burzaco" className="border-b border-congress-cyan">
+                <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
+                  Desde Burzaco
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
+                  <ul className="space-y-2">
+                    <li><strong>506 (Gendarmería - Por Bynnon):</strong> Av Espora - esq. Ricardo Rojas</li>
+                    <li><strong>266 (A):</strong> Estación Burzaco</li>
                     <li><strong>74 (A):</strong> Av Espora - esq. Ricardo Rojas</li>
                   </ul>
-                </CardContent>
-              </Card>
-
-              {/* Desde Longchamps */}
-              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-congress-blue rounded-lg flex items-center justify-center">
-                      <FiMapPin className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle className="text-xl">Desde Longchamps</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-2 text-gray-600">
-                    <li><strong>79 (San Vicente):</strong> Constitucion (Chiesa y Francia)</li>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="longchamps" className="border-b border-congress-cyan">
+                <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
+                  Desde Longchamps
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
+                  <ul className="space-y-2">
+                    <li><strong>79 (San Vicente):</strong> Constitución (Chiesa y Francia)</li>
                     <li><strong>506 (San Jose, Por Bynnon):</strong> Alsina y Magdalena Motti de Tieghi</li>
                   </ul>
-                </CardContent>
-              </Card>
-            </div>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="tren" className="border-b border-congress-cyan">
+                <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
+                  En Tren (Línea Roca)
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
+                  <p>Las estaciones más cercanas son <strong>Adrogué</strong>, <strong>Burzaco</strong> y <strong>Longchamps</strong>.<br />
+                  Desde ambas, puedes tomar un colectivo o servicio de auto hasta el campus.</p>
+                  <p className="mt-2 text-xs text-gray-500">Nota: Se está construyendo la nueva estación "Universidad Guillermo Brown". Verifica su estado para la fecha del evento.</p>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="auto">
+                <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
+                  En Auto
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
+                  <p><strong>Acceso principal:</strong> Por Av. Espora, a 3 cuadras de la Ruta Provincial 4 (Camino de Cintura).</p>
+                  <p><strong>GPS:</strong> Blas Parera 132, Burzaco.</p>
+                  <p><strong>Estacionamiento:</strong> Habrá estacionamiento disponible en un predio alejado para los asistentes al congreso.</p>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
 
-          <div className="max-w-5xl mx-auto mt-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-              {/* En Tren */}
-              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-congress-blue rounded-lg flex items-center justify-center">
-                      <FaTrain className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle className="text-xl">En Tren (Línea Roca)</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-2 text-gray-600">
-                    <li>Las estaciones más cercanas son <strong>Adrogué</strong>, <strong>Burzaco</strong> y <strong>Longchamps</strong>.</li>
-                    <li>Desde ambas, puedes tomar un colectivo o servicio de auto hasta el campus.</li>
-                    <li className="pt-2"><em>Nota: Se está construyendo la nueva estación "Universidad Guillermo Brown". Verifica su estado para la fecha del evento.</em></li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              {/* En Auto */}
-              <Card className="border-2 hover:border-congress-cyan transition-colors h-full flex flex-col">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-congress-cyan rounded-lg flex items-center justify-center">
-                      <FaCar className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle className="text-xl">En Auto</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-2 text-gray-600">
-                    <li><strong>Acceso principal:</strong> Por Av. Espora, a 3 cuadras de la Ruta Provincial 4 (Camino de Cintura).</li>
-                    <li><strong>GPS:</strong> Blas Parera 132, Burzaco.</li>
-                    <li className="pt-2"><strong>Estacionamiento:</strong> Habrá estacionamiento disponible en un predio aledaño para los asistentes al congreso.</li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          
 
           <div className="flex justify-center mt-12">
             <div className="w-full max-w-4xl rounded-lg overflow-hidden shadow-lg">
