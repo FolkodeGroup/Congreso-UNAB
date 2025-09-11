@@ -86,49 +86,31 @@ export default function Index() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center mt-10">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                <FiCalendar className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
+              {/* Card FECHA */}
+              <div className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl">
+                <FiCalendar className="w-8 h-8 mb-3 text-congress-blue-dark" />
                 <h3 className="font-semibold mb-2">Fecha</h3>
-                <p className="text-lg">15 de Noviembre 2025</p>
+                <p className="text-lg text-center">15 de Noviembre 2025</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 cursor-pointer hover:bg-white/50 transition-all duration-300" onClick={scrollToMap}>
-                <FiMapPin className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
+              {/* Card UBICACION */}
+              <div className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl cursor-pointer" onClick={scrollToMap}>
+                <FiMapPin className="w-8 h-8 mb-3 text-congress-blue-dark" />
                 <h3 className="font-semibold mb-2">Ubicación</h3>
-                <p className="text-lg">
-                  Campus UNaB
-                  <br />
-                  Blas Parera 132, Burzaco
+                <p className="text-lg text-center">
+                  Campus UNaB<br />Blas Parera 132, Burzaco
                 </p>
               </div>
+              {/* Card CONTACTO */}
               <Link to="/contacto" className="block">
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/50 transition-all duration-300">
-                  <FiMail className="w-8 h-8 mx-auto mb-3 text-congress-blue-dark" />
+                <div className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl">
+                  <FiMail className="w-8 h-8 mb-3 text-congress-blue-dark" />
                   <h3 className="font-semibold mb-2">Contacto</h3>
-                  <p className="text-sm break-all">
-                    congresologisticaytransporte@unab.edu.ar
+                  <p className="text-lg break-words text-center leading-tight">
+                    congresologisticaytransporte<br />@unab.edu.ar
                   </p>
                 </div>
               </Link>
             </div>
-
-            {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/registro">
-                <Button
-                  size="lg"
-                  className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3"
-                >
-                  Registrarse Ahora
-                </Button>
-              </Link>
-              <Link to="/programa">
-                <Button
-                  size="lg"
-                  className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3"
-                >
-                  Ver Programa
-                </Button>
-              </Link>
-            </div> */}
           </div>
         </div>
       </section>
@@ -248,14 +230,7 @@ export default function Index() {
                     </Button>
                   </Link>
                 </div>
-                {/* <Link to="/registro">
-                  <Button
-                    variant="outline"
-                    className="border-congress-blue text-congress-blue hover:bg-congress-blue hover:text-white"
-                  >
-                    Registro Individual
-                  </Button>
-                </Link> */}
+                
               </div>
             </div>
           </div>

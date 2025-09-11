@@ -25,6 +25,32 @@ export default function Empresas() {
               Participación 100% Gratuita
             </Badge>
           </div>
+          {/* Cards de información principal */}
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <Card className="group bg-white/10 backdrop-blur-md border-0 shadow-lg hover:shadow-2xl rounded-2xl p-8 flex flex-col items-center transition-all duration-300 hover:scale-105">
+              <div className="w-14 h-14 bg-gradient-to-br from-congress-blue to-congress-cyan rounded-full flex items-center justify-center mb-4 shadow-md group-hover:shadow-xl">
+                <FiClock className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-lg font-bold text-white mb-2">Fecha</CardTitle>
+              <CardDescription className="text-base text-congress-white/90 text-center">15 de Noviembre 2025</CardDescription>
+            </Card>
+            <Card className="group bg-white/10 backdrop-blur-md border-0 shadow-lg hover:shadow-2xl rounded-2xl p-8 flex flex-col items-center transition-all duration-300 hover:scale-105">
+              <div className="w-14 h-14 bg-gradient-to-br from-congress-cyan to-congress-blue rounded-full flex items-center justify-center mb-4 shadow-md group-hover:shadow-xl">
+                <FiHome className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-lg font-bold text-white mb-2">Ubicación</CardTitle>
+              <CardDescription className="text-base text-congress-white/90 text-center">Campus UNaB<br/>Blas Parera 132, Burzaco</CardDescription>
+            </Card>
+            <Card className="group bg-white/10 backdrop-blur-md border-0 shadow-lg hover:shadow-2xl rounded-2xl p-8 flex flex-col items-center transition-all duration-300 hover:scale-105">
+              <div className="w-14 h-14 bg-gradient-to-br from-congress-blue-dark to-congress-cyan-light rounded-full flex items-center justify-center mb-4 shadow-md group-hover:shadow-xl">
+                <FiUsers className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-lg font-bold text-white mb-2">Contacto</CardTitle>
+              <CardDescription className="text-base text-congress-white/90 text-center break-words whitespace-pre-line">
+                congresologisticaytransporte@unab.edu.ar
+              </CardDescription>
+            </Card>
+          </div>
         </div>
       </section>
 
@@ -40,70 +66,60 @@ export default function Empresas() {
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              <Card className="border-2 border-gray-200 hover:border-congress-cyan transition-colors">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-congress-blue rounded-lg flex items-center justify-center">
-                      <FiTrendingUp className="w-5 h-5 text-white" />
-                    </div>
-                    <CardTitle>Visibilidad de Marca</CardTitle>
+              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-blue/90 to-congress-cyan/80 p-8 transition-all duration-300 transform hover:scale-105">
+                <CardHeader className="flex flex-col items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                    <FiTrendingUp className="w-10 h-10 text-white" />
                   </div>
+                  <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-cyan transition-colors">Visibilidad de Marca</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
-                    Posiciona tu empresa frente a más de 500 asistentes especializados 
-                    en logística y transporte, incluyendo tomadores de decisión.
+                  <CardDescription className="text-lg text-congress-white/90 leading-relaxed text-center">
+                    Posiciona tu empresa frente a más de 500 asistentes especializados en logística y transporte, incluyendo tomadores de decisión.
                   </CardDescription>
                 </CardContent>
               </Card>
 
-              <Card className="border-2 border-gray-200 hover:border-congress-cyan transition-colors">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-congress-cyan rounded-lg flex items-center justify-center">
-                      <FaHandshake className="w-5 h-5 text-white" />
-                    </div>
-                    <CardTitle>Networking Estratégico</CardTitle>
+              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-cyan/90 to-congress-blue/80 p-8 transition-all duration-300 transform hover:scale-105">
+                <CardHeader className="flex flex-col items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                    <FaHandshake className="w-10 h-10 text-white" />
                   </div>
+                  <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-blue transition-colors">Networking Estratégico</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
-                    Conecta con empresas del sector, proveedores, clientes potenciales 
-                    y líderes de la industria en un ambiente propicio para los negocios.
+                  <CardDescription className="text-lg text-congress-white/90 leading-relaxed text-center">
+                    Conecta con empresas del sector, proveedores, clientes potenciales y líderes de la industria en un ambiente propicio para los negocios.
                   </CardDescription>
                 </CardContent>
               </Card>
 
-              <Card className="border-2 border-gray-200 hover:border-congress-cyan transition-colors">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-congress-blue rounded-lg flex items-center justify-center">
-                      <FiStar className="w-5 h-5 text-white" />
-                    </div>
-                    <CardTitle>Liderazgo de Pensamiento</CardTitle>
+              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-blue-dark/90 to-congress-cyan/80 p-8 transition-all duration-300 transform hover:scale-105">
+                <CardHeader className="flex flex-col items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-blue-dark to-congress-cyan rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                    <FiStar className="w-10 h-10 text-white" />
                   </div>
+                  <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-cyan-light transition-colors">Liderazgo de Pensamiento</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
-                    Posiciona a tu empresa como líder de innovación compartiendo 
-                    conocimientos y experiencias con la comunidad profesional.
+                  <CardDescription className="text-lg text-congress-white/90 leading-relaxed text-center">
+                    Posiciona a tu empresa como líder de innovación compartiendo conocimientos y experiencias con la comunidad profesional.
                   </CardDescription>
                 </CardContent>
               </Card>
 
-              <Card className="border-2 border-gray-200 hover:border-congress-cyan transition-colors">
-                <CardHeader>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-congress-cyan rounded-lg flex items-center justify-center">
-                      <FiHome className="w-5 h-5 text-white" />
-                    </div>
-                    <CardTitle>Desarrollo de Negocio</CardTitle>
+              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-cyan-light/90 to-congress-blue-dark/80 p-8 transition-all duration-300 transform hover:scale-105">
+                <CardHeader className="flex flex-col items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan-light to-congress-blue-dark rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                    <FiHome className="w-10 h-10 text-white" />
                   </div>
+                  <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-blue transition-colors">Desarrollo de Negocio</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
-                    Genera nuevas oportunidades comerciales y fortalece relaciones 
-                    con clientes actuales en un contexto académico y profesional.
+                  <CardDescription className="text-lg text-congress-white/90 leading-relaxed text-center break-words whitespace-pre-line">
+                    Genera nuevas oportunidades comerciales y fortalece relaciones con clientes actuales en un contexto académico y profesional.
+                    {"\n"}
+                    <span className="block mt-4 text-base text-congress-cyan-light font-semibold break-all">📧 congresologisticaytransporte@unab.edu.ar</span>
                   </CardDescription>
                 </CardContent>
               </Card>
