@@ -21,9 +21,13 @@ export default function Empresas() {
               Sumate a las más de 30 empresas líderes del sector que ya confirmaron su participación 
               en el congreso más importante de logística y transporte del país.
             </p>
-            <Badge className="bg-congress-cyan text-congress-white text-lg px-4 py-2">
-              Participación 100% Gratuita
-            </Badge>
+              <Button
+                size="xxl"
+                className="button-super-enhanced bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-bold px-16 py-8 text-xl shadow-4xl hover:shadow-4xl transform hover:scale-110 transition-all duration-300 animate-gentle-pulse hover:animate-none"
+                
+              >
+                Participación 100% Gratuita
+              </Button>
           </div>
           {/* Cards de información principal */}
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
