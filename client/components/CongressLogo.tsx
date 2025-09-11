@@ -1,20 +1,24 @@
 interface CongressLogoProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   showText?: boolean;
   className?: string;
 }
 
-export default function CongressLogo({ size = 'md', showText = true, className = '' }: CongressLogoProps) {
+export default function CongressLogo({
+  size = "md",
+  showText = true,
+  className = "",
+}: CongressLogoProps) {
   const sizeClasses = {
-    sm: 'w-8 h-8',
-    md: 'w-12 h-12',
-    lg: 'w-16 h-16'
+    sm: "w-8 h-8",
+    md: "w-12 h-12",
+    lg: "w-16 h-16",
   };
 
   const textSizeClasses = {
-    sm: 'text-sm',
-    md: 'text-base',
-    lg: 'text-xl'
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-xl",
   };
 
   return (
@@ -34,14 +38,20 @@ export default function CongressLogo({ size = 'md', showText = true, className =
 
       {showText && (
         <div className="flex-1">
-          <div className={`font-bold text-congress-blue ${textSizeClasses[size]}`}>
+          <div
+            className={`font-bold text-congress-blue ${textSizeClasses[size]}`}
+          >
             CONGRESO DE LOGÍSTICA
           </div>
-          <div className={`font-bold text-congress-blue ${textSizeClasses[size]}`}>
+          <div
+            className={`font-bold text-congress-blue ${textSizeClasses[size]}`}
+          >
             Y TRANSPORTE
           </div>
-          {size !== 'sm' && (
-            <div className={`text-congress-cyan text-xs ${size === 'lg' ? 'text-sm' : ''}`}>
+          {size !== "sm" && (
+            <div
+              className={`text-congress-cyan text-xs ${size === "lg" ? "text-sm" : ""}`}
+            >
               Universidad Nacional Guillermo Brown
             </div>
           )}

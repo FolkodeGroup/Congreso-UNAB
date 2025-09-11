@@ -11,7 +11,10 @@ interface ImageSliderProps {
   interval?: number; // ms
 }
 
-const ImageSlider: React.FC<ImageSliderProps> = ({ images, interval = 4000 }) => {
+const ImageSlider: React.FC<ImageSliderProps> = ({
+  images,
+  interval = 4000,
+}) => {
   const [current, setCurrent] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [paused, setPaused] = useState(false);

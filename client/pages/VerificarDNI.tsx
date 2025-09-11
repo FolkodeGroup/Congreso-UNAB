@@ -1,37 +1,37 @@
-import { useState } from 'react';
-import Layout from '@/components/Layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { CheckCircle, AlertCircle } from 'lucide-react';
+import { useState } from "react";
+import Layout from "@/components/Layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { CheckCircle, AlertCircle } from "lucide-react";
 
 export default function VerificarDNI() {
-  const [dni, setDni] = useState<string>('');
+  const [dni, setDni] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [confirmed, setConfirmed] = useState<boolean>(false);
   const [asistente, setAsistente] = useState<any>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!dni.trim()) {
-      toast.error('Por favor ingresa tu DNI');
+      toast.error("Por favor ingresa tu DNI");
       return;
     }
 
     if (!/^\d{7,8}$/.test(dni)) {
-      toast.error('DNI inválido. Debe tener 7 u 8 dígitos');
+      toast.error("DNI inválido. Debe tener 7 u 8 dígitos");
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/verificar-dni/', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:8000/api/verificar-dni/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ dni: dni.trim() }),
       });
@@ -39,17 +39,22 @@ export default function VerificarDNI() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || 'Error desconocido en la verificación');
+        throw new Error(
+          result.message || "Error desconocido en la verificación",
+        );
       }
 
       setConfirmed(true);
       setAsistente(result.asistente);
-      toast.success('¡Asistencia Confirmada!', {
+      toast.success("¡Asistencia Confirmada!", {
         description: `Bienvenido/a ${result.asistente.nombre_completo}. Tu certificado ha sido enviado por email.`,
       });
     } catch (error) {
-      toast.error('Error en la verificación', {
-        description: error instanceof Error ? error.message : 'No se pudo verificar el DNI.',
+      toast.error("Error en la verificación", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "No se pudo verificar el DNI.",
       });
     } finally {
       setLoading(false);
@@ -82,7 +87,8 @@ export default function VerificarDNI() {
                 </div>
                 <div className="mt-6 p-4 bg-green-50 rounded-lg">
                   <p className="text-green-800 text-center">
-                    Tu certificado de asistencia ha sido enviado a tu correo electrónico.
+                    Tu certificado de asistencia ha sido enviado a tu correo
+                    electrónico.
                   </p>
                 </div>
               </CardContent>
@@ -101,7 +107,8 @@ export default function VerificarDNI() {
             Confirmar Asistencia
           </h1>
           <p className="text-xl text-gray-600">
-            Ingresa tu DNI para confirmar tu asistencia al congreso y recibir tu certificado.
+            Ingresa tu DNI para confirmar tu asistencia al congreso y recibir tu
+            certificado.
           </p>
         </div>
 
@@ -126,13 +133,9 @@ export default function VerificarDNI() {
                   Ingresa tu DNI sin puntos ni espacios
                 </p>
               </div>
-              
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={loading}
-              >
-                {loading ? 'Verificando...' : 'Confirmar Asistencia'}
+
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Verificando..." : "Confirmar Asistencia"}
               </Button>
             </form>
 
@@ -141,7 +144,10 @@ export default function VerificarDNI() {
                 <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
                 <div className="text-sm text-blue-800">
                   <p className="font-semibold">Importante:</p>
-                  <p>Solo puedes confirmar tu asistencia una vez. Tu certificado será enviado automáticamente a tu email registrado.</p>
+                  <p>
+                    Solo puedes confirmar tu asistencia una vez. Tu certificado
+                    será enviado automáticamente a tu email registrado.
+                  </p>
                 </div>
               </div>
             </div>

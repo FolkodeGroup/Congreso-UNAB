@@ -1,5 +1,9 @@
 import * as React from "react";
-import { FiChevronLeft, FiChevronRight, FiMoreHorizontal } from "react-icons/fi";
+import {
+  FiChevronLeft,
+  FiChevronRight,
+  FiMoreHorizontal,
+} from "react-icons/fi";
 
 import { cn } from "@/lib/utils";
 import { ButtonProps, buttonVariants } from "@/components/ui/button";
@@ -69,7 +73,7 @@ const PaginationPrevious = ({
     className={cn("gap-1 pl-2.5", className)}
     {...props}
   >
-  <FiChevronLeft className="h-4 w-4" />
+    <FiChevronLeft className="h-4 w-4" />
     <span>Previous</span>
   </PaginationLink>
 );
@@ -86,7 +90,7 @@ const PaginationNext = ({
     {...props}
   >
     <span>Next</span>
-  <FiChevronRight className="h-4 w-4" />
+    <FiChevronRight className="h-4 w-4" />
   </PaginationLink>
 );
 PaginationNext.displayName = "PaginationNext";
@@ -100,7 +104,7 @@ const PaginationEllipsis = ({
     className={cn("flex h-9 w-9 items-center justify-center", className)}
     {...props}
   >
-  <FiMoreHorizontal className="h-4 w-4" />
+    <FiMoreHorizontal className="h-4 w-4" />
     <span className="sr-only">More pages</span>
   </span>
 );

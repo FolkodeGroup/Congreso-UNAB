@@ -30,9 +30,11 @@ El email no llega porque Gmail requiere una **contraseña de aplicación especí
 
 1. **Abre el archivo `.env`** en el directorio backend
 2. **Reemplaza la línea `EMAIL_HOST_PASSWORD`** con la nueva contraseña:
+
    ```
    EMAIL_HOST_PASSWORD=abcdefghijklmnop
    ```
+
    (Sin espacios, solo los 16 caracteres)
 
 3. **Guarda el archivo**
@@ -40,10 +42,13 @@ El email no llega porque Gmail requiere una **contraseña de aplicación especí
 ### 4. Cambiar a SMTP Backend
 
 En el archivo `backend/core/settings.py`, cambia:
+
 ```python
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ```
+
 Por:
+
 ```python
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 ```
@@ -51,6 +56,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 ### 5. Probar el Sistema
 
 Ejecuta el script de diagnóstico:
+
 ```bash
 cd backend
 python test_email.py
@@ -59,6 +65,7 @@ python test_email.py
 ## Configuración Final Esperada
 
 Tu archivo `.env` debe verse así:
+
 ```
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
@@ -70,18 +77,22 @@ EMAIL_USE_TLS=True
 ## Posibles Problemas y Soluciones
 
 ### Error de Autenticación
+
 - **Causa:** Contraseña incorrecta o no es contraseña de aplicación
 - **Solución:** Generar nueva contraseña de aplicación
 
 ### Email va a Spam
+
 - **Causa:** Gmail puede marcar emails automáticos como spam
 - **Solución:** Revisar carpeta de spam en el email de destino
 
 ### "Less secure app access"
+
 - **Causa:** Método obsoleto, ya no funciona
 - **Solución:** Usar contraseñas de aplicación (este método)
 
 ### No puedo encontrar "Contraseñas de aplicación"
+
 - **Causa:** Verificación en 2 pasos no está habilitada
 - **Solución:** Habilitar verificación en 2 pasos primero
 
@@ -96,6 +107,7 @@ EMAIL_USE_TLS=True
 ## Script de Diagnóstico
 
 El archivo `test_email.py` puede ayudarte a identificar problemas:
+
 - Verifica la conexión SMTP
 - Prueba el envío de emails básicos
 - Prueba el sistema de certificados completo

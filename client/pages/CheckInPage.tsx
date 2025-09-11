@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import Layout from '@/components/Layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { QrReader } from 'react-qr-reader';
-import { Label } from '@/components/ui/label';
+import { useState } from "react";
+import Layout from "@/components/Layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { QrReader } from "react-qr-reader";
+import { Label } from "@/components/ui/label";
 
 export default function CheckInPage() {
-  const [qrCode, setQrCode] = useState<string>('');
-  const [manualCode, setManualCode] = useState<string>('');
+  const [qrCode, setQrCode] = useState<string>("");
+  const [manualCode, setManualCode] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleScan = async (data: string | null) => {
@@ -21,18 +21,18 @@ export default function CheckInPage() {
 
   const handleError = (err: Error) => {
     console.error(err);
-    toast.error('Error al escanear QR', {
-      description: 'Asegúrate de que la cámara esté funcionando correctamente.',
+    toast.error("Error al escanear QR", {
+      description: "Asegúrate de que la cámara esté funcionando correctamente.",
     });
   };
 
   const processCheckIn = async (code: string) => {
     setLoading(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/checkin/', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:8000/api/checkin/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ codigo: code }),
       });
@@ -40,20 +40,23 @@ export default function CheckInPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || 'Error desconocido en el check-in');
+        throw new Error(result.message || "Error desconocido en el check-in");
       }
 
-      toast.success('Check-in Exitoso', {
-        description: `Bienvenido/a ${result.asistente.nombre_completo}!`, 
+      toast.success("Check-in Exitoso", {
+        description: `Bienvenido/a ${result.asistente.nombre_completo}!`,
       });
     } catch (error) {
-      toast.error('Error en el Check-in', {
-        description: error instanceof Error ? error.message : 'No se pudo completar el check-in.',
+      toast.error("Error en el Check-in", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "No se pudo completar el check-in.",
       });
     } finally {
       setLoading(false);
-      setQrCode(''); // Limpiar el código QR después de procesar
-      setManualCode(''); // Limpiar el código manual
+      setQrCode(""); // Limpiar el código QR después de procesar
+      setManualCode(""); // Limpiar el código manual
     }
   };
 
@@ -61,7 +64,7 @@ export default function CheckInPage() {
     if (manualCode) {
       await processCheckIn(manualCode);
     } else {
-      toast.warning('Ingresa un código para el check-in manual.');
+      toast.warning("Ingresa un código para el check-in manual.");
     }
   };
 
@@ -73,7 +76,8 @@ export default function CheckInPage() {
             Panel de Check-in
           </h1>
           <p className="text-xl text-gray-600">
-            Escanea el código QR o ingresa el código manualmente para registrar la asistencia.
+            Escanea el código QR o ingresa el código manualmente para registrar
+            la asistencia.
           </p>
         </div>
 
@@ -95,13 +99,17 @@ export default function CheckInPage() {
                       // handleError(error);
                     }
                   }}
-                  constraints={{ facingMode: 'environment' }}
+                  constraints={{ facingMode: "environment" }}
                   scanDelay={500} // Retraso para evitar múltiples escaneos rápidos
-                  videoContainerStyle={{ width: '100%', paddingTop: '100%' }} // Para mantener el aspecto cuadrado
-                  videoStyle={{ objectFit: 'cover' }} // Para que el video ocupe todo el espacio
+                  videoContainerStyle={{ width: "100%", paddingTop: "100%" }} // Para mantener el aspecto cuadrado
+                  videoStyle={{ objectFit: "cover" }} // Para que el video ocupe todo el espacio
                 />
               </div>
-              {qrCode && <p className="text-sm text-gray-500">Código Escaneado: {qrCode}</p>}
+              {qrCode && (
+                <p className="text-sm text-gray-500">
+                  Código Escaneado: {qrCode}
+                </p>
+              )}
             </div>
 
             <div className="relative flex items-center">
@@ -118,8 +126,12 @@ export default function CheckInPage() {
                 value={manualCode}
                 onChange={(e) => setManualCode(e.target.value)}
               />
-              <Button onClick={handleManualCheckIn} className="w-full" disabled={loading}>
-                {loading ? 'Procesando...' : 'Realizar Check-in Manual'}
+              <Button
+                onClick={handleManualCheckIn}
+                className="w-full"
+                disabled={loading}
+              >
+                {loading ? "Procesando..." : "Realizar Check-in Manual"}
               </Button>
             </div>
           </CardContent>

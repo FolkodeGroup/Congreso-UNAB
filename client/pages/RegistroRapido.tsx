@@ -1,22 +1,36 @@
-import Layout from '@/components/Layout';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { useState } from 'react';
-import { CheckCircle } from 'lucide-react';
+import Layout from "@/components/Layout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
+import { useState } from "react";
+import { CheckCircle } from "lucide-react";
 
 // Esquema de validación para registro rápido
 const registroRapidoSchema = z.object({
-  nombre_completo: z.string().min(3, 'El nombre es requerido'),
-  dni: z.string().regex(/^\d{7,8}$/, 'DNI inválido, debe tener 7 u 8 dígitos'),
-  email: z.string().email('Email inválido'),
-  tipo_inscripcion: z.enum(['INDIVIDUAL', 'EMPRESA', 'GRUPO'], { required_error: 'Debes seleccionar un tipo' }),
+  nombre_completo: z.string().min(3, "El nombre es requerido"),
+  dni: z.string().regex(/^\d{7,8}$/, "DNI inválido, debe tener 7 u 8 dígitos"),
+  email: z.string().email("Email inválido"),
+  tipo_inscripcion: z.enum(["INDIVIDUAL", "EMPRESA", "GRUPO"], {
+    required_error: "Debes seleccionar un tipo",
+  }),
   empresa: z.string().optional(),
   nombre_grupo: z.string().optional(),
 });
@@ -36,11 +50,11 @@ export default function RegistroRapido() {
   } = useForm<RegistroRapidoFormData>({
     resolver: zodResolver(registroRapidoSchema),
     defaultValues: {
-      tipo_inscripcion: 'INDIVIDUAL',
+      tipo_inscripcion: "INDIVIDUAL",
     },
   });
 
-  const tipoInscripcion = watch('tipo_inscripcion');
+  const tipoInscripcion = watch("tipo_inscripcion");
 
   const onSubmit = async (data: RegistroRapidoFormData) => {
     const payload = {
@@ -51,34 +65,38 @@ export default function RegistroRapido() {
         email: data.email,
       },
       empresa: data.empresa || null,
-      nombre_grupo: data.nombre_grupo || '',
+      nombre_grupo: data.nombre_grupo || "",
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/registro-rapido/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/registro-rapido/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      });
+      );
 
       const result = await response.json();
 
       if (response.ok) {
         setCompleted(true);
         setAsistente(data);
-        toast.success('¡Registro Completado!', {
-          description: 'Tu registro ha sido exitoso y tu asistencia confirmada.',
+        toast.success("¡Registro Completado!", {
+          description:
+            "Tu registro ha sido exitoso y tu asistencia confirmada.",
         });
       } else {
-        toast.error('Error en el registro', {
-          description: result.message || 'No se pudo completar el registro.',
+        toast.error("Error en el registro", {
+          description: result.message || "No se pudo completar el registro.",
         });
       }
     } catch (error) {
-      toast.error('Error de conexión', {
-        description: 'No se pudo conectar con el servidor.',
+      toast.error("Error de conexión", {
+        description: "No se pudo conectar con el servidor.",
       });
     }
   };
@@ -112,7 +130,8 @@ export default function RegistroRapido() {
                 </div>
                 <div className="mt-6 p-4 bg-green-50 rounded-lg">
                   <p className="text-green-800 text-center">
-                    Tu asistencia ha sido confirmada automáticamente y tu certificado será enviado a tu correo electrónico.
+                    Tu asistencia ha sido confirmada automáticamente y tu
+                    certificado será enviado a tu correo electrónico.
                   </p>
                 </div>
               </CardContent>
@@ -131,7 +150,8 @@ export default function RegistroRapido() {
             Registro Rápido en el Evento
           </h1>
           <p className="text-xl text-gray-600">
-            Regístrate directamente en el congreso y confirma tu asistencia al mismo tiempo.
+            Regístrate directamente en el congreso y confirma tu asistencia al
+            mismo tiempo.
           </p>
         </div>
 
@@ -139,7 +159,8 @@ export default function RegistroRapido() {
           <CardHeader>
             <CardTitle>Registro de Asistente</CardTitle>
             <CardDescription>
-              Completa tus datos para registrarte y confirmar tu asistencia automáticamente.
+              Completa tus datos para registrarte y confirmar tu asistencia
+              automáticamente.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -149,11 +170,13 @@ export default function RegistroRapido() {
                   <Label htmlFor="nombre_completo">Nombre Completo *</Label>
                   <Input
                     id="nombre_completo"
-                    {...register('nombre_completo')}
+                    {...register("nombre_completo")}
                     placeholder="Ingresa tu nombre completo"
                   />
                   {errors.nombre_completo && (
-                    <p className="text-sm text-red-600">{errors.nombre_completo.message}</p>
+                    <p className="text-sm text-red-600">
+                      {errors.nombre_completo.message}
+                    </p>
                   )}
                 </div>
 
@@ -161,7 +184,7 @@ export default function RegistroRapido() {
                   <Label htmlFor="dni">DNI *</Label>
                   <Input
                     id="dni"
-                    {...register('dni')}
+                    {...register("dni")}
                     placeholder="Ej: 12345678"
                     maxLength={8}
                   />
@@ -176,7 +199,7 @@ export default function RegistroRapido() {
                 <Input
                   id="email"
                   type="email"
-                  {...register('email')}
+                  {...register("email")}
                   placeholder="tu@email.com"
                 />
                 {errors.email && (
@@ -186,7 +209,11 @@ export default function RegistroRapido() {
 
               <div className="space-y-2">
                 <Label htmlFor="tipo_inscripcion">Tipo de Inscripción *</Label>
-                <Select onValueChange={(value) => setValue('tipo_inscripcion', value as any)}>
+                <Select
+                  onValueChange={(value) =>
+                    setValue("tipo_inscripcion", value as any)
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona el tipo de inscripción" />
                   </SelectTrigger>
@@ -197,27 +224,29 @@ export default function RegistroRapido() {
                   </SelectContent>
                 </Select>
                 {errors.tipo_inscripcion && (
-                  <p className="text-sm text-red-600">{errors.tipo_inscripcion.message}</p>
+                  <p className="text-sm text-red-600">
+                    {errors.tipo_inscripcion.message}
+                  </p>
                 )}
               </div>
 
-              {tipoInscripcion === 'EMPRESA' && (
+              {tipoInscripcion === "EMPRESA" && (
                 <div className="space-y-2">
                   <Label htmlFor="empresa">Nombre de la Empresa</Label>
                   <Input
                     id="empresa"
-                    {...register('empresa')}
+                    {...register("empresa")}
                     placeholder="Nombre de tu empresa"
                   />
                 </div>
               )}
 
-              {tipoInscripcion === 'GRUPO' && (
+              {tipoInscripcion === "GRUPO" && (
                 <div className="space-y-2">
                   <Label htmlFor="nombre_grupo">Nombre del Grupo</Label>
                   <Input
                     id="nombre_grupo"
-                    {...register('nombre_grupo')}
+                    {...register("nombre_grupo")}
                     placeholder="Nombre de tu grupo"
                   />
                 </div>
@@ -225,13 +254,16 @@ export default function RegistroRapido() {
 
               <div className="p-4 bg-blue-50 rounded-lg">
                 <p className="text-sm text-blue-800">
-                  <strong>Nota:</strong> Al completar este registro, tu asistencia será confirmada automáticamente
-                  y recibirás tu certificado por email inmediatamente.
+                  <strong>Nota:</strong> Al completar este registro, tu
+                  asistencia será confirmada automáticamente y recibirás tu
+                  certificado por email inmediatamente.
                 </p>
               </div>
 
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? 'Registrando...' : 'Registrarse y Confirmar Asistencia'}
+                {isSubmitting
+                  ? "Registrando..."
+                  : "Registrarse y Confirmar Asistencia"}
               </Button>
             </form>
           </CardContent>

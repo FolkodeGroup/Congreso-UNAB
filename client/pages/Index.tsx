@@ -1,5 +1,5 @@
-import { useEffect} from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +26,7 @@ import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
-  AccordionContent
+  AccordionContent,
 } from "@/components/ui/accordion";
 
 export default function Index() {
@@ -34,8 +34,8 @@ export default function Index() {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.hash === '#mapa' && mapRef.current) {
-      mapRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (location.hash === "#mapa" && mapRef.current) {
+      mapRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [location]);
 
@@ -93,23 +93,33 @@ export default function Index() {
                 <p className="text-lg text-center">15 de Noviembre 2025</p>
               </div>
               {/* Card UBICACION */}
-              <div className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl cursor-pointer" onClick={scrollToMap}>
+              <div
+                className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl cursor-pointer"
+                onClick={scrollToMap}
+              >
                 <FiMapPin className="w-8 h-8 mb-3 text-congress-blue-dark" />
                 <h3 className="font-semibold mb-2">Ubicación</h3>
                 <p className="text-lg text-center">
-                  Campus UNaB<br />Blas Parera 132, Burzaco
+                  Campus UNaB
+                  <br />
+                  Blas Parera 132, Burzaco
                 </p>
               </div>
               {/* Card CONTACTO */}
-              <Link to="/contacto" className="block">
+              <a
+                href="mailto:congresologisticaytransporte@unab.edu.ar"
+                className="block"
+              >
                 <div className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl">
                   <FiMail className="w-8 h-8 mb-3 text-congress-blue-dark" />
                   <h3 className="font-semibold mb-2">Contacto</h3>
                   <p className="text-lg break-words text-center leading-tight">
-                    congresologisticaytransporte<br />@unab.edu.ar
+                    congresologisticaytransporte
+                    <br />
+                    @unab.edu.ar
                   </p>
                 </div>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -131,7 +141,7 @@ export default function Index() {
                   {" "}
                   Todas las modalidades son sin costo
                 </span>
-                 para instituciones y empresas que deseen sumarse.
+                para instituciones y empresas que deseen sumarse.
               </p>
             </div>
 
@@ -141,7 +151,9 @@ export default function Index() {
                   <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
                     <FiUsers className="w-8 h-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-blue transition-colors">Expositor con Stand</CardTitle>
+                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-blue transition-colors">
+                    Expositor con Stand
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-base text-gray-600 leading-relaxed">
@@ -193,7 +205,9 @@ export default function Index() {
                   <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
                     <FiUsers className="w-8 h-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-cyan transition-colors">Otras Modalidades</CardTitle>
+                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-cyan transition-colors">
+                    Otras Modalidades
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-base text-gray-600 leading-relaxed">
@@ -210,7 +224,7 @@ export default function Index() {
                 {/* Efecto de brillo decorativo */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-congress-cyan/20 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-congress-cyan-light/20 rounded-full blur-2xl"></div>
-                
+
                 <div className="relative z-10">
                   <h3 className="text-2xl font-bold text-white mb-4 flex items-center justify-center gap-3">
                     <span className="text-3xl">💡</span>
@@ -222,15 +236,14 @@ export default function Index() {
                     visibilidad y desarrollo de negocio.
                   </p>
                   <Link to="/contacto">
-                    <Button 
-                      size="xl" 
+                    <Button
+                      size="xl"
                       className="bg-congress-cyan hover:bg-congress-cyan-light text-congress-blue-dark hover:text-congress-blue font-bold px-12 py-6 text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 border-2 border-congress-cyan-light"
                     >
                       Contactar para Participar
                     </Button>
                   </Link>
                 </div>
-                
               </div>
             </div>
           </div>
@@ -266,68 +279,127 @@ export default function Index() {
               ¿Cómo llegar?
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              El congreso se realizará en el Campus de la Universidad Nacional Guillermo Brown,
-              ubicado en Blas Parera 132. Te esperamos!
+              El congreso se realizará en el Campus de la Universidad Nacional
+              Guillermo Brown, ubicado en Blas Parera 132. Te esperamos!
             </p>
           </div>
 
           <div className="max-w-5xl mx-auto">
             {/* Acordeón para opciones de transporte con estilos personalizados */}
-            <Accordion type="single" collapsible className="w-full max-w-4xl mx-auto bg-white rounded-lg shadow border border-congress-cyan">
-              <AccordionItem value="caba" className="border-b border-congress-cyan">
+            <Accordion
+              type="single"
+              collapsible
+              className="w-full max-w-4xl mx-auto bg-white rounded-lg shadow border border-congress-cyan"
+            >
+              <AccordionItem
+                value="caba"
+                className="border-b border-congress-cyan"
+              >
                 <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
                   Desde CABA (Obelisco)
                 </AccordionTrigger>
                 <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
                   <ul className="space-y-2">
-                    <li><strong>Transporte Público:</strong> Tomar Subte hasta Constitución, luego Tren Roca (ramales A. Korn, Glew) hasta la estación Burzaco. Desde allí, colectivos locales o 15 min a pie.</li>
-                    <li><strong>En Auto:</strong> Tomar Au. 25 de Mayo, luego Au. Riccheri y Camino de Cintura (Ruta 4) hasta Av. Espora. El viaje dura aprox. 45-60 min.</li>
+                    <li>
+                      <strong>Transporte Público:</strong> Tomar Subte hasta
+                      Constitución, luego Tren Roca (ramales A. Korn, Glew)
+                      hasta la estación Burzaco. Desde allí, colectivos locales
+                      o 15 min a pie.
+                    </li>
+                    <li>
+                      <strong>En Auto:</strong> Tomar Au. 25 de Mayo, luego Au.
+                      Riccheri y Camino de Cintura (Ruta 4) hasta Av. Espora. El
+                      viaje dura aprox. 45-60 min.
+                    </li>
                   </ul>
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="adrogue" className="border-b border-congress-cyan">
+              <AccordionItem
+                value="adrogue"
+                className="border-b border-congress-cyan"
+              >
                 <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
                   Desde Adrogué
                 </AccordionTrigger>
                 <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
                   <ul className="space-y-2">
-                    <li><strong>506 (Gendarmería - Por Bynnon):</strong> Av Espora - esq. Ricardo Rojas</li>
-                    <li><strong>79 (Constitución - San Vicente):</strong> Av Espora (Colegio Nacional de Adrogué)</li>
-                    <li><strong>74 (A):</strong> Av Espora (Colegio Nacional de Adrogué)</li>
+                    <li>
+                      <strong>506 (Gendarmería - Por Bynnon):</strong> Av Espora
+                      - esq. Ricardo Rojas
+                    </li>
+                    <li>
+                      <strong>79 (Constitución - San Vicente):</strong> Av
+                      Espora (Colegio Nacional de Adrogué)
+                    </li>
+                    <li>
+                      <strong>74 (A):</strong> Av Espora (Colegio Nacional de
+                      Adrogué)
+                    </li>
                   </ul>
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="burzaco" className="border-b border-congress-cyan">
+              <AccordionItem
+                value="burzaco"
+                className="border-b border-congress-cyan"
+              >
                 <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
                   Desde Burzaco
                 </AccordionTrigger>
                 <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
                   <ul className="space-y-2">
-                    <li><strong>506 (Gendarmería - Por Bynnon):</strong> Av Espora - esq. Ricardo Rojas</li>
-                    <li><strong>266 (A):</strong> Estación Burzaco</li>
-                    <li><strong>74 (A):</strong> Av Espora - esq. Ricardo Rojas</li>
+                    <li>
+                      <strong>506 (Gendarmería - Por Bynnon):</strong> Av Espora
+                      - esq. Ricardo Rojas
+                    </li>
+                    <li>
+                      <strong>266 (A):</strong> Estación Burzaco
+                    </li>
+                    <li>
+                      <strong>74 (A):</strong> Av Espora - esq. Ricardo Rojas
+                    </li>
                   </ul>
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="longchamps" className="border-b border-congress-cyan">
+              <AccordionItem
+                value="longchamps"
+                className="border-b border-congress-cyan"
+              >
                 <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
                   Desde Longchamps
                 </AccordionTrigger>
                 <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
                   <ul className="space-y-2">
-                    <li><strong>79 (San Vicente):</strong> Constitución (Chiesa y Francia)</li>
-                    <li><strong>506 (San Jose, Por Bynnon):</strong> Alsina y Magdalena Motti de Tieghi</li>
+                    <li>
+                      <strong>79 (San Vicente):</strong> Constitución (Chiesa y
+                      Francia)
+                    </li>
+                    <li>
+                      <strong>506 (San Jose, Por Bynnon):</strong> Alsina y
+                      Magdalena Motti de Tieghi
+                    </li>
                   </ul>
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="tren" className="border-b border-congress-cyan">
+              <AccordionItem
+                value="tren"
+                className="border-b border-congress-cyan"
+              >
                 <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
                   En Tren (Línea Roca)
                 </AccordionTrigger>
                 <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
-                  <p>Las estaciones más cercanas son <strong>Adrogué</strong>, <strong>Burzaco</strong> y <strong>Longchamps</strong>.<br />
-                  Desde ambas, puedes tomar un colectivo o servicio de auto hasta el campus.</p>
-                  <p className="mt-2 text-xs text-gray-500">Nota: Se está construyendo la nueva estación "Universidad Guillermo Brown". Verifica su estado para la fecha del evento.</p>
+                  <p>
+                    Las estaciones más cercanas son <strong>Adrogué</strong>,{" "}
+                    <strong>Burzaco</strong> y <strong>Longchamps</strong>.
+                    <br />
+                    Desde ambas, puedes tomar un colectivo o servicio de auto
+                    hasta el campus.
+                  </p>
+                  <p className="mt-2 text-xs text-gray-500">
+                    Nota: Se está construyendo la nueva estación "Universidad
+                    Guillermo Brown". Verifica su estado para la fecha del
+                    evento.
+                  </p>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="auto">
@@ -335,15 +407,22 @@ export default function Index() {
                   En Auto
                 </AccordionTrigger>
                 <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
-                  <p><strong>Acceso principal:</strong> Por Av. Espora, a 3 cuadras de la Ruta Provincial 4 (Camino de Cintura).</p>
-                  <p><strong>GPS:</strong> Blas Parera 132, Burzaco.</p>
-                  <p><strong>Estacionamiento:</strong> Habrá estacionamiento disponible en un predio alejado para los asistentes al congreso.</p>
+                  <p>
+                    <strong>Acceso principal:</strong> Por Av. Espora, a 3
+                    cuadras de la Ruta Provincial 4 (Camino de Cintura).
+                  </p>
+                  <p>
+                    <strong>GPS:</strong> Blas Parera 132, Burzaco.
+                  </p>
+                  <p>
+                    <strong>Estacionamiento:</strong> Habrá estacionamiento
+                    disponible en un predio alejado para los asistentes al
+                    congreso.
+                  </p>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
           </div>
-
-          
 
           <div className="flex justify-center mt-12">
             <div className="w-full max-w-4xl rounded-lg overflow-hidden shadow-lg">
@@ -363,7 +442,9 @@ export default function Index() {
 
           <div className="max-w-4xl mx-auto mt-8 text-center">
             <div className="bg-white rounded-lg p-6 shadow-md">
-              <h3 className="text-xl font-semibold text-congress-blue mb-4">Dirección</h3>
+              <h3 className="text-xl font-semibold text-congress-blue mb-4">
+                Dirección
+              </h3>
               <p className="text-lg text-gray-700 mb-2">
                 <strong>Universidad Nacional Guillermo Brown</strong>
               </p>
@@ -387,9 +468,6 @@ export default function Index() {
           </div>
         </div>
       </section>
-
-
     </Layout>
   );
 }
-
