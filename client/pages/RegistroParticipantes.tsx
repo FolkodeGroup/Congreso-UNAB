@@ -136,12 +136,41 @@ const RegistroParticipantes: React.FC = () => {
         };
         response = await inscribirGrupal(dataToSend);
       } else {
-        response = await inscribirIndividual(data);
+        // Estructura esperada por el backend
+        // Traducción de profile_type a los valores esperados por el backend
+        const profileTypeMap: Record<string, string> = {
+          visitor: "VISITOR",
+          student: "STUDENT",
+          teacher: "TEACHER",
+          professional: "PROFESSIONAL",
+          groupRepresentative: "GROUP_REPRESENTATIVE"
+        };
+        const dataToSend = {
+          asistente: {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            dni: data.dni,
+            email: data.email,
+            phone: data.phone,
+            profile_type: profileTypeMap[data.profileType] || data.profileType,
+          }
+        };
+        response = await inscribirIndividual(dataToSend);
       }
 
-      console.log("Respuesta del servidor:", response);
-      alert("¡Inscripción exitosa!");
-      reset();
+      if (response && response.status === 'success') {
+        alert("¡Inscripción exitosa!");
+        reset();
+      } else {
+        // Mostrar el error real del backend
+        let errorMsg = '';
+        if (response && typeof response === 'object') {
+          errorMsg = JSON.stringify(response);
+        } else {
+          errorMsg = response?.message || 'No se pudo inscribir.';
+        }
+        alert("Error: " + errorMsg);
+      }
     } catch (error) {
       console.error("Error en la inscripción:", error);
       alert("Hubo un error al procesar la inscripción. Por favor, inténtalo de nuevo.");
