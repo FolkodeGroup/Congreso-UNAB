@@ -148,20 +148,20 @@ export default function GenerarQRs() {
                   <p className="text-xs text-gray-500 font-mono break-all">
                     {qrData.checkin_qr.url}
                   </p>
-                  <div className="flex gap-2 justify-center ">
+                  <div className="flex gap-3 justify-center">
                     <Button
                       variant="outline"
-                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3'
-                      size="sm"
+                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300'
+                      size="lg"
                       onClick={() => downloadQR(qrData.checkin_qr.image_base64, 'QR-Confirmar-Asistencia.png')}
                     >
-                      <Download className="mr-2 h-4 w-4 " />
+                      <Download className="mr-2 h-5 w-5" />
                       Descargar
                     </Button>
                     <Button
                       variant="outline"
-                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3'
-                      size="sm"
+                      className='w-full bg-congress-cyan hover:bg-congress-blue-dark text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300'
+                      size="lg"
                       onClick={() => printQR(qrData.checkin_qr.image_base64, 'QR para Confirmar Asistencia')}
                     >
                       Imprimir
@@ -191,21 +191,20 @@ export default function GenerarQRs() {
                   <p className="text-xs text-gray-500 font-mono break-all">
                     {qrData.registro_qr.url}
                   </p>
-                  <div className="flex gap-2 justify-center">
+                  <div className="flex gap-3 justify-center">
                     <Button
                       variant="outline"
-                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3'
-                      size="sm"
+                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300'
+                      size="lg"
                       onClick={() => downloadQR(qrData.registro_qr.image_base64, 'QR-Registro-Rapido.png')}
                     >
-                      <Download className="mr-2 h-4 w-4" />
+                      <Download className="mr-2 h-5 w-5" />
                       Descargar
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
-
-                      className='w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3'
+                      size="lg"
+                      className='w-full bg-congress-cyan hover:bg-congress-blue-dark text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300'
                       onClick={() => printQR(qrData.registro_qr.image_base64, 'QR para Registro in-situ')}
                     >
                       Imprimir

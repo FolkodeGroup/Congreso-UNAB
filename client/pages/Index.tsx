@@ -64,7 +64,8 @@ export default function Index() {
                 <Link to="/historia-campus">
                   <Button
                     variant="secondary"
-                    className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3"
+                    size="xl"
+                    className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-bold px-12 py-6 text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
                   >
                     Conocé la historia del campus y la casona
                   </Button>
@@ -153,15 +154,15 @@ export default function Index() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card className="border-2 hover:border-congress-cyan transition-colors">
+              <Card className="group border-2 border-congress-blue/20 hover:border-congress-blue hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-br from-white to-congress-blue/5 card-enhanced relative overflow-hidden">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-congress-blue rounded-lg flex items-center justify-center mb-4">
-                    <FiUsers className="w-6 h-6 text-white" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                    <FiUsers className="w-8 h-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl">Expositor con Stand</CardTitle>
+                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-blue transition-colors">Expositor con Stand</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
+                  <CardDescription className="text-base text-gray-600 leading-relaxed">
                     Presenta tu empresa, servicios o proyectos en un espacio
                     dedicado. Conecta directamente con profesionales del sector
                     y genera nuevas oportunidades de negocio.
@@ -169,17 +170,17 @@ export default function Index() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2 hover:border-congress-cyan transition-colors">
+              <Card className="group border-2 border-congress-cyan/20 hover:border-congress-cyan hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-br from-white to-congress-cyan/5 card-enhanced relative overflow-hidden">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-congress-cyan rounded-lg flex items-center justify-center mb-4">
-                    <FiAward className="w-6 h-6 text-white" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                    <FiAward className="w-8 h-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl">
+                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-cyan transition-colors">
                     Presentador de Tecnología
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
+                  <CardDescription className="text-base text-gray-600 leading-relaxed">
                     Muestra vehículos, maquinaria o tecnologías innovadoras.
                     Demuestra las últimas innovaciones que están transformando
                     el sector logístico y de transporte.
@@ -187,17 +188,17 @@ export default function Index() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2 hover:border-congress-cyan transition-colors">
+              <Card className="group border-2 border-congress-blue/20 hover:border-congress-blue hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-br from-white to-congress-blue/5 card-enhanced relative overflow-hidden">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-congress-blue rounded-lg flex items-center justify-center mb-4">
-                    <FiClock className="w-6 h-6 text-white" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                    <FiClock className="w-8 h-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl">
+                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-blue transition-colors">
                     Coordinador de Taller
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
+                  <CardDescription className="text-base text-gray-600 leading-relaxed">
                     Lidera un taller práctico o instancia demostrativa. Comparte
                     tu expertise y conocimientos prácticos con otros
                     profesionales del sector.
@@ -205,15 +206,15 @@ export default function Index() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2 hover:border-congress-cyan transition-colors">
+              <Card className="group border-2 border-congress-cyan/20 hover:border-congress-cyan hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-br from-white to-congress-cyan/5 card-enhanced relative overflow-hidden">
                 <CardHeader>
-                  <div className="w-12 h-12 bg-congress-cyan rounded-lg flex items-center justify-center mb-4">
-                    <FiUsers className="w-6 h-6 text-white" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                    <FiUsers className="w-8 h-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl">Otras Modalidades</CardTitle>
+                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-cyan transition-colors">Otras Modalidades</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base">
+                  <CardDescription className="text-base text-gray-600 leading-relaxed">
                     ¿Tienes una propuesta diferente? Nos encantaría conocer
                     otras modalidades que consideres relevantes y de interés
                     para el sector. Contáctanos para conversarlo.
@@ -223,20 +224,30 @@ export default function Index() {
             </div>
 
             <div className="text-center mt-12">
-              <div className="bg-white rounded-lg p-8 border-2 border-congress-cyan">
-                <h3 className="text-2xl font-bold text-congress-blue mb-4">
-                  💡 ¿Interesado en Participar como Empresa?
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Únete a las más de 30 empresas que ya confirmaron su
-                  participación. Es una excelente oportunidad para networking,
-                  visibilidad y desarrollo de negocio.
-                </p>
-                <Link to="/contacto">
-                  <Button className="bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3">
-                    Contactar para Participar
-                  </Button>
-                </Link>
+              <div className="relative bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-2xl p-8 border-2 border-congress-cyan shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 overflow-hidden">
+                {/* Efecto de brillo decorativo */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-congress-cyan/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-congress-cyan-light/20 rounded-full blur-2xl"></div>
+                
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-bold text-white mb-4 flex items-center justify-center gap-3">
+                    <span className="text-3xl">💡</span>
+                    ¿Interesado en Participar como Empresa?
+                  </h3>
+                  <p className="text-congress-cyan-light mb-6 text-lg leading-relaxed max-w-2xl mx-auto">
+                    Únete a las más de 30 empresas que ya confirmaron su
+                    participación. Es una excelente oportunidad para networking,
+                    visibilidad y desarrollo de negocio.
+                  </p>
+                  <Link to="/contacto">
+                    <Button 
+                      size="xl" 
+                      className="bg-congress-cyan hover:bg-congress-cyan-light text-congress-blue-dark hover:text-congress-blue font-bold px-12 py-6 text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 border-2 border-congress-cyan-light"
+                    >
+                      Contactar para Participar
+                    </Button>
+                  </Link>
+                </div>
                 {/* <Link to="/registro">
                   <Button
                     variant="outline"
@@ -263,8 +274,8 @@ export default function Index() {
           </p>
           <Link to="/registro">
             <Button
-              size="lg"
-              className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3"
+              size="xxl"
+              className="button-super-enhanced bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-bold px-16 py-8 text-xl shadow-4xl hover:shadow-4xl transform hover:scale-110 transition-all duration-300 animate-gentle-pulse hover:animate-none"
             >
               Registrarse Gratis
             </Button>
@@ -385,7 +396,8 @@ export default function Index() {
                 Blas Parera 132, Burzaco, Buenos Aires
               </p>
               <Button
-                className="bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-semibold px-8 py-3"
+                size="xl"
+                className="bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-bold px-12 py-6 text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
                 asChild
               >
                 <a

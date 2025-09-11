@@ -24,7 +24,10 @@ const NotFound = () => {
               Lo sentimos, la página que buscas no existe o ha sido movida.
             </p>
             <Link to="/">
-              <Button className="bg-congress-blue hover:bg-congress-blue-dark">
+              <Button 
+                size="xl"
+                className="bg-congress-blue hover:bg-congress-blue-dark text-white font-bold px-12 py-6 text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
+              >
                 Volver al Inicio
               </Button>
             </Link>

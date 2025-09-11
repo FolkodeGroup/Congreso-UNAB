@@ -18,7 +18,7 @@ export default function Empresas() {
               Participa como <span className="text-congress-cyan">Empresa</span>
             </h1>
             <p className="text-xl mb-8 opacity-90">
-              Únete a las más de 30 empresas líderes del sector que ya confirmaron su participación 
+              Sumate a las más de 30 empresas líderes del sector que ya confirmaron su participación 
               en el congreso más importante de logística y transporte del país.
             </p>
             <Badge className="bg-congress-cyan text-congress-white text-lg px-4 py-2">
@@ -283,14 +283,22 @@ export default function Empresas() {
             Nos encantaría contar con tu presencia y ofrecerte la oportunidad de participar 
             en la modalidad que prefieras. Todas las modalidades son sin costo.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link to="/contacto">
-              <Button size="lg" variant="outline" className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3">
+              <Button 
+                size="xl" 
+                variant="outline" 
+                className="bg-white hover:bg-congress-cyan text-congress-blue hover:text-white font-bold px-12 py-6 text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 border-2 border-white"
+              >
                 Contactar para Participar
               </Button>
             </Link>
             <Link to="/registro">
-              <Button size="lg" variant="outline" className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-semibold px-8 py-3">
+              <Button 
+                size="xl" 
+                variant="outline" 
+                className="bg-white hover:bg-congress-cyan text-congress-blue hover:text-white font-bold px-12 py-6 text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 border-2 border-white"
+              >
                 Registro Individual
               </Button>
             </Link>
