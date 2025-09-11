@@ -217,7 +217,7 @@ export default function Index() {
                     ¿Interesado en Participar como Empresa?
                   </h3>
                   <p className="text-congress-cyan-light mb-6 text-lg leading-relaxed max-w-2xl mx-auto">
-                    Únete a las más de 30 empresas que ya confirmaron su
+                    Sumate a las más de 30 empresas que ya confirmaron su
                     participación. Es una excelente oportunidad para networking,
                     visibilidad y desarrollo de negocio.
                   </p>
@@ -244,7 +244,7 @@ export default function Index() {
             ¿Listo para ser parte del futuro?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto text-congress-white">
-            Únete a nosotros en este importante evento que marcará el rumbo de
+            Comparte con nosotros este importante evento que marcará el rumbo de
             la logística y el transporte en Argentina y Latinoamérica.
           </p>
           <Link to="/registro">
