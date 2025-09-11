@@ -27,29 +27,44 @@ class Command(BaseCommand):
             horario_actual += intervalo
         # Alternar duración entre 1h y 1h30m
         duraciones = [timedelta(hours=1), timedelta(hours=1, minutes=30)]
+        
+        # Primero, limpiar programas existentes para evitar problemas
+        Programa.objects.filter(dia=dia_evento).delete()
+        self.stdout.write(self.style.WARNING('Programas existentes eliminados.'))
+        
         for aula in aulas:
-            for idx, hora in enumerate(horarios):
-                # Para cada horario y aula, crear 2 charlas (una de 1h y otra de 1h30m)
-                for d_idx, duracion in enumerate(duraciones):
-                    disertante = disertantes[(idx + aulas.index(aula) + d_idx) % len(disertantes)]
-                    titulo = f"Charla de {disertante.nombre} en {aula} ({'1h' if duracion==timedelta(hours=1) else '1h30m'})"
-                    descripcion = f"Descripción de ejemplo para la charla de {disertante.nombre} en {aula} a las {hora.strftime('%H:%M')}, duración {'1h' if duracion==timedelta(hours=1) else '1h30m'}."
-                    hora_fin_prog = (datetime.combine(dia_evento, hora) + duracion).time()
-                    # Evitar duplicados exactos
-                    if not Programa.objects.filter(
-                        disertante=disertante,
-                        hora_inicio=hora,
-                        aula=aula,
-                        dia=dia_evento
-                    ).exists():
-                        Programa.objects.create(
-                            titulo=titulo,
-                            disertante=disertante,
-                            hora_inicio=hora,
-                            hora_fin=hora_fin_prog,
-                            dia=dia_evento,
-                            descripcion=descripcion,
-                            aula=aula
-                        )
-                        count += 1
+            hora_libre = hora_inicio  # Hora en que el aula está libre
+            idx = 0
+            
+            while hora_libre < hora_fin:
+                # Alternar duración entre 1h y 1h30m
+                duracion = duraciones[idx % 2]
+                
+                # Calcular hora de fin
+                hora_fin_prog = (datetime.combine(dia_evento, hora_libre) + duracion).time()
+                
+                # Si la charla se extiende más allá del horario de cierre, saltarla
+                if hora_fin_prog > hora_fin:
+                    break
+                
+                disertante = disertantes[(idx + aulas.index(aula)) % len(disertantes)]
+                titulo = f"Charla de {disertante.nombre} en {aula} ({'1h' if duracion==timedelta(hours=1) else '1h30m'})"
+                descripcion = f"Descripción de ejemplo para la charla de {disertante.nombre} en {aula} a las {hora_libre.strftime('%H:%M')}, duración {'1h' if duracion==timedelta(hours=1) else '1h30m'}."
+                
+                # Crear el programa
+                Programa.objects.create(
+                    titulo=titulo,
+                    disertante=disertante,
+                    hora_inicio=hora_libre,
+                    hora_fin=hora_fin_prog,
+                    dia=dia_evento,
+                    descripcion=descripcion,
+                    aula=aula
+                )
+                count += 1
+                
+                # Avanzar la hora libre al final de esta charla + 30 min de descanso
+                nueva_hora_libre = datetime.combine(dia_evento, hora_fin_prog) + timedelta(minutes=30)
+                hora_libre = nueva_hora_libre.time()
+                idx += 1
         self.stdout.write(self.style.SUCCESS(f'Total de programas creados: {count}'))
