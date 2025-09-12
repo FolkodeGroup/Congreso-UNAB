@@ -81,7 +81,7 @@ class InscripcionViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         try:
             serializer.is_valid(raise_exception=True)
             inscripcion = serializer.save()
-            # send_confirmation_email(inscripcion) # Commented out for testing
+            send_confirmation_email(inscripcion) # Commented out for testing
             headers = self.get_success_headers(serializer.data)
             return Response({'status': 'success', 'message': 'Inscripción realizada correctamente. Se ha enviado un email de confirmación.'}, status=status.HTTP_201_CREATED, headers=headers)
         except serializers.ValidationError as e:

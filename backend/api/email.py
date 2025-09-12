@@ -9,37 +9,49 @@ from datetime import date
 
 def send_confirmation_email(inscripcion_instance):
     asistente = inscripcion_instance.asistente
-    # qr_code = inscripcion_instance.codigoqr.codigo # Corrected related_name - This line is problematic, commenting out for now
-
-    # Generar el código QR (dummy for now)
-    qr_img = qrcode.make("dummy_qr_code")
-    qr_img_bytes = io.BytesIO()
-    qr_img.save(qr_img_bytes, format='PNG')
-    qr_img_bytes.seek(0)
-
     # Contexto para la plantilla de email
     context = {
         'asistente_nombre': asistente.nombre_completo,
         'asistente_email': asistente.email,
         'tipo_inscripcion': "Individual", # inscripcion_instance.get_tipo_inscripcion_display(),
         'empresa': inscripcion_instance.empresa.nombre_empresa if inscripcion_instance.empresa else None,
-        'nombre_grupo': "", # inscripcion_instance.nombre_grupo,
         'year': 2025, # Puedes hacerlo dinámico si lo necesitas
+        'evento_nombre': 'Congreso de Logística UNAB',
+        'evento_fecha': '25 de Octubre de 2025', # Actualiza según corresponda
+        'evento_hora': '09:00', # Actualiza según corresponda
+        'evento_ubicacion': 'Campus UNAB, Blas Parera 132, Burzaco, Buenos Aires', # Actualiza según corresponda
+    'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251025T120000Z/20251025T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
     }
 
     # Renderizar la plantilla HTML
     html_content = render_to_string('api/email/confirmacion.html', context)
     text_content = strip_tags(html_content) # Versión de texto plano
 
-    # Crear el email
+    import os
+    from email.mime.image import MIMEImage
+
+    logo_env = os.getenv('LOGO_CONGRESO_PATH', 'media/logo.png')
+    logo_path = os.path.join(settings.BASE_DIR, logo_env)
+
+    # Crear el email con HTML y texto plano
     email = EmailMultiAlternatives(
         subject='Confirmación de Inscripción al Congreso de Logística UNAB',
         body=text_content,
-        from_email=settings.DEFAULT_FROM_EMAIL, # Asegúrate de configurar esto en settings.py
+        from_email=settings.DEFAULT_FROM_EMAIL,
         to=[asistente.email],
     )
     email.attach_alternative(html_content, "text/html")
-    email.attach('qr_code.png', qr_img_bytes.getvalue(), 'image/png', cid='qr_code_image')
+
+    # Adjuntar el logo embebido
+    if os.path.exists(logo_path):
+        with open(logo_path, 'rb') as f:
+            logo_img = MIMEImage(f.read(), _subtype="png")
+            logo_img.add_header('Content-ID', '<logo_congreso>')
+            logo_img.add_header('Content-Disposition', 'inline', filename='logo-congreso.png')
+            email.attach(logo_img)
+        print(f"[INFO] Logo embebido correctamente: {logo_path}")
+    else:
+        print(f"[ERROR] No se encontró el logo en {logo_path}")
 
     email.send()
 

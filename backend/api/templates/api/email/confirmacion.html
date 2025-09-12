@@ -38,85 +38,51 @@
       .content p {
         margin-bottom: 15px;
       }
-      .qr-code {
-        text-align: center;
-        margin: 30px 0;
+      .evento {
+        background: #eaf4ff;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 24px 0;
       }
-      .qr-code img {
-        max-width: 200px;
-        height: auto;
-        border: 1px solid #ddd;
-        padding: 5px;
-        background-color: #fff;
+      .logo {
+        display: block;
+        margin: 0 auto 24px auto;
+        max-width: 180px;
+      }
+      .btn {
+        display: inline-block;
+        background: #0056b3;
+        color: #fff !important;
+        padding: 12px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 24px;
       }
       .footer {
+        font-size: 0.9em;
+        color: #888;
+        margin-top: 32px;
         text-align: center;
-        padding-top: 20px;
-        border-top: 1px solid #eee;
-        font-size: 12px;
-        color: #777;
-      }
-      .button {
-        display: inline-block;
-        background-color: #007bff;
-        color: #ffffff !important;
-        padding: 10px 20px;
-        text-decoration: none;
-        border-radius: 5px;
-        margin-top: 20px;
-      }
-      .highlight {
-        color: #0056b3;
-        font-weight: bold;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="header">
-        <h1>¡Inscripción Confirmada!</h1>
+  <img src="cid:logo_congreso" alt="Logo Congreso UNAB" class="logo">
+      <h2>¡Hola {{ asistente_nombre }}!</h2>
+      <p>Tu preinscripción al <strong>{{ evento_nombre }}</strong> ha sido recibida con éxito.</p>
+      <div class="evento">
+        <strong>Fecha:</strong> {{ evento_fecha }}<br>
+        <strong>Hora:</strong> {{ evento_hora }}<br>
+        <strong>Ubicación:</strong> {{ evento_ubicacion }}
       </div>
-      <div class="content">
-        <p>Estimado/a <span class="highlight">{{ asistente_nombre }}</span>,</p>
-        <p>
-          Nos complace confirmar tu inscripción al
-          <span class="highlight">Congreso de Logística UNAB</span>.
-        </p>
-        <p>
-          Tu participación es muy importante para nosotros. A continuación,
-          encontrarás tu código QR personal. Por favor, preséntalo en la entrada
-          del evento para realizar tu check-in.
-        </p>
-
-        <div class="qr-code">
-          <p><strong>Tu Código QR de Acceso:</strong></p>
-          <img src="cid:qr_code_image" alt="Código QR de Acceso" />
-        </div>
-
-        <p>Detalles de tu inscripción:</p>
-        <ul>
-          <li><strong>Tipo de Inscripción:</strong> {{ tipo_inscripcion }}</li>
-          {% if empresa %}
-          <li><strong>Empresa:</strong> {{ empresa }}</li>
-          {% endif %} {% if nombre_grupo %}
-          <li><strong>Grupo:</strong> {{ nombre_grupo }}</li>
-          {% endif %}
-          <li><strong>Email Registrado:</strong> {{ asistente_email }}</li>
-        </ul>
-
-        <p>
-          Te esperamos para compartir conocimientos y experiencias en el mundo
-          de la logística.
-        </p>
-        <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-        <p>Saludos cordiales,</p>
-        <p>El Equipo del Congreso de Logística UNAB</p>
-      </div>
+      <p>Te invitamos a agendar el evento en tu calendario de Google para no perderte nada:</p>
+      <a href="{{ google_calendar_url }}" class="btn" target="_blank">Agendar en Google Calendar</a>
+      <p style="margin-top:32px;">Pronto recibirás más información sobre el evento y actividades especiales.</p>
       <div class="footer">
-        <p>
-          &copy; {{ year }} Congreso de Logística UNAB. Todos los derechos
-          reservados.
-        </p>
+        &copy; {{ year }} Congreso de Logística UNAB<br>
+        Este mensaje fue enviado automáticamente. No respondas a este correo.
       </div>
     </div>
   </body>
