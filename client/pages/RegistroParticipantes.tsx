@@ -159,15 +159,33 @@ const RegistroParticipantes: React.FC = () => {
           professional: "PROFESSIONAL",
           groupRepresentative: "GROUP_REPRESENTATIVE",
         };
+        
+        // Preparar datos base del asistente
+        const asistenteData: any = {
+          first_name: data.firstName,
+          last_name: data.lastName,
+          dni: data.dni,
+          email: data.email,
+          phone: data.phone,
+          profile_type: profileTypeMap[data.profileType] || data.profileType,
+        };
+
+        // Agregar campos específicos según el tipo de participante
+        if (data.profileType === "student") {
+          asistenteData.is_unab_student = data.isUnabStudent || false;
+          if (data.institution) asistenteData.institution = data.institution;
+          if (data.career) asistenteData.career = data.career;
+          if (data.yearOfStudy) asistenteData.year_of_study = data.yearOfStudy;
+        } else if (data.profileType === "teacher") {
+          if (data.institution) asistenteData.institution = data.institution;
+          if (data.careerTaught) asistenteData.career_taught = data.careerTaught;
+        } else if (data.profileType === "professional") {
+          if (data.workArea) asistenteData.work_area = data.workArea;
+          if (data.occupation) asistenteData.occupation = data.occupation;
+        }
+
         const dataToSend = {
-          asistente: {
-            first_name: data.firstName,
-            last_name: data.lastName,
-            dni: data.dni,
-            email: data.email,
-            phone: data.phone,
-            profile_type: profileTypeMap[data.profileType] || data.profileType,
-          },
+          asistente: asistenteData,
         };
         response = await inscribirIndividual(dataToSend);
       }

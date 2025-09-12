@@ -22,6 +22,7 @@ import GenerarQRs from "./pages/GenerarQRs";
 import HistoriaCampus from "./pages/HistoriaCampus";
 
 import SobreElCongreso from "./pages/SobreElCongreso";
+import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
 
@@ -34,22 +35,110 @@ const App = () => (
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/programa" element={<Programa />} />
-          <Route path="/registro" element={<SeleccionRegistro />} />
-          <Route path="/seleccion-registro" element={<SeleccionRegistro />} />
+          <Route
+            path="/programa"
+            element={
+              <Layout>
+                <Programa />
+              </Layout>
+            }
+          />
+          <Route
+            path="/registro"
+            element={
+              <Layout>
+                <SeleccionRegistro />
+              </Layout>
+            }
+          />
+          <Route
+            path="/seleccion-registro"
+            element={
+              <Layout>
+                <SeleccionRegistro />
+              </Layout>
+            }
+          />
           <Route
             path="/registro-participantes"
-            element={<RegistroParticipantes />}
+            element={
+              <Layout>
+                <RegistroParticipantes />
+              </Layout>
+            }
           />
-          <Route path="/registro-empresas" element={<RegistroEmpresas />} />
-          <Route path="/ponentes" element={<Ponentes />} />
-          <Route path="/empresas" element={<Empresas />} />
-          <Route path="/contacto" element={<Contacto />} />
-          <Route path="/historia-campus" element={<HistoriaCampus />} />
-          <Route path="/verificar-dni" element={<VerificarDNI />} />
-          <Route path="/registro-rapido" element={<RegistroRapido />} />
-          <Route path="/generar-qrs" element={<GenerarQRs />} />
-          <Route path="/sobre-el-congreso" element={<SobreElCongreso />} />
+          <Route
+            path="/registro-empresas"
+            element={
+              <Layout>
+                <RegistroEmpresas />
+              </Layout>
+            }
+          />
+          <Route
+            path="/ponentes"
+            element={
+              <Layout>
+                <Ponentes />
+              </Layout>
+            }
+          />
+          <Route
+            path="/empresas"
+            element={
+              <Layout>
+                <Empresas />
+              </Layout>
+            }
+          />
+          <Route
+            path="/contacto"
+            element={
+              <Layout>
+                <Contacto />
+              </Layout>
+            }
+          />
+          <Route
+            path="/historia-campus"
+            element={
+              <Layout>
+                <HistoriaCampus />
+              </Layout>
+            }
+          />
+          <Route
+            path="/verificar-dni"
+            element={
+              <Layout>
+                <VerificarDNI />
+              </Layout>
+            }
+          />
+          <Route
+            path="/registro-rapido"
+            element={
+              <Layout>
+                <RegistroRapido />
+              </Layout>
+            }
+          />
+          <Route
+            path="/generar-qrs"
+            element={
+              <Layout>
+                <GenerarQRs />
+              </Layout>
+            }
+          />
+          <Route
+            path="/sobre-el-congreso"
+            element={
+              <Layout>
+                <SobreElCongreso />
+              </Layout>
+            }
+          />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
