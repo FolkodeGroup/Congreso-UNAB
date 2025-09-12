@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Select from "react-select";
 import { useForm, useFieldArray, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -99,6 +100,7 @@ const RegistroParticipantes: React.FC = () => {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
     reset,
     watch,
@@ -106,6 +108,16 @@ const RegistroParticipantes: React.FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues: { profileType: "visitor" },
   });
+
+  // Cargar instituciones desde JSON
+  const [instituciones, setInstituciones] = useState<{ label: string; value: string }[]>([]);
+  useEffect(() => {
+    import("../data/instituciones-argentina.json").then((data) => {
+      setInstituciones(
+        (data.default || data).map((nombre: string) => ({ label: nombre, value: nombre }))
+      );
+    });
+  }, []);
 
   // Watch for profileType changes to conditionally reset fields
   React.useEffect(() => {
@@ -372,11 +384,13 @@ const RegistroParticipantes: React.FC = () => {
                 >
                   ¿En qué institución estudias?
                 </label>
-                <input
-                  type="text"
+                <Select
                   id="institution"
-                  {...register("institution")}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  options={instituciones}
+                  placeholder="Buscar institución..."
+                  onChange={(option) => setValue("institution", option?.value || "")}
+                  className="mt-1"
+                  isClearable
                 />
                 {getErrorMessage("institution") && (
                   <p className="text-red-500 text-xs mt-1">
