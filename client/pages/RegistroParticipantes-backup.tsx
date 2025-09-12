@@ -23,9 +23,8 @@ import {
   Users, 
   IdCard,
   CheckCircle
-} from "lucide-react";
+} from "lucide-react"; // Importar funciones de la API
 
-// Schemas de validación (mantenidos igual)
 const participantSchema = z.object({
   firstName: z.string().min(1, "El nombre es requerido"),
   lastName: z.string().min(1, "El apellido es requerido"),
@@ -116,14 +115,15 @@ type FormData = z.infer<typeof formSchema>;
 const RegistroParticipantes: React.FC = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [profileType, setProfileType] = useState<FormData["profileType"]>("visitor");
+  const [profileType, setProfileType] =
+    useState<FormData["profileType"]>("visitor");
 
   const {
     register,
     handleSubmit,
     control,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
     watch,
   } = useForm<FormData>({
@@ -133,7 +133,6 @@ const RegistroParticipantes: React.FC = () => {
 
   // Cargar instituciones desde JSON
   const [instituciones, setInstituciones] = useState<{ label: string; value: string }[]>([]);
-  
   useEffect(() => {
     import("../data/instituciones-argentina.json").then((data) => {
       setInstituciones(
@@ -186,6 +185,7 @@ const RegistroParticipantes: React.FC = () => {
         response = await inscribirGrupal(dataToSend);
       } else {
         // Estructura esperada por el backend
+        // Traducción de profile_type a los valores esperados por el backend
         const profileTypeMap: Record<string, string> = {
           visitor: "VISITOR",
           student: "STUDENT",
@@ -194,6 +194,7 @@ const RegistroParticipantes: React.FC = () => {
           groupRepresentative: "GROUP_REPRESENTATIVE",
         };
         
+        // Preparar datos base del asistente
         const asistenteData: any = {
           first_name: data.firstName,
           last_name: data.lastName,
@@ -227,6 +228,7 @@ const RegistroParticipantes: React.FC = () => {
         setShowModal(true);
         reset();
       } else {
+        // Mostrar el error real del backend
         let errorMsg = "";
         if (response && typeof response === "object") {
           errorMsg = JSON.stringify(response);
@@ -237,7 +239,9 @@ const RegistroParticipantes: React.FC = () => {
       }
     } catch (error) {
       console.error("Error en la inscripción:", error);
-      alert("Hubo un error al procesar la inscripción. Por favor, inténtalo de nuevo.");
+      alert(
+        "Hubo un error al procesar la inscripción. Por favor, inténtalo de nuevo.",
+      );
     }
   };
 
@@ -298,7 +302,6 @@ const RegistroParticipantes: React.FC = () => {
           description="Complete el formulario con sus datos para registrarse en el Congreso de Logística y Transporte UNaB 2025"
         >
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Tipo de Participante */}
             <FormSection title="Información del Participante" description="Seleccione el tipo de participante y complete sus datos personales">
               <FormSelect
                 label="Tipo de Participante"
@@ -316,7 +319,6 @@ const RegistroParticipantes: React.FC = () => {
               />
             </FormSection>
 
-            {/* Datos Personales */}
             <FormSection title="Datos Personales">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormInput
@@ -361,7 +363,7 @@ const RegistroParticipantes: React.FC = () => {
               />
             </FormSection>
 
-            {/* Campos condicionales por tipo de participante */}
+        {/* Conditional Fields */}
             {profileType === "student" && (
               <FormSection title="Información Académica" description="Complete los datos sobre su formación académica">
                 <FormCheckbox
@@ -497,110 +499,182 @@ const RegistroParticipantes: React.FC = () => {
               </FormSection>
             )}
 
-            {profileType === "groupRepresentative" && (
-              <FormSection title="Información del Grupo" description="Complete los datos del grupo que representa">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormInput
-                    label="Nombre del grupo"
-                    icon={<Users className="h-4 w-4" />}
-                    placeholder="Ej: Asociación de Transportistas"
-                    {...register("groupName")}
-                    error={getErrorMessage("groupName")}
+        {profileType === "groupRepresentative" && (
+          <>
+            <div>
+              <label
+                htmlFor="groupName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Nombre del Grupo
+              </label>
+              <input
+                type="text"
+                id="groupName"
+                {...register("groupName")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("groupName") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("groupName")}
+                </p>
+              )}
+            </div>
+            <div>
+              <label
+                htmlFor="groupMunicipality"
+                className="block text-sm font-medium text-gray-700"
+              >
+                ¿A qué partido pertenece tu institución? (Si aplica)
+              </label>
+              <input
+                type="text"
+                id="groupMunicipality"
+                {...register("groupMunicipality")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("groupMunicipality") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("groupMunicipality")}
+                </p>
+              )}
+            </div>
+            <div>
+              <label
+                htmlFor="institutionOrWorkplace"
+                className="block text-sm font-medium text-gray-700"
+              >
+                ¿En qué institución estudias o trabajas? (Si aplica)
+              </label>
+              <input
+                type="text"
+                id="institutionOrWorkplace"
+                {...register("institutionOrWorkplace")}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+              {getErrorMessage("institutionOrWorkplace") && (
+                <p className="text-red-500 text-xs mt-1">
+                  {getErrorMessage("institutionOrWorkplace")}
+                </p>
+              )}
+            </div>
+
+            <h2 className="text-xl font-semibold mt-6 mb-2">
+              Integrantes del Grupo
+            </h2>
+            {fields.map((item, index) => (
+              <div key={item.id} className="border p-4 rounded-md space-y-2">
+                <h3 className="font-medium">Integrante #{index + 1}</h3>
+                <div>
+                  <label
+                    htmlFor={`groupMembers.${index}.firstName`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Nombre
+                  </label>
+                  <input
+                    type="text"
+                    id={`groupMembers.${index}.firstName`}
+                    {...register(`groupMembers.${index}.firstName`)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                   />
-                  <FormInput
-                    label="Municipio del grupo"
-                    icon={<Building2 className="h-4 w-4" />}
-                    placeholder="Opcional"
-                    {...register("groupMunicipality")}
-                    error={getErrorMessage("groupMunicipality")}
-                  />
-                </div>
-                <FormInput
-                  label="Institución o lugar de trabajo"
-                  icon={<Building2 className="h-4 w-4" />}
-                  placeholder="Opcional"
-                  {...register("institutionOrWorkplace")}
-                  error={getErrorMessage("institutionOrWorkplace")}
-                />
-
-                <div className="border-t border-slate-200 pt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-slate-900">Integrantes del Grupo</h3>
-                    <FormButton
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => append({ firstName: "", lastName: "", dni: "", email: "" })}
-                    >
-                      + Agregar Integrante
-                    </FormButton>
-                  </div>
-
-                  <div className="space-y-6">
-                    {fields.map((item, index) => (
-                      <div key={item.id} className="bg-slate-50 rounded-xl p-6 space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-medium text-slate-900">Integrante #{index + 1}</h4>
-                          <FormButton
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remove(index)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            Remover
-                          </FormButton>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormInput
-                            label="Nombre"
-                            icon={<User className="h-4 w-4" />}
-                            {...register(`groupMembers.${index}.firstName`)}
-                            error={getErrorMessage(`groupMembers.${index}.firstName`)}
-                          />
-                          <FormInput
-                            label="Apellido"
-                            icon={<User className="h-4 w-4" />}
-                            {...register(`groupMembers.${index}.lastName`)}
-                            error={getErrorMessage(`groupMembers.${index}.lastName`)}
-                          />
-                          <FormInput
-                            label="DNI"
-                            icon={<IdCard className="h-4 w-4" />}
-                            {...register(`groupMembers.${index}.dni`)}
-                            error={getErrorMessage(`groupMembers.${index}.dni`)}
-                          />
-                          <FormInput
-                            type="email"
-                            label="Email"
-                            icon={<Mail className="h-4 w-4" />}
-                            {...register(`groupMembers.${index}.email`)}
-                            error={getErrorMessage(`groupMembers.${index}.email`)}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {getErrorMessage("groupMembers") && (
-                    <p className="text-xs text-red-600 font-medium mt-4">
-                      {getErrorMessage("groupMembers")}
+                  {getErrorMessage(`groupMembers.${index}.firstName`) && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {getErrorMessage(`groupMembers.${index}.firstName`)}
                     </p>
                   )}
                 </div>
-              </FormSection>
+                <div>
+                  <label
+                    htmlFor={`groupMembers.${index}.lastName`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Apellido
+                  </label>
+                  <input
+                    type="text"
+                    id={`groupMembers.${index}.lastName`}
+                    {...register(`groupMembers.${index}.lastName`)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                  {getErrorMessage(`groupMembers.${index}.lastName`) && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {getErrorMessage(`groupMembers.${index}.lastName`)}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label
+                    htmlFor={`groupMembers.${index}.dni`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    DNI
+                  </label>
+                  <input
+                    type="text"
+                    id={`groupMembers.${index}.dni`}
+                    {...register(`groupMembers.${index}.dni`)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                  {getErrorMessage(`groupMembers.${index}.dni`) && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {getErrorMessage(`groupMembers.${index}.dni`)}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label
+                    htmlFor={`groupMembers.${index}.email`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id={`groupMembers.${index}.email`}
+                    {...register(`groupMembers.${index}.email`)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                  {getErrorMessage(`groupMembers.${index}.email`) && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {getErrorMessage(`groupMembers.${index}.email`)}
+                    </p>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="mt-2 px-3 py-1 bg-red-500 text-white rounded-md text-sm"
+                >
+                  Eliminar Integrante
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() =>
+                append({ firstName: "", lastName: "", dni: "", email: "" })
+              }
+              className="mt-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700"
+            >
+              Agregar Integrante
+            </button>
+            {getErrorMessage("groupMembers") && (
+              <p className="text-red-500 text-xs mt-1">
+                {getErrorMessage("groupMembers")}
+              </p>
             )}
+          </>
+        )}
 
-            {/* Botón de envío */}
             <div className="pt-6 border-t border-slate-200">
               <FormButton
                 type="submit"
                 fullWidth
                 size="lg"
-                isLoading={isSubmitting}
                 icon={<CheckCircle className="h-5 w-5" />}
               >
-                {isSubmitting ? "Registrando..." : "Registrar Participante"}
+                Registrar Participante
               </FormButton>
             </div>
           </form>

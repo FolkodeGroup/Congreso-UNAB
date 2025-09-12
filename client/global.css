@@ -106,6 +106,15 @@
     --congress-cyan: 197 88% 44%;
     --congress-cyan-light: 197 81% 50%;
     --congress-white: 0 0% 100%;
+
+    /* Modern form gradients and effects */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--congress-cyan)) 0%, hsl(220, 91%, 60%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(210, 40%, 96%) 0%, hsl(220, 13%, 91%) 100%);
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+    --backdrop-blur: blur(20px);
   }
 }
 
@@ -304,6 +313,127 @@
 
 .card-enhanced:hover::before {
   opacity: 1;
+}
+
+/* Modern Form Styles */
+.form-glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--glass-border);
+}
+
+.form-shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+.form-shadow-hover {
+  box-shadow: var(--shadow-hover);
+}
+
+@keyframes slide-in-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+}
+
+/* Professional form backgrounds */
+.form-bg-gradient {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.05) 100%),
+    linear-gradient(45deg, 
+    hsl(var(--congress-blue)) 0%, 
+    hsl(var(--congress-cyan)) 100%);
+}
+
+/* React Select Modern Styles */
+.react-select-container .react-select__control {
+  border: 1px solid hsl(214, 32%, 91%) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(20px) !important;
+  min-height: 48px !important;
+  transition: all 0.2s ease !important;
+}
+
+.react-select-container .react-select__control:hover {
+  border-color: hsl(214, 32%, 85%) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+.react-select-container .react-select__control--is-focused {
+  border-color: hsl(197, 88%, 44%) !important;
+  border-width: 2px !important;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1) !important;
+  background: white !important;
+}
+
+.react-select-container .react-select__value-container {
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+}
+
+.react-select-container .react-select__placeholder {
+  color: hsl(215, 16%, 47%) !important;
+  font-weight: 500 !important;
+}
+
+.react-select-container .react-select__single-value {
+  color: hsl(222, 84%, 5%) !important;
+  font-weight: 500 !important;
+}
+
+.react-select-container .react-select__dropdown-indicator {
+  color: hsl(215, 16%, 47%) !important;
+  transition: color 0.2s ease !important;
+}
+
+.react-select-container .react-select__control--is-focused .react-select__dropdown-indicator {
+  color: hsl(197, 88%, 44%) !important;
+}
+
+.react-select-container .react-select__menu {
+  border-radius: 12px !important;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid hsl(214, 32%, 91%) !important;
+  overflow: hidden !important;
+}
+
+.react-select-container .react-select__option {
+  padding: 12px 16px !important;
+  transition: all 0.2s ease !important;
+}
+
+.react-select-container .react-select__option--is-focused {
+  background: hsl(197, 88%, 97%) !important;
+  color: hsl(197, 88%, 44%) !important;
+}
+
+.react-select-container .react-select__option--is-selected {
+  background: hsl(197, 88%, 44%) !important;
+  color: white !important;
 }
 
 /* Efectos de iconos flotantes */
