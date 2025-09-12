@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { CheckCircle } from "lucide-react";
 
 // Esquema de validación para registro rápido
@@ -38,8 +39,9 @@ const registroRapidoSchema = z.object({
 type RegistroRapidoFormData = z.infer<typeof registroRapidoSchema>;
 
 export default function RegistroRapido() {
-  const [completed, setCompleted] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [asistente, setAsistente] = useState<any>(null);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -83,7 +85,7 @@ export default function RegistroRapido() {
       const result = await response.json();
 
       if (response.ok) {
-        setCompleted(true);
+        setShowModal(true);
         setAsistente(data);
         toast.success("¡Registro Completado!", {
           description:
@@ -101,41 +103,30 @@ export default function RegistroRapido() {
     }
   };
 
-  if (completed && asistente) {
+  // Modal de confirmación y redirección
+  if (showModal && asistente) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="flex justify-center mb-6">
-              <CheckCircle className="h-16 w-16 text-green-500" />
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full text-center" onClick={e => e.stopPropagation()}>
+            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-green-600 mb-4">¡Registro Completado!</h2>
+            <div className="space-y-2 mb-4 text-left">
+              <div><strong>Nombre:</strong> {asistente.nombre_completo}</div>
+              <div><strong>Email:</strong> {asistente.email}</div>
+              <div><strong>DNI:</strong> {asistente.dni}</div>
+              <div><strong>Tipo:</strong> {asistente.tipo_inscripcion}</div>
             </div>
-            <h1 className="text-4xl font-bold text-green-600 mb-4">
-              ¡Registro Completado!
-            </h1>
-            <Card className="mt-8">
-              <CardContent className="pt-6">
-                <div className="space-y-4 text-left">
-                  <div>
-                    <strong>Nombre:</strong> {asistente.nombre_completo}
-                  </div>
-                  <div>
-                    <strong>Email:</strong> {asistente.email}
-                  </div>
-                  <div>
-                    <strong>DNI:</strong> {asistente.dni}
-                  </div>
-                  <div>
-                    <strong>Tipo:</strong> {asistente.tipo_inscripcion}
-                  </div>
-                </div>
-                <div className="mt-6 p-4 bg-green-50 rounded-lg">
-                  <p className="text-green-800 text-center">
-                    Tu asistencia ha sido confirmada automáticamente y tu
-                    certificado será enviado a tu correo electrónico.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <p className="mb-6 text-green-800">Tu asistencia ha sido confirmada automáticamente y tu certificado será enviado a tu correo electrónico.</p>
+            <button
+              className="px-4 py-2 bg-blue-600 text-white rounded font-semibold shadow hover:bg-blue-700"
+              onClick={() => {
+                setShowModal(false);
+                navigate("/seleccion-registro");
+              }}
+            >
+              OK
+            </button>
           </div>
         </div>
       </Layout>

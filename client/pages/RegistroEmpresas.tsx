@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -23,22 +23,57 @@ const companyRegistrationSchema = z.object({
 type CompanyRegistrationFormData = z.infer<typeof companyRegistrationSchema>;
 
 const RegistroEmpresas: React.FC = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<CompanyRegistrationFormData>({
     resolver: zodResolver(companyRegistrationSchema),
   });
 
+  // Simulación de API call y éxito
   const onSubmit = (data: CompanyRegistrationFormData) => {
     console.log("Formulario de Empresa Enviado:", data);
-    // Placeholder for API call
-    alert("Formulario de empresa enviado. (Simulado)");
+    // Aquí iría la llamada real a la API
+    setShowModal(true);
+    reset();
+  };
+
+  // Redirección tras cerrar el modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setRedirecting(true);
+    setTimeout(() => {
+      window.location.href = "/seleccion-registro";
+    }, 300);
   };
 
   return (
     <div className="container mx-auto p-4">
+      {/* Modal de confirmación */}
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+          onClick={handleCloseModal}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full text-center"
+            onClick={e => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold mb-4">¡Inscripción exitosa!</h2>
+            <p className="mb-6">Se ha enviado un email de confirmación a la dirección registrada.</p>
+            <button
+              className="px-4 py-2 bg-blue-600 text-white rounded font-semibold shadow hover:bg-blue-700"
+              onClick={handleCloseModal}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
       <h1 className="text-2xl font-bold mb-4">Inscripción para Empresas</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>

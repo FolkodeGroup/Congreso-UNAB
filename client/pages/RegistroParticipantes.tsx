@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { useForm, useFieldArray, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -93,6 +94,8 @@ const formSchema = z
 type FormData = z.infer<typeof formSchema>;
 
 const RegistroParticipantes: React.FC = () => {
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
   const [profileType, setProfileType] =
     useState<FormData["profileType"]>("visitor");
 
@@ -203,7 +206,7 @@ const RegistroParticipantes: React.FC = () => {
       }
 
       if (response && response.status === "success") {
-        alert("¡Inscripción exitosa!");
+        setShowModal(true);
         reset();
       } else {
         // Mostrar el error real del backend
@@ -241,6 +244,33 @@ const RegistroParticipantes: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
+      {/* Modal de confirmación */}
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+          onClick={() => {
+            setShowModal(false);
+            navigate("/seleccion-registro");
+          }}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold mb-4">¡Inscripción exitosa!</h2>
+            <p className="mb-6">Se ha enviado un email de confirmación a la dirección registrada.</p>
+            <button
+              className="px-4 py-2 bg-blue-600 text-white rounded font-semibold shadow hover:bg-blue-700"
+              onClick={() => {
+                setShowModal(false);
+                navigate("/seleccion-registro");
+              }}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
       <h1 className="text-2xl font-bold mb-4">
         Inscripción para Participantes
       </h1>
@@ -449,11 +479,13 @@ const RegistroParticipantes: React.FC = () => {
               >
                 Institución
               </label>
-              <input
-                type="text"
+              <Select
                 id="institution"
-                {...register("institution")}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                options={instituciones}
+                placeholder="Buscar institución..."
+                onChange={(option) => setValue("institution", option?.value || "")}
+                className="mt-1"
+                isClearable
               />
               {getErrorMessage("institution") && (
                 <p className="text-red-500 text-xs mt-1">
