@@ -1,4 +1,3 @@
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -106,8 +105,7 @@ export default function RegistroRapido() {
   // Modal de confirmación y redirección
   if (showModal && asistente) {
     return (
-      <Layout>
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full text-center" onClick={e => e.stopPropagation()}>
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-green-600 mb-4">¡Registro Completado!</h2>
@@ -129,12 +127,11 @@ export default function RegistroRapido() {
             </button>
           </div>
         </div>
-      </Layout>
     );
   }
 
   return (
-    <Layout>
+    <>
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-2xl mx-auto text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -260,6 +257,6 @@ export default function RegistroRapido() {
           </CardContent>
         </Card>
       </div>
-    </Layout>
+    </>
   );
 }

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -137,7 +136,7 @@ export default function Ponentes() {
     ));
 
   return (
-    <Layout>
+    <>
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -221,6 +220,6 @@ export default function Ponentes() {
           </div>
         )}
       </div>
-    </Layout>
+    </>
   );
 }

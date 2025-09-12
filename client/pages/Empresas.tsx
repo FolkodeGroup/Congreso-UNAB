@@ -1,4 +1,3 @@
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,7 +22,7 @@ import LargeLogoCarousel from "@/components/LargeLogoCarousel";
 
 export default function Empresas() {
   return (
-    <Layout>
+    <>
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-congress-blue to-congress-blue-dark text-white py-16">
         <div className="container mx-auto px-4">
@@ -393,6 +392,6 @@ export default function Empresas() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

@@ -1,11 +1,10 @@
 import React from "react";
 import ImageSlider from "@/components/ImageSlider";
 import ModernFadeSlider from "@/components/ModernFadeSlider";
-import Layout from "@/components/Layout";
 
 export default function HistoriaCampus() {
   return (
-    <Layout>
+    <>
       <main className="min-h-screen font-sans antialiased text-gray-800">
         {/* Sección de Encabezado con animaciones */}
         <section className="bg-white py-16 md:py-24 text-center">
@@ -194,6 +193,6 @@ export default function HistoriaCampus() {
           </div>
         </section>
       </main>
-    </Layout>
+    </>
   );
 }

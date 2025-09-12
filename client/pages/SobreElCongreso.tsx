@@ -1,4 +1,3 @@
-import Layout from "@/components/Layout";
 import {
   Card,
   CardContent,
@@ -10,7 +9,7 @@ import { FiUsers, FiClock, FiAward } from "react-icons/fi";
 
 export default function SobreElCongreso() {
   return (
-    <Layout>
+    <>
       <section className="py-16 bg-gray-50 degradado-section">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-12">
@@ -132,6 +131,6 @@ export default function SobreElCongreso() {
           </section>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

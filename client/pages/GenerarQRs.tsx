@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, QrCode } from "lucide-react";
@@ -106,7 +105,7 @@ export default function GenerarQRs() {
   }, []);
 
   return (
-    <Layout>
+    <>
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -248,6 +247,6 @@ export default function GenerarQRs() {
           </div> */}
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

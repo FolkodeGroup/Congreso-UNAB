@@ -1,4 +1,3 @@
-import Layout from "@/components/Layout";
 import { useState, useEffect } from "react";
 
 // Nueva estructura de datos para actividades con hora de inicio y fin
@@ -269,7 +268,7 @@ export default function Programa() {
   }
 
   return (
-    <Layout>
+    <>
       <div className="container mx-auto px-2 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -442,6 +441,6 @@ export default function Programa() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

@@ -1,10 +1,9 @@
-import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Instagram, MapPin, Linkedin } from "lucide-react";
 
 export default function Contacto() {
   return (
-    <Layout>
+    <>
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -95,6 +94,6 @@ export default function Contacto() {
           {/* Aquí podrías integrar un formulario de contacto si fuera necesario */}
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
