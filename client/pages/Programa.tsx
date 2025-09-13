@@ -9,7 +9,19 @@ import MenuItem from '@mui/material/MenuItem';
 import Chip from '@mui/material/Chip';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { Category, School, Person } from '@mui/icons-material';
+import { 
+  Category, 
+  School, 
+  Person,
+  LocalShipping,
+  DirectionsCar,
+  Inventory,
+  Computer,
+  Nature,
+  Lightbulb,
+  Business,
+  Group
+} from '@mui/icons-material';
 import { motion } from "framer-motion";
 
 // Nueva estructura de datos para actividades con hora de inicio y fin
@@ -62,14 +74,14 @@ function getHorariosFijos() {
 
 // Categorías de tracks del congreso de logística y transporte
 const TRACK_CATEGORIES = {
-  "LOGÍSTICA": { bg: "#1e40af", text: "#ffffff" }, // azul institucional
-  "TRANSPORTE": { bg: "#059669", text: "#ffffff" }, // verde
-  "SUPPLY CHAIN": { bg: "#dc2626", text: "#ffffff" }, // rojo
-  "TECNOLOGÍA": { bg: "#7c3aed", text: "#ffffff" }, // violeta
-  "SOSTENIBILIDAD": { bg: "#ea580c", text: "#ffffff" }, // naranja
-  "INNOVACIÓN": { bg: "#0891b2", text: "#ffffff" }, // cyan
-  "GESTIÓN": { bg: "#be185d", text: "#ffffff" }, // rosa
-  "NETWORKING": { bg: "#374151", text: "#ffffff" }, // gris
+  "LOGÍSTICA": { bg: "#1e40af", text: "#ffffff", icon: LocalShipping }, // azul institucional
+  "TRANSPORTE": { bg: "#059669", text: "#ffffff", icon: DirectionsCar }, // verde
+  "SUPPLY CHAIN": { bg: "#dc2626", text: "#ffffff", icon: Inventory }, // rojo
+  "TECNOLOGÍA": { bg: "#7c3aed", text: "#ffffff", icon: Computer }, // violeta
+  "SOSTENIBILIDAD": { bg: "#ea580c", text: "#ffffff", icon: Nature }, // naranja
+  "INNOVACIÓN": { bg: "#0891b2", text: "#ffffff", icon: Lightbulb }, // cyan
+  "GESTIÓN": { bg: "#be185d", text: "#ffffff", icon: Business }, // rosa
+  "NETWORKING": { bg: "#374151", text: "#ffffff", icon: Group }, // gris
 } as const;
 
 // Paleta para aulas (más suave para el fondo de las tarjetas)
@@ -521,15 +533,23 @@ export default function Programa() {
                 onChange={(e) => setFiltroCategoria(e.target.value)}
                 sx={{ borderRadius: 2, fontWeight: 500 }}
               >
-                <MenuItem value="TODOS">Todos los tracks</MenuItem>
-                {categorias.map(cat => (
-                  <MenuItem key={cat} value={cat}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Category sx={{ color: TRACK_CATEGORIES[cat]?.bg, fontSize: 18 }} />
-                      {cat}
-                    </Box>
-                  </MenuItem>
-                ))}
+                <MenuItem value="TODOS">
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Category sx={{ color: '#666', fontSize: 18 }} />
+                    Todos los tracks
+                  </Box>
+                </MenuItem>
+                {categorias.map(cat => {
+                  const IconComponent = TRACK_CATEGORIES[cat as keyof typeof TRACK_CATEGORIES]?.icon;
+                  return (
+                    <MenuItem key={cat} value={cat}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {IconComponent && <IconComponent sx={{ color: TRACK_CATEGORIES[cat as keyof typeof TRACK_CATEGORIES]?.bg, fontSize: 18 }} />}
+                        {cat}
+                      </Box>
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
             {/* Aula */}
@@ -566,14 +586,38 @@ export default function Programa() {
             />
             {/* Chips de filtros activos */}
             <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center', ml: 2 }}>
-              {filtroCategoria !== "TODOS" && (
-                <Chip label={filtroCategoria} color="primary" size="small" sx={{ bgcolor: TRACK_CATEGORIES[filtroCategoria]?.bg, color: '#fff', fontWeight: 500 }} onDelete={() => setFiltroCategoria("TODOS")} />
-              )}
+              {filtroCategoria !== "TODOS" && (() => {
+                const IconComponent = TRACK_CATEGORIES[filtroCategoria as keyof typeof TRACK_CATEGORIES]?.icon;
+                return (
+                  <Chip 
+                    icon={IconComponent ? <IconComponent sx={{ color: '#fff !important', fontSize: 16 }} /> : undefined}
+                    label={filtroCategoria} 
+                    color="primary" 
+                    size="small" 
+                    sx={{ bgcolor: TRACK_CATEGORIES[filtroCategoria as keyof typeof TRACK_CATEGORIES]?.bg, color: '#fff', fontWeight: 500 }} 
+                    onDelete={() => setFiltroCategoria("TODOS")} 
+                  />
+                );
+              })()}
               {filtroAula !== "TODAS" && (
-                <Chip label={filtroAula} color="secondary" size="small" sx={{ bgcolor: AULA_COLORS[filtroAula]?.border, color: '#fff', fontWeight: 500 }} onDelete={() => setFiltroAula("TODAS")} />
+                <Chip 
+                  icon={<School sx={{ color: '#fff !important', fontSize: 16 }} />}
+                  label={filtroAula} 
+                  color="secondary" 
+                  size="small" 
+                  sx={{ bgcolor: AULA_COLORS[filtroAula]?.border, color: '#fff', fontWeight: 500 }} 
+                  onDelete={() => setFiltroAula("TODAS")} 
+                />
               )}
               {filtroDisertante !== "TODOS" && (
-                <Chip label={filtroDisertante} color="default" size="small" sx={{ bgcolor: '#374151', color: '#fff', fontWeight: 500 }} onDelete={() => setFiltroDisertante("TODOS")} />
+                <Chip 
+                  icon={<Person sx={{ color: '#fff !important', fontSize: 16 }} />}
+                  label={filtroDisertante} 
+                  color="default" 
+                  size="small" 
+                  sx={{ bgcolor: '#374151', color: '#fff', fontWeight: 500 }} 
+                  onDelete={() => setFiltroDisertante("TODOS")} 
+                />
               )}
             </Box>
           </CardContent>
@@ -657,12 +701,16 @@ export default function Programa() {
                                     {/* Categoría Tag */}
                                     <div className="flex items-center justify-between mb-2">
                                       <span 
-                                        className="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wide"
+                                        className="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wide flex items-center gap-1"
                                         style={{ 
                                           backgroundColor: trackColor?.bg || aulaColor.border,
                                           color: trackColor?.text || 'white'
                                         }}
                                       >
+                                        {(() => {
+                                          const IconComponent = TRACK_CATEGORIES[actividad.categoria as keyof typeof TRACK_CATEGORIES]?.icon;
+                                          return IconComponent ? <IconComponent style={{ fontSize: 14, color: trackColor?.text || 'white' }} /> : null;
+                                        })()}
                                         {actividad.categoria}
                                       </span>
                                       <span className="text-xs text-gray-500 font-mono">
