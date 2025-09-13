@@ -71,7 +71,8 @@ export default function Programa() {
   useEffect(() => {
     const fetchPrograma = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/programa/");
+        const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+        const response = await fetch(`${apiUrl}/api/programa/`);
         if (!response.ok)
           throw new Error("No se pudo cargar la agenda desde el backend.");
         const data = await response.json();
@@ -410,7 +411,7 @@ export default function Programa() {
                   </li>
                 </ul>
               </div>
-              <div className="space-y-4 ml-20">
+              <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-congress-cyan mb-4">
                   Transporte
                 </h3>

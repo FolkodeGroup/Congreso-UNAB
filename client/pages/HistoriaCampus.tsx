@@ -1,15 +1,62 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ImageSlider from "@/components/ImageSlider";
-import ModernFadeSlider from "@/components/ModernFadeSlider";
 
 export default function HistoriaCampus() {
+  const heroImages = [
+    {
+      src: "/images/campus-01.jpg",
+      alt: "Vista aérea del campus actual UNaB",
+    },
+    {
+      src: "/images/campus-02.jpg",
+      alt: "Ingreso principal y jardines renovados",
+    },
+    {
+      src: "/images/campus-04.jpg",
+      alt: "Edificio universitario y áreas verdes",
+    },
+    {
+      src: "/images/Universidad.webp",
+      alt: "Fachada de la UNaB",
+    },
+  ];
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
+    }, 4000); // Change image every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
   return (
     <>
       <main className="min-h-screen font-sans antialiased text-gray-800">
-        {/* Sección de Encabezado con animaciones */}
-        <section className="bg-white py-16 md:py-24 text-center">
-          <div className="container mx-auto px-4 max-w-4xl animate-fade-in-down">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-congress-blue tracking-tight">
+        {/* Hero Section with Fading Background */}
+        <section
+          className="relative flex h-[60vh] items-center justify-center overflow-hidden text-center md:h-[70vh]"
+        >
+          {/* Background Images */}
+          {heroImages.map((image, index) => (
+            <div
+              key={image.src}
+              className="absolute inset-0 h-full w-full bg-cover bg-center transition-opacity duration-1000 ease-in-out"
+              style={{
+                backgroundImage: `url(${image.src})`,
+                opacity: index === currentImageIndex ? 1 : 0,
+              }}
+            />
+          ))}
+          {/* Overlay */}
+          <div
+            className="absolute inset-0 bg-black/50"
+            aria-hidden="true"
+          ></div>
+          {/* Content */}
+          <div className="container mx-auto px-4 max-w-4xl animate-fade-in-down relative z-10">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight [text-shadow:2px_2px_8px_rgba(0,0,0,0.6)]">
               Historia del Predio y la Universidad
             </h1>
           </div>
@@ -153,42 +200,6 @@ export default function HistoriaCampus() {
                   educación y cultura para la comunidad.
                 </p>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Sección 4: El predio en la actualidad */}
-        <section className="py-16 md:py-24 bg-white">
-          <div className="container mx-auto px-4 max-w-7xl text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-congress-cyan animate-fade-in-up">
-              El predio en la actualidad
-            </h2>
-            <div className="animate-fade-in-up mx-auto">
-              <ModernFadeSlider
-                images={[
-                  {
-                    src: "/images/campus-01.jpg",
-                    alt: "Vista aérea del campus actual UNaB",
-                    caption: "Vista aérea del campus actual UNaB",
-                  },
-                  {
-                    src: "/images/campus-02.jpg",
-                    alt: "Ingreso principal y jardines renovados",
-                    caption: "Ingreso principal y jardines renovados",
-                  },
-                  {
-                    src: "/images/campus-04.jpg",
-                    alt: "Edificio universitario y áreas verdes",
-                    caption: "Edificio universitario y áreas verdes",
-                  },
-                  {
-                    src: "/images/Universidad.webp",
-                    alt: "Fachada de la UNaB",
-                    caption: "Fachada de la UNaB",
-                  },
-                ]}
-                interval={2000}
-              />
             </div>
           </div>
         </section>

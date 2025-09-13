@@ -35,13 +35,14 @@ export default function Empresas() {
               confirmaron su participación en el congreso más importante de
               logística y transporte del país.
             </p>
+            <Link to="/contacto">
               <Button
                 size="xxl"
                 className="button-super-enhanced bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-bold px-16 py-8 text-xl shadow-4xl hover:shadow-4xl transform hover:scale-110 transition-all duration-300 animate-gentle-pulse hover:animate-none"
-                
               >
                 Participación 100% Gratuita
               </Button>
+            </Link>
           </div>
           {/* Cards de información principal */}
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -103,12 +104,12 @@ export default function Empresas() {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-blue/90 to-congress-cyan/80 p-6 transition-all duration-300 transform hover:scale-105">
+              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-blue/90 to-congress-cyan/80 p-6 transition-all duration-300 transform hover:scale-105 text-center">
                 <CardHeader className="flex flex-col items-center justify-center mb-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-cyan rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
                     <FiTrendingUp className="w-10 h-10 text-white" />
                   </div>
-                  <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-cyan transition-colors">
+                  <CardTitle className="text-2xl font-bold text-white group-hover:text-white transition-colors">
                     Visibilidad de Marca
                   </CardTitle>
                 </CardHeader>
@@ -121,12 +122,12 @@ export default function Empresas() {
                 </CardContent>
               </Card>
 
-              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-cyan/90 to-congress-blue/80 p-6 transition-all duration-300 transform hover:scale-105">
+              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-cyan/90 to-congress-blue/80 p-6 transition-all duration-300 transform hover:scale-105 text-center">
                 <CardHeader className="flex flex-col items-center justify-center mb-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
                     <FaHandshake className="w-10 h-10 text-white" />
                   </div>
-                  <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-blue transition-colors">
+                  <CardTitle className="text-2xl font-bold text-white group-hover:text-white transition-colors">
                     Networking Estratégico
                   </CardTitle>
                 </CardHeader>
@@ -139,12 +140,12 @@ export default function Empresas() {
                 </CardContent>
               </Card>
 
-              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-blue-dark/90 to-congress-cyan/80 p-6 transition-all duration-300 transform hover:scale-105">
+              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-blue-dark/90 to-congress-cyan/80 p-6 transition-all duration-300 transform hover:scale-105 text-center">
                 <CardHeader className="flex flex-col items-center justify-center mb-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-congress-blue-dark to-congress-cyan rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-blue-dark to-congress-blue rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
                     <FiStar className="w-10 h-10 text-white" />
                   </div>
-                  <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-cyan-light transition-colors text-center">
+                  <CardTitle className="text-2xl font-bold text-white group-hover:text-white transition-colors text-center">
                     Liderazgo de Pensamiento
                   </CardTitle>
                 </CardHeader>
@@ -156,12 +157,12 @@ export default function Empresas() {
                 </CardContent>
               </Card>
 
-              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-cyan-light/90 to-congress-blue-dark/80 p-6 transition-all duration-300 transform hover:scale-105">
+              <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-cyan-light/90 to-congress-blue-dark/80 p-6 transition-all duration-300 transform hover:scale-105 text-center">
                 <CardHeader className="flex flex-col items-center justify-center mb-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan-light to-congress-blue-dark rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                  <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan-light to-congress-blue rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
                     <FiHome className="w-10 h-10 text-white" />
                   </div>
-                  <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-blue transition-colors">
+                  <CardTitle className="text-2xl font-bold text-white group-hover:text-white transition-colors">
                     Desarrollo de Negocio
                   </CardTitle>
                 </CardHeader>
@@ -365,7 +366,7 @@ export default function Empresas() {
                 Contactar para Participar
               </Button>
             </Link>
-            <Link to="/registro">
+            <Link to="/seleccion-registro">
               <Button
                 size="xl"
                 variant="outline"
