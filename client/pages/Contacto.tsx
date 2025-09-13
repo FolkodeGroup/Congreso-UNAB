@@ -15,6 +15,17 @@ export default function Contacto() {
           </p>
         </div>
 
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+            ¿Tienes alguna pregunta?
+          </h2>
+          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+            Si necesitas asistencia inmediata o tienes consultas específicas,
+            por favor, envíanos un correo directamente.
+          </p>
+          {/* Aquí podrías integrar un formulario de contacto si fuera necesario */}
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Correo Electrónico */}
           <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-blue/90 to-congress-cyan/80 p-6 transition-all duration-300 transform hover:scale-105 text-center">
@@ -101,18 +112,6 @@ export default function Contacto() {
               </a>
             </CardContent>
           </Card>
-        </div>
-
-        <div className="mt-12 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
-            ¿Tienes alguna pregunta?
-          </h2>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto mb-8">
-            Si necesitas asistencia inmediata o tienes consultas específicas,
-            por favor, utiliza el formulario de contacto en nuestra página
-            principal o envíanos un correo directamente.
-          </p>
-          {/* Aquí podrías integrar un formulario de contacto si fuera necesario */}
         </div>
       </div>
     </>
