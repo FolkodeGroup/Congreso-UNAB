@@ -410,7 +410,7 @@ export default function Programa() {
                   </li>
                 </ul>
               </div>
-              <div className="space-y-4 ml-20">
+              <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-congress-cyan mb-4">
                   Transporte
                 </h3>

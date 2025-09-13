@@ -136,7 +136,7 @@ export default function Index() {
                 Te invitamos a participar en la modalidad que prefieras.
                 <span className="font-semibold text-congress-blue">
                   {" "}
-                  Todas las modalidades son sin costo
+                  Todas las modalidades son sin costo{" "}
                 </span>
                 para instituciones y empresas que deseen sumarse.
               </p>
@@ -222,7 +222,7 @@ export default function Index() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-congress-cyan/20 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-congress-cyan-light/20 rounded-full blur-2xl"></div>
 
-                <div className="relative z-10">
+                <div className="relative z-10 text-center">
                   <h3 className="text-2xl font-bold text-white mb-4 flex items-center justify-center gap-3">
                     <span className="text-3xl">💡</span>
                     ¿Interesado en Participar como Empresa?
