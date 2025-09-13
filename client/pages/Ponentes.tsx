@@ -288,9 +288,20 @@ export default function Ponentes() {
             <p>No hay disertantes para mostrar.</p>
           </div>
         ) : (
-          <div
+          <motion.div
             className="flex flex-row gap-6 z-50 w-full overflow-x-auto pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:overflow-x-visible"
             style={{ WebkitOverflowScrolling: 'touch' }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.25,
+                },
+              },
+            }}
           >
             {disertantes.map((disertante, idx) => {
               const rotations = [
@@ -307,9 +318,13 @@ export default function Ponentes() {
                 fotoUrl = `${apiUrl}/media/${cleanPath}`;
               }
               return (
-                <div
+                <motion.div
                   key={`${disertante.nombre}-${idx}`}
                   className={`flex-shrink-0 flex flex-col items-center group w-72 sm:w-full ${rotation}`}
+                  variants={{
+                    hidden: { opacity: 0, y: 80 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } },
+                  }}
                 >
                   {/* Modern Polaroid Card */}
                   <div
@@ -340,10 +355,10 @@ export default function Ponentes() {
                       {disertante.bio}
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         )}
       </div>
     </>
