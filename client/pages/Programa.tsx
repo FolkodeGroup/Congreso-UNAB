@@ -27,11 +27,20 @@ import {
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from "framer-motion";
 
+// Información completa del disertante
+type DisertanteInfo = {
+  nombre: string;
+  bio: string;
+  foto_url: string;
+  tema_presentacion: string;
+};
+
 // Nueva estructura de datos para actividades con hora de inicio y fin
 type ActividadCalendar = {
   aula: string;
   titulo: string;
   disertante: string;
+  disertanteInfo?: DisertanteInfo | null; // Información completa del disertante
   descripcion?: string;
   inicio: string; // 'HH:MM'
   fin: string; // 'HH:MM'
@@ -137,6 +146,35 @@ function getDisertanteColor(disertante: string): string {
   return colorsPool[colorIndex];
 }
 
+// Función para construir la URL completa de la imagen del disertante
+function getDisertanteImageUrl(fotoUrl: string): string {
+  if (!fotoUrl) return "";
+  
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+  
+  // Si la URL ya incluye la ruta completa, normalizarla
+  if (fotoUrl.includes("Congreso-UNAB/backend/media/")) {
+    // Extraer solo la parte de ponencias/imagen.png
+    const pathParts = fotoUrl.split("media/");
+    if (pathParts.length > 1) {
+      return `${apiUrl}/media/${pathParts[1]}`;
+    }
+  }
+  
+  // Si es solo ponencias/imagen.png
+  if (fotoUrl.startsWith("ponencias/")) {
+    return `${apiUrl}/media/${fotoUrl}`;
+  }
+  
+  // Si es una URL completa ya
+  if (fotoUrl.startsWith("http")) {
+    return fotoUrl;
+  }
+  
+  // Default: asumir que es una ruta relativa en media
+  return `${apiUrl}/media/${fotoUrl}`;
+}
+
 // Estado para actividades y carga
 export default function Programa() {
   const [actividades, setActividades] = useState<ActividadCalendar[] | null>(
@@ -156,19 +194,29 @@ export default function Programa() {
         const data = await response.json();
         // Mapear los datos del backend al formato visual
         const mapped: ActividadCalendar[] = data.map((item: any) => {
-          // Extraer nombre del disertante si es objeto
+          // Extraer información completa del disertante
           let disertante = "";
+          let disertanteInfo = null;
+          
           if (typeof item.disertante === "string") {
             disertante = item.disertante;
           } else if (item.disertante && typeof item.disertante === "object") {
             disertante = item.disertante.nombre || "";
+            disertanteInfo = {
+              nombre: item.disertante.nombre || "",
+              bio: item.disertante.bio || "",
+              foto_url: item.disertante.foto_url || "",
+              tema_presentacion: item.disertante.tema_presentacion || ""
+            };
           }
+          
           // Usar el campo correcto para aula
           const aula = item.aula || item.sala || "Aula Magna";
           return {
             aula,
             titulo: item.titulo,
             disertante,
+            disertanteInfo, // Agregar información completa del disertante
             descripcion: item.descripcion || "",
             inicio: item.hora_inicio.substring(0, 5),
             fin: item.hora_fin.substring(0, 5),
@@ -212,6 +260,7 @@ export default function Programa() {
       aula: "Aula Magna",
       titulo: "Apertura y bienvenida",
       disertante: "Comité Organizador",
+      disertanteInfo: null,
       descripcion: "Bienvenida y apertura general del congreso",
       inicio: "10:00",
       fin: "10:30",
@@ -222,6 +271,7 @@ export default function Programa() {
       aula: "Aula Magna",
       titulo: "Tendencias en Logística 4.0",
       disertante: "Ing. Laura Pérez",
+      disertanteInfo: null,
       descripcion: "Automatización y tecnología en la cadena de suministro",
       inicio: "10:30",
       fin: "11:30",
@@ -232,6 +282,7 @@ export default function Programa() {
       aula: "Aula Magna",
       titulo: "Panel: Desafíos del e-commerce",
       disertante: "Varios Expertos",
+      disertanteInfo: null,
       descripcion: "Mesa redonda sobre logística en comercio electrónico",
       inicio: "12:00",
       fin: "13:00",
@@ -362,6 +413,7 @@ export default function Programa() {
       aula: "Aula 5",
       titulo: "Blockchain en Supply Chain",
       disertante: "Ing. María Santos",
+      disertanteInfo: null,
       descripcion: "Trazabilidad y transparencia con blockchain",
       inicio: "14:00",
       fin: "15:00",
@@ -372,6 +424,7 @@ export default function Programa() {
       aula: "Aula 6",
       titulo: "Logística urbana de última milla",
       disertante: "Lic. Roberto González",
+      disertanteInfo: null,
       descripcion: "Desafíos y soluciones para entregas urbanas",
       inicio: "11:00",
       fin: "12:30",
@@ -382,6 +435,7 @@ export default function Programa() {
       aula: "Aula 6",
       titulo: "Gestión de inventarios Just-in-Time",
       disertante: "Ing. Ana Rodríguez",
+      disertanteInfo: null,
       descripcion: "Optimización de inventarios y reducción de costos",
       inicio: "15:00",
       fin: "16:00",
@@ -392,6 +446,7 @@ export default function Programa() {
       aula: "Aula 7",
       titulo: "Energías renovables en transporte",
       disertante: "Dr. Miguel Torres",
+      disertanteInfo: null,
       descripcion: "Transición hacia combustibles limpios",
       inicio: "10:30",
       fin: "12:00",
@@ -998,11 +1053,36 @@ export default function Programa() {
                   <Close className="text-white text-xl" />
                 </button>
 
-                {/* Imagen del disertante (placeholder) */}
+                {/* Imagen del disertante */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-32 h-32 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
-                    <Person className="text-white text-6xl" />
-                  </div>
+                  {modalActividad.disertanteInfo?.foto_url ? (
+                    <div className="w-44 h-44 rounded-full overflow-hidden bg-white/10 backdrop-blur-md border-4 border-white/30 shadow-2xl">
+                      <img
+                        src={getDisertanteImageUrl(modalActividad.disertanteInfo.foto_url)}
+                        alt={modalActividad.disertante}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // Fallback si la imagen no carga
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const parent = target.parentElement;
+                          if (parent) {
+                            parent.innerHTML = `
+                              <div class="w-full h-full bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
+                                <svg class="text-white text-8xl w-22 h-22" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                              </div>
+                            `;
+                          }
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-44 h-44 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl">
+                      <Person className="text-white text-8xl" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Logo/branding */}
@@ -1049,9 +1129,20 @@ export default function Programa() {
                   <h3 className="text-lg font-semibold text-gray-800 mb-2">
                     {modalActividad.disertante}
                   </h3>
-                  <p className="text-gray-600 text-sm">
-                    Especialista en {modalActividad.categoria.toLowerCase()}
-                  </p>
+                  {modalActividad.disertanteInfo?.bio ? (
+                    <p className="text-gray-600 text-sm leading-relaxed mb-2">
+                      {modalActividad.disertanteInfo.bio}
+                    </p>
+                  ) : (
+                    <p className="text-gray-600 text-sm">
+                      Especialista en {modalActividad.categoria.toLowerCase()}
+                    </p>
+                  )}
+                  {modalActividad.disertanteInfo?.tema_presentacion && modalActividad.disertanteInfo.tema_presentacion !== "Título de la Presentación" && (
+                    <p className="text-congress-blue text-sm font-medium">
+                      📝 {modalActividad.disertanteInfo.tema_presentacion}
+                    </p>
+                  )}
                 </div>
 
                 {/* Descripción */}
