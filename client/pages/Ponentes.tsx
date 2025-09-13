@@ -145,9 +145,11 @@ export default function Ponentes() {
       </Card>
     ));
 
+  // Log para depuración
+  console.log('Disertantes:', disertantes);
   return (
     <>
-      <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-white to-congress-blue/10 px-2 py-16 flex flex-col items-center relative overflow-x-hidden">
+      <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-white to-congress-blue/10 px-2 py-16 flex flex-col items-center relative overflow-x-auto">
         {/* Fondo decorativo elegante con efecto parallax */}
         <motion.div 
           className="absolute inset-0 pointer-events-none z-0"
@@ -272,33 +274,27 @@ export default function Ponentes() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-10 z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 z-50 w-full">
             {renderSkeletons()}
           </div>
         ) : error ? (
-          <div className="text-center text-red-500 bg-red-100 p-4 rounded-xl shadow-md z-10">
+          <div className="text-center text-red-500 bg-red-100 p-4 rounded-xl shadow-md z-50">
             <p>
               <strong>Error:</strong> {error}
             </p>
             <p>
               Asegúrate de que el servidor backend de Django esté corriendo en
-              http://127.0.0.1:8000
+              {apiUrl}
             </p>
           </div>
+        ) : disertantes.length === 0 ? (
+          <div className="text-center text-gray-500 bg-gray-100 p-4 rounded-xl shadow-md z-50">
+            <p>No hay disertantes para mostrar.</p>
+          </div>
         ) : (
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-12 z-10"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.25,
-                },
-              },
-            }}
+          <div
+            className="flex flex-row gap-6 z-50 w-full overflow-x-auto pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:overflow-x-visible"
+            style={{ WebkitOverflowScrolling: 'touch' }}
           >
             {disertantes.map((disertante, idx) => {
               const rotations = [
@@ -315,23 +311,19 @@ export default function Ponentes() {
                 fotoUrl = `${apiUrl}/media/${cleanPath}`;
               }
               return (
-                <motion.div
+                <div
                   key={`${disertante.nombre}-${idx}`}
-                  className="flex flex-col items-center group"
-                  variants={{
-                    hidden: { opacity: 0, y: 80 },
-                    visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } },
-                  }}
+                  className={`flex-shrink-0 flex flex-col items-center group w-72 sm:w-full ${rotation}`}
                 >
                   {/* Modern Polaroid Card */}
                   <div
-                    className={`relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-56 h-64 flex flex-col items-center justify-center ${rotation} group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5`}
+                    className="relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-64 h-64 flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5"
                   >
                     <div className="absolute inset-0 rounded-2xl pointer-events-none border border-congress-blue/20"></div>
                     <img
                       src={fotoUrl}
                       alt={disertante.nombre}
-                      className="w-44 h-44 object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl"
+                      className="w-full max-w-[90%] h-auto aspect-square object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl sm:w-32 sm:h-32 sm:max-w-none"
                       style={{ aspectRatio: "1/1" }}
                     />
                     {/* Minimalist screws */}
@@ -341,21 +333,21 @@ export default function Ponentes() {
                     <span className="absolute bottom-2 right-2 w-2 h-2 bg-congress-blue/30 rounded-full border border-congress-blue/40 shadow-sm"></span>
                   </div>
                   {/* Data Card */}
-                  <div className="bg-white/95 border border-congress-blue/20 rounded-xl shadow-lg px-5 py-4 w-56 text-center flex flex-col items-center backdrop-blur-sm group-hover:border-congress-blue/40 group-hover:shadow-xl">
-                    <h2 className="text-xl font-extrabold text-congress-blue tracking-wide mb-1 uppercase drop-shadow-sm group-hover:text-congress-blue/80">
+                  <div className="bg-white/95 border border-congress-blue/20 rounded-xl shadow-lg px-3 py-3 w-64 text-center flex flex-col items-center backdrop-blur-sm group-hover:border-congress-blue/40 group-hover:shadow-xl">
+                    <h2 className="text-lg font-extrabold text-congress-blue tracking-wide mb-1 uppercase drop-shadow-sm group-hover:text-congress-blue/80">
                       {disertante.nombre}
                     </h2>
-                    <div className="text-gray-800 font-semibold text-base mb-1 group-hover:text-congress-blue/70">
+                    <div className="text-gray-800 font-semibold text-sm mb-1 group-hover:text-congress-blue/70">
                       {disertante.tema_presentacion}
                     </div>
-                    <div className="text-gray-600 text-sm mb-1 group-hover:text-congress-blue/60">
+                    <div className="text-gray-600 text-xs mb-1 group-hover:text-congress-blue/60">
                       {disertante.bio}
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
         )}
       </div>
     </>
