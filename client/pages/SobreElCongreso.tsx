@@ -68,67 +68,66 @@ export default function SobreElCongreso() {
               </CardContent>
             </Card>
           </div>
-          <section className="py-16 bg-white">
-            <div className="container mx-auto px-4">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                  Moviendo el futuro
-                </h2>
-                <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                  Este congreso reunirá a los principales actores del sector
-                  logístico y de transporte para reflexionar y debatir sobre los
-                  desafíos y oportunidades tanto a nivel nacional como
-                  internacional.
+          {/* Moviendo el futuro Section */}
+          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 mt-16">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Moviendo el futuro
+              </h2>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                Este congreso reunirá a los principales actores del sector
+                logístico y de transporte para reflexionar y debatir sobre los
+                desafíos y oportunidades tanto a nivel nacional como
+                internacional.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div className="text-center">
+                <div className="bg-congress-blue text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold">30+</span>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Empresas
+                </h3>
+                <p className="text-gray-600">
+                  Empresas líderes del sector participando
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div className="text-center">
-                  <div className="bg-congress-blue text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl font-bold">30+</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Empresas
-                  </h3>
-                  <p className="text-gray-600">
-                    Empresas líderes del sector participando
-                  </p>
+              <div className="text-center">
+                <div className="bg-congress-cyan text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold">25+</span>
                 </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Disertantes
+                </h3>
+                <p className="text-gray-600">
+                  Especialistas y académicos de primer nivel
+                </p>
+              </div>
 
-                <div className="text-center">
-                  <div className="bg-congress-cyan text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl font-bold">25+</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Disertantes
-                  </h3>
-                  <p className="text-gray-600">
-                    Especialistas y académicos de primer nivel
-                  </p>
+              <div className="text-center">
+                <div className="bg-congress-blue text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold">2</span>
                 </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Alcances
+                </h3>
+                <p className="text-gray-600">Nacional e internacional</p>
+              </div>
 
-                <div className="text-center">
-                  <div className="bg-congress-blue text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl font-bold">2</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Alcances
-                  </h3>
-                  <p className="text-gray-600">Nacional e internacional</p>
+              <div className="text-center">
+                <div className="bg-congress-cyan text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold">0</span>
                 </div>
-
-                <div className="text-center">
-                  <div className="bg-congress-cyan text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl font-bold">0</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Costo
-                  </h3>
-                  <p className="text-gray-600">Participación gratuita</p>
-                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Costo
+                </h3>
+                <p className="text-gray-600">Participación gratuita</p>
               </div>
             </div>
-          </section>
+          </div>
         </div>
       </section>
     </>

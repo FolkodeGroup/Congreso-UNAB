@@ -192,7 +192,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 md:pl-16 md:pr-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-lg font-bold mb-4">
@@ -202,18 +202,25 @@ export default function Layout({ children }: LayoutProps) {
             </div>
             <div>
               <h3 className="text-lg font-bold mb-4">Información del Evento</h3>
-              <p className="text-gray-300 mb-2">📅 15 de Noviembre de 2025</p>
-              <p className="text-gray-300 mb-2 notranslate">
-                📍 Campus UNaB, Blas Parera 132, Burzaco
+              <p className="text-gray-300 mb-2 flex items-start">
+                <span className="text-white mr-2">📅</span>
+                <span>15 de Noviembre de 2025</span>
+              </p>
+              <p className="text-gray-300 mb-2 notranslate flex items-start">
+                <span className="text-white mr-2">📍</span>
+                <span>Campus UNaB, Blas Parera 132, Burzaco</span>
               </p>
               <p className="text-gray-300 notranslate">
                 <a
                   href="mailto:congresologisticaytransporte@unab.edu.ar"
-                  className="text-gray-300 hover:underline"
+                  className="text-gray-300 hover:underline flex items-start"
                 >
-                  ✉️ congresologisticaytransporte
-                  <br className="sm:hidden" />
-                  @unab.edu.ar
+                  <span className="text-white mr-2">✉️</span>
+                  <span>
+                    congresologisticaytransporte
+                    <br />
+                    @unab.edu.ar
+                  </span>
                 </a>
               </p>
             </div>
