@@ -320,7 +320,7 @@ export default function Ponentes() {
               return (
                 <motion.div
                   key={`${disertante.nombre}-${idx}`}
-                  className={`flex-shrink-0 flex flex-col items-center group w-72 sm:w-full ${rotation}`}
+                  className="flex-shrink-0 flex flex-col items-center group w-72 sm:w-full"
                   variants={{
                     hidden: { opacity: 0, y: 80 },
                     visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } },
@@ -328,13 +328,13 @@ export default function Ponentes() {
                 >
                   {/* Modern Polaroid Card */}
                   <div
-                    className="relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-64 h-64 flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5"
+                    className={`relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-64 h-64 flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5 ${rotation}`}
                   >
                     <div className="absolute inset-0 rounded-2xl pointer-events-none border border-congress-blue/20"></div>
                     <img
                       src={fotoUrl}
                       alt={disertante.nombre}
-                      className="w-full max-w-[90%] h-auto aspect-square object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl sm:w-32 sm:h-32 sm:max-w-none"
+                      className="w-full max-w-[90%] h-auto aspect-square object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl"
                       style={{ aspectRatio: "1/1" }}
                     />
                     {/* Minimalist screws */}
