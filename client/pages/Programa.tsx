@@ -487,11 +487,53 @@ export default function Programa() {
 
   // Filtrar actividades
   const actividadesFiltradas = actividadesToShow.filter(act => {
+    // Si todos los filtros están en "TODOS"/"TODAS", mostrar todo
+    if (filtroCategoria === "TODOS" && filtroAula === "TODAS" && filtroDisertante === "TODOS") {
+      return true;
+    }
     const matchCategoria = filtroCategoria === "TODOS" || act.categoria === filtroCategoria;
     const matchAula = filtroAula === "TODAS" || act.aula === filtroAula;
     const matchDisertante = filtroDisertante === "TODOS" || act.disertante === filtroDisertante;
     return matchCategoria && matchAula && matchDisertante;
   });
+
+  // Reconstruir la grilla con las actividades filtradas
+  const gridFiltrada: { [aula: string]: { [hora: string]: ActividadCalendar | null } } = {};
+  for (const aula of AULAS) {
+    gridFiltrada[aula] = {};
+    for (const hora of HORARIOS) {
+      gridFiltrada[aula][hora] = null;
+    }
+  }
+  for (const act of actividadesFiltradas) {
+    // Solo agregar si el aula está definida en la grilla
+    if (AULAS.includes(act.aula)) {
+      gridFiltrada[act.aula][act.inicio] = act;
+    }
+  }
+
+  // Función actualizada para verificar si una celda está cubierta (usando actividades filtradas)
+  function isCellCoveredFiltrado(aula: string, hora: string) {
+    // Convertir la hora actual a minutos para comparación precisa
+    const [h, m] = hora.split(":").map(Number);
+    const horaMinutos = h * 60 + m;
+    
+    // Buscar si hay una actividad que comenzó antes y termina después de la hora actual
+    const actividad = actividadesFiltradas.find((a) => {
+      if (a.aula !== aula) return false;
+      
+      const [h1, m1] = a.inicio.split(":").map(Number);
+      const [h2, m2] = a.fin.split(":").map(Number);
+      const inicioMinutos = h1 * 60 + m1;
+      const finMinutos = h2 * 60 + m2;
+      
+      // La celda está cubierta si la hora actual está dentro del rango de la actividad
+      // pero no es el inicio de la actividad
+      return inicioMinutos < horaMinutos && horaMinutos < finMinutos;
+    });
+    
+    return !!actividad;
+  }
 
   return (
     <>
@@ -667,10 +709,10 @@ export default function Programa() {
 
                         {/* Columnas de aulas */}
                         {AULAS.slice(0, 9).map((aula) => {
-                          if (isCellCovered(aula, hora)) return null;
+                          if (isCellCoveredFiltrado(aula, hora)) return null;
                           
-                          const actividad = grid[aula] && grid[aula][hora];
-                          if (actividad && actividadesFiltradas.includes(actividad)) {
+                          const actividad = gridFiltrada[aula] && gridFiltrada[aula][hora];
+                          if (actividad) {
                             const rowSpan = getRowSpan(actividad.inicio, actividad.fin);
                             const trackColor = TRACK_CATEGORIES[actividad.categoria as keyof typeof TRACK_CATEGORIES];
                             const aulaColor = AULA_COLORS[actividad.color] || AULA_COLORS["Aula Magna"];
