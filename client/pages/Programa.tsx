@@ -563,18 +563,26 @@ export default function Programa() {
 
       {/* Filtros Modernos con MUI */}
       <Box sx={{ position: 'sticky', top: 0, zIndex: 40, background: 'transparent', py: 3, display: 'flex', justifyContent: 'center' }}>
-        <Card sx={{ maxWidth: 1200, width: '100%', boxShadow: 6, borderRadius: 4, background: '#fff', px: { xs: 3, md: 6 }, py: 3 }}>
-          <CardContent sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, alignItems: 'center', justifyContent: 'center', px: 0, mx: 'auto', width: '100%' }}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+        <Card sx={{ maxWidth: 1200, width: '100%', boxShadow: 6, borderRadius: 4, background: '#fff', px: { xs: 2, md: 6 }, py: { xs: 2, md: 3 } }}>
+          <CardContent sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 2, md: 3 }, alignItems: 'center', justifyContent: 'center', px: 0, mx: 'auto', width: '100%' }}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', md: 'row' },
+              flexWrap: 'wrap', 
+              gap: { xs: 2, md: 3 }, 
+              alignItems: { xs: 'stretch', md: 'center' }, 
+              justifyContent: 'center', 
+              width: '100%' 
+            }}>
               {/* Categoría */}
-              <FormControl sx={{ minWidth: 200 }} size="small" variant="outlined">
+              <FormControl sx={{ minWidth: { xs: '100%', md: 200 } }} size="small" variant="outlined">
                 <InputLabel id="categoria-label" sx={{ background: '#fff', px: 0.5, ml: -0.5 }}><Category sx={{ mr: 1, fontSize: 18 }} />Categoría</InputLabel>
                 <Select
                   labelId="categoria-label"
                   value={filtroCategoria}
                   label="Categoría"
                   onChange={(e) => setFiltroCategoria(e.target.value)}
-                  sx={{ borderRadius: 2, fontWeight: 500, minWidth: 200 }}
+                  sx={{ borderRadius: 2, fontWeight: 500 }}
                 >
                   <MenuItem value="TODOS">
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -596,14 +604,14 @@ export default function Programa() {
                 </Select>
               </FormControl>
               {/* Aula */}
-              <FormControl sx={{ minWidth: 180 }} size="small" variant="outlined">
+              <FormControl sx={{ minWidth: { xs: '100%', md: 180 } }} size="small" variant="outlined">
                 <InputLabel id="aula-label" sx={{ background: '#fff', px: 0.5, ml: -0.5 }}><School sx={{ mr: 1, fontSize: 18 }} />Aula</InputLabel>
                 <Select
                   labelId="aula-label"
                   value={filtroAula}
                   label="Aula"
                   onChange={(e) => setFiltroAula(e.target.value)}
-                  sx={{ borderRadius: 2, fontWeight: 500, minWidth: 180 }}
+                  sx={{ borderRadius: 2, fontWeight: 500 }}
                 >
                   <MenuItem value="TODAS">Todas las aulas</MenuItem>
                   {AULAS.slice(0, 9).map(aula => (
@@ -622,52 +630,61 @@ export default function Programa() {
                 value={filtroDisertante}
                 onChange={(_, value) => setFiltroDisertante(value || "TODOS")}
                 size="small"
-                sx={{ minWidth: 220 }}
+                sx={{ minWidth: { xs: '100%', md: 220 } }}
                 renderInput={(params) => (
                   <TextField {...params} label={<><Person sx={{ mr: 1, fontSize: 18 }} />Disertante</>} variant="outlined" sx={{ background: '#fff' }} />
                 )}
               />
               {/* Chips de filtros activos */}
-              {filtroCategoria !== "TODOS" && (() => {
-                const IconComponent = TRACK_CATEGORIES[filtroCategoria as keyof typeof TRACK_CATEGORIES]?.icon;
-                return (
+              <Box sx={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                gap: 1, 
+                alignItems: 'center',
+                width: { xs: '100%', md: 'auto' },
+                justifyContent: { xs: 'flex-start', md: 'center' }
+              }}>
+                {filtroCategoria !== "TODOS" && (() => {
+                  const IconComponent = TRACK_CATEGORIES[filtroCategoria as keyof typeof TRACK_CATEGORIES]?.icon;
+                  return (
+                    <Chip 
+                      icon={IconComponent ? <IconComponent sx={{ color: '#fff !important', fontSize: 16 }} /> : undefined}
+                      label={filtroCategoria} 
+                      color="primary" 
+                      size="small" 
+                      sx={{ bgcolor: TRACK_CATEGORIES[filtroCategoria as keyof typeof TRACK_CATEGORIES]?.bg, color: '#fff', fontWeight: 500 }} 
+                      onDelete={() => setFiltroCategoria("TODOS")} 
+                    />
+                  );
+                })()}
+                {filtroAula !== "TODAS" && (
                   <Chip 
-                    icon={IconComponent ? <IconComponent sx={{ color: '#fff !important', fontSize: 16 }} /> : undefined}
-                    label={filtroCategoria} 
-                    color="primary" 
+                    icon={<School sx={{ color: '#fff !important', fontSize: 16 }} />}
+                    label={filtroAula} 
+                    color="secondary" 
                     size="small" 
-                    sx={{ bgcolor: TRACK_CATEGORIES[filtroCategoria as keyof typeof TRACK_CATEGORIES]?.bg, color: '#fff', fontWeight: 500 }} 
-                    onDelete={() => setFiltroCategoria("TODOS")} 
+                    sx={{ bgcolor: AULA_COLORS[filtroAula]?.border, color: '#fff', fontWeight: 500 }} 
+                    onDelete={() => setFiltroAula("TODAS")} 
                   />
-                );
-              })()}
-              {filtroAula !== "TODAS" && (
-                <Chip 
-                  icon={<School sx={{ color: '#fff !important', fontSize: 16 }} />}
-                  label={filtroAula} 
-                  color="secondary" 
-                  size="small" 
-                  sx={{ bgcolor: AULA_COLORS[filtroAula]?.border, color: '#fff', fontWeight: 500 }} 
-                  onDelete={() => setFiltroAula("TODAS")} 
-                />
-              )}
-              {filtroDisertante !== "TODOS" && (
-                <Chip 
-                  icon={<Person sx={{ color: '#fff !important', fontSize: 16 }} />}
-                  label={filtroDisertante} 
-                  color="default" 
-                  size="small" 
-                  sx={{ bgcolor: '#374151', color: '#fff', fontWeight: 500 }} 
-                  onDelete={() => setFiltroDisertante("TODOS")} 
-                />
-              )}
+                )}
+                {filtroDisertante !== "TODOS" && (
+                  <Chip 
+                    icon={<Person sx={{ color: '#fff !important', fontSize: 16 }} />}
+                    label={filtroDisertante} 
+                    color="default" 
+                    size="small" 
+                    sx={{ bgcolor: '#374151', color: '#fff', fontWeight: 500 }} 
+                    onDelete={() => setFiltroDisertante("TODOS")} 
+                  />
+                )}
+              </Box>
             </Box>
           </CardContent>
         </Card>
       </Box>
 
-      {/* Grilla Moderna de Agenda */}
-      <div className="bg-gray-50 min-h-screen py-8">
+      {/* Vista Desktop - Grilla */}
+      <div className="hidden md:block bg-gray-50 min-h-screen py-8">
         <div className="w-full px-4">
           <div className="w-full max-w-full mx-auto">
             
@@ -802,6 +819,124 @@ export default function Programa() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Vista Móvil - Lista por Horarios (estilo Nerdear.la) */}
+      <div className="md:hidden bg-gray-50 min-h-screen py-4">
+        <div className="px-4 space-y-6">
+          {HORARIOS.map((hora) => {
+            // Obtener todas las actividades que empiezan en esta hora
+            const actividadesEnHora = actividadesFiltradas.filter(act => act.inicio === hora);
+            
+            if (actividadesEnHora.length === 0) return null;
+            
+            return (
+              <div key={hora} className="space-y-4">
+                {/* Encabezado de hora */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="sticky top-20 z-10 bg-gradient-to-r from-congress-blue to-congress-cyan rounded-xl p-4 shadow-lg"
+                >
+                  <h3 className="text-2xl font-bold text-white">
+                    {hora} <span className="text-sm font-normal opacity-90">(GMT -3)</span>
+                  </h3>
+                </motion.div>
+                
+                {/* Actividades en esta hora */}
+                <div className="space-y-3">
+                  {actividadesEnHora.map((actividad, idx) => {
+                    const trackColor = TRACK_CATEGORIES[actividad.categoria as keyof typeof TRACK_CATEGORIES];
+                    const aulaColor = AULA_COLORS[actividad.color] || AULA_COLORS["Aula Magna"];
+                    const disertanteColor = getDisertanteColor(actividad.disertante);
+                    
+                    return (
+                      <motion.div
+                        key={`${actividad.aula}-${actividad.inicio}-${idx}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: idx * 0.1 }}
+                        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border-l-4"
+                        style={{ 
+                          borderLeftColor: disertanteColor,
+                          boxShadow: `0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), -2px 0 4px -1px ${disertanteColor}20`
+                        }}
+                      >
+                        <div className="p-4">
+                          {/* Header con categoría y aula */}
+                          <div className="flex items-center justify-between mb-3">
+                            <span 
+                              className="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide flex items-center gap-1.5"
+                              style={{ 
+                                backgroundColor: trackColor?.bg || aulaColor.border,
+                                color: trackColor?.text || 'white'
+                              }}
+                            >
+                              {(() => {
+                                const IconComponent = TRACK_CATEGORIES[actividad.categoria as keyof typeof TRACK_CATEGORIES]?.icon;
+                                return IconComponent ? <IconComponent style={{ fontSize: 14, color: trackColor?.text || 'white' }} /> : null;
+                              })()}
+                              {actividad.categoria}
+                            </span>
+                            <div className="flex items-center gap-2 text-sm">
+                              <span className="text-gray-600">{actividad.inicio} - {actividad.fin}</span>
+                              <span 
+                                className="px-2 py-1 rounded-lg text-xs font-semibold"
+                                style={{ 
+                                  backgroundColor: aulaColor.bg,
+                                  color: aulaColor.text,
+                                  border: `1px solid ${aulaColor.border}`
+                                }}
+                              >
+                                {actividad.aula}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {/* Título */}
+                          <h4 className="font-bold text-lg text-gray-900 mb-2 leading-tight">
+                            {actividad.titulo.replace(/\s*\(\d+h\)/gi, "")}
+                          </h4>
+                          
+                          {/* Disertante */}
+                          <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                            <Person style={{ fontSize: 16, color: disertanteColor }} />
+                            {actividad.disertante}
+                          </p>
+                          
+                          {/* Descripción */}
+                          {actividad.descripcion && (
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                              {actividad.descripcion}
+                            </p>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+          
+          {/* Mensaje si no hay actividades */}
+          {actividadesFiltradas.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-12"
+            >
+              <div className="text-gray-400 text-6xl mb-4">📅</div>
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                No hay actividades que coincidan con los filtros seleccionados
+              </h3>
+              <p className="text-gray-500">
+                Prueba ajustando los filtros para ver más charlas
+              </p>
+            </motion.div>
+          )}
         </div>
       </div>
 
