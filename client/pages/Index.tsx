@@ -70,14 +70,12 @@ export default function Index() {
                   </Button>
                 </Link>
               </div>
-              <div className="flex items-center justify-center space-x-3 opacity-80 mb-10">
-                <div className="mb-4 lg:mb-0">
-                  <img
-                    src="/images/Logo_unab2.png"
-                    alt="UNaB Logo"
-                    className="h-28 w-auto"
-                  />
-                </div>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left opacity-80 mb-10">
+                <img
+                  src="/images/Logo_unab2.png"
+                  alt="UNaB Logo"
+                  className="h-28 w-auto"
+                />
                 <span className="text-lg font-medium">
                   Universidad Nacional Guillermo Brown
                 </span>
@@ -219,7 +217,7 @@ export default function Index() {
             </div>
 
             <div className="text-center mt-12">
-              <div className="relative bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-2xl p-8 border-2 border-congress-cyan shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 overflow-hidden">
+              <div className="relative bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-2xl p-8 border-2 border-congress-cyan shadow-2xl hover:shadow-3xl transition-all duration-300 overflow-hidden">
                 {/* Efecto de brillo decorativo */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-congress-cyan/20 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-congress-cyan-light/20 rounded-full blur-2xl"></div>
