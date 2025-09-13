@@ -15,64 +15,85 @@ export default function Contacto() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <Card className="text-center">
-            <CardHeader>
-              <Mail className="mx-auto h-12 w-12 text-congress-blue mb-4" />
-              <CardTitle>Correo Electrónico</CardTitle>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {/* Correo Electrónico */}
+          <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-blue/90 to-congress-cyan/80 p-6 transition-all duration-300 transform hover:scale-105 text-center">
+            <CardHeader className="flex flex-col items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                <Mail className="w-10 h-10 text-white" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-cyan transition-colors">
+                Correo Electrónico
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <a
                 href="mailto:congresologisticaytransporte@unab.edu.ar"
-                className="text-lg text-blue-500 hover:underline"
+                className="text-lg text-congress-white/90 leading-relaxed hover:underline"
               >
-                congresologisticaytransporte@unab.edu.ar
+                congresologisticaytransporte
+                <br />
+                @unab.edu.ar
               </a>
             </CardContent>
           </Card>
 
-          <Card className="text-center">
-            <CardHeader>
-              <Instagram className="mx-auto h-12 w-12 text-congress-blue mb-4" />
-              <CardTitle>Instagram</CardTitle>
+          {/* Instagram */}
+          <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-cyan/90 to-congress-blue/80 p-6 transition-all duration-300 transform hover:scale-105 text-center">
+            <CardHeader className="flex flex-col items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                <Instagram className="w-10 h-10 text-white" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-blue transition-colors">
+                Instagram
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-lg text-gray-700"></p>
               <a
                 href="https://www.instagram.com/congresologisticounab/"
-                className="text-lg text-blue-500 hover:underline"
+                className="text-lg text-congress-white/90 leading-relaxed hover:underline"
               >
                 @congresologisticounab
               </a>
             </CardContent>
           </Card>
 
-          <Card className="text-center">
-            <CardHeader>
-              <MapPin className="mx-auto h-12 w-12 text-congress-blue mb-4" />
-              <CardTitle>Ubicación</CardTitle>
+          {/* Ubicación */}
+          <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-blue/90 to-congress-cyan/80 p-6 transition-all duration-300 transform hover:scale-105 text-center">
+            <CardHeader className="flex flex-col items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                <MapPin className="w-10 h-10 text-white" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-cyan transition-colors">
+                Ubicación
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-lg text-gray-700">
-                <a href="/#mapa" className="text-lg text-gray-700">
-                  Universidad Nacional Guillermo Brown
-                </a>
-              </p>
-              <a href="/#mapa" className="text-sm text-gray-500">
+              <a
+                href="/#mapa"
+                className="text-lg text-congress-white/90 leading-relaxed hover:underline"
+              >
+                Universidad Nacional Guillermo Brown
+                <br />
                 Blas Parera 132, Burzaco, Buenos Aires
               </a>
             </CardContent>
           </Card>
 
-          <Card className="text-center">
-            <CardHeader>
-              <Linkedin className="mx-auto h-12 w-12 text-congress-blue mb-4" />
-              <CardTitle>LinkedIn</CardTitle>
+          {/* LinkedIn */}
+          <Card className="group border-0 shadow-xl hover:shadow-2xl rounded-2xl bg-gradient-to-br from-congress-cyan/90 to-congress-blue/80 p-6 transition-all duration-300 transform hover:scale-105 text-center">
+            <CardHeader className="flex flex-col items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
+                <Linkedin className="w-10 h-10 text-white" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-blue transition-colors">
+                LinkedIn
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <a
                 href="https://www.linkedin.com/company/congresologisticounab/"
-                className="text-lg text-blue-500 hover:underline"
+                className="text-lg text-congress-white/90 leading-relaxed hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >

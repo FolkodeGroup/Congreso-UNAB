@@ -61,13 +61,12 @@ export default function Index() {
                 Innovación y desafíos en la logística y el transporte
               </p>
               <div className="mb-6">
-                <Link to="/historia-campus">
+                <Link to="/registro">
                   <Button
-                    variant="secondary"
-                    size="xl"
-                    className="bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-bold px-12 py-6 text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
+                    size="xxl"
+                    className="button-super-enhanced bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-bold px-16 py-8 text-xl shadow-4xl hover:shadow-4xl transform hover:scale-110 transition-all duration-300 animate-gentle-pulse hover:animate-none"
                   >
-                    Conocé la historia del campus y la casona
+                    Registrarse Gratis
                   </Button>
                 </Link>
               </div>
