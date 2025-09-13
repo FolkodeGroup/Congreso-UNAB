@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation, useScroll, useTransform } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,6 +17,12 @@ export default function Ponentes() {
   const [disertantes, setDisertantes] = useState<Disertante[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Efecto parallax para el fondo
+  const { scrollY } = useScroll();
+  const backgroundY = useTransform(scrollY, [0, 1000], [0, -200]);
+  const circleY1 = useTransform(scrollY, [0, 1000], [0, -150]);
+  const circleY2 = useTransform(scrollY, [0, 1000], [0, -100]);
 
   useEffect(() => {
     const fetchDisertantes = async () => {
@@ -139,21 +145,120 @@ export default function Ponentes() {
   return (
     <>
       <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-white to-congress-blue/10 px-2 py-16 flex flex-col items-center relative overflow-x-hidden">
-        {/* Fondo decorativo elegante */}
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <svg width="100%" height="100%" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        {/* Fondo decorativo elegante con efecto parallax */}
+        <motion.div 
+          className="absolute inset-0 pointer-events-none z-0"
+          style={{ y: backgroundY }}
+        >
+          <motion.svg 
+            width="100%" 
+            height="120%" 
+            viewBox="0 0 1440 960" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="w-full h-full"
+          >
             <defs>
-              <linearGradient id="bg1" x1="0" y1="0" x2="1440" y2="800" gradientUnits="userSpaceOnUse">
+              <linearGradient id="bg1" x1="0" y1="0" x2="1440" y2="960" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#e3eafc" />
                 <stop offset="1" stopColor="#eaf3ff" />
               </linearGradient>
             </defs>
-            <rect width="1440" height="800" fill="url(#bg1)" />
-            <circle cx="1200" cy="100" r="180" fill="#2563eb22" />
-            <circle cx="200" cy="700" r="120" fill="#2563eb11" />
-            <rect x="0" y="0" width="1440" height="800" fill="url(#bg1)" opacity="0.2" />
-          </svg>
-        </div>
+            <rect width="1440" height="960" fill="url(#bg1)" />
+            <rect x="0" y="0" width="1440" height="960" fill="url(#bg1)" opacity="0.2" />
+          </motion.svg>
+        </motion.div>
+
+        {/* Círculos decorativos con diferentes velocidades de parallax */}
+        <motion.div 
+          className="absolute inset-0 pointer-events-none z-0"
+          style={{ y: circleY1 }}
+        >
+          <motion.svg 
+            width="100%" 
+            height="120%" 
+            viewBox="0 0 1440 960" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="w-full h-full"
+          >
+            <motion.circle 
+              cx="1200" 
+              cy="100" 
+              r="180" 
+              fill="#2563eb22"
+              animate={{ 
+                x: [0, 20, 0],
+                y: [0, -10, 0]
+              }}
+              transition={{
+                duration: 8,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            <motion.circle 
+              cx="300" 
+              cy="500" 
+              r="100" 
+              fill="#2563eb15"
+              animate={{ 
+                x: [0, -15, 0],
+                y: [0, 15, 0]
+              }}
+              transition={{
+                duration: 12,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          </motion.svg>
+        </motion.div>
+
+        <motion.div 
+          className="absolute inset-0 pointer-events-none z-0"
+          style={{ y: circleY2 }}
+        >
+          <motion.svg 
+            width="100%" 
+            height="120%" 
+            viewBox="0 0 1440 960" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="w-full h-full"
+          >
+            <motion.circle 
+              cx="200" 
+              cy="700" 
+              r="120" 
+              fill="#2563eb11"
+              animate={{ 
+                x: [0, 25, 0],
+                y: [0, -20, 0]
+              }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            <motion.circle 
+              cx="1100" 
+              cy="600" 
+              r="80" 
+              fill="#2563eb18"
+              animate={{ 
+                x: [0, -20, 0],
+                y: [0, 10, 0]
+              }}
+              transition={{
+                duration: 15,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          </motion.svg>
+        </motion.div>
   <div className="text-center mb-14 z-10">
           <h1 className="text-5xl font-extrabold text-congress-blue mb-4 tracking-tight drop-shadow-lg">
             Disertantes del Congreso
