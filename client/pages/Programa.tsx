@@ -20,9 +20,12 @@ import {
   Nature,
   Lightbulb,
   Business,
-  Group
+  Group,
+  Close,
+  AccessTime,
+  LocationOn
 } from '@mui/icons-material';
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Nueva estructura de datos para actividades con hora de inicio y fin
 type ActividadCalendar = {
@@ -485,6 +488,22 @@ export default function Programa() {
   const disertantesUnicos = Array.from(new Set(actividadesToShow.map(act => act.disertante))).filter(d => d && d.length > 0);
   const [filtroDisertante, setFiltroDisertante] = useState<string>("TODOS");
 
+  // Estado para el modal
+  const [modalActividad, setModalActividad] = useState<ActividadCalendar | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Función para abrir el modal
+  const abrirModal = (actividad: ActividadCalendar) => {
+    setModalActividad(actividad);
+    setIsModalOpen(true);
+  };
+
+  // Función para cerrar el modal
+  const cerrarModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setModalActividad(null), 300); // Delay para la animación
+  };
+
   // Filtrar actividades
   const actividadesFiltradas = actividadesToShow.filter(act => {
     // Si todos los filtros están en "TODOS"/"TODAS", mostrar todo
@@ -750,12 +769,14 @@ export default function Programa() {
                                   transition={{ duration: 0.3 }}
                                   className="h-full"
                                 >
-                                  <div className="w-full h-full bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-3 border-l-4 hover:scale-[1.02] cursor-pointer group"
-                                       style={{ 
-                                         borderLeftColor: disertanteColor,
-                                         minHeight: `${Math.max(rowSpan * 76, 100)}px`,
-                                         boxShadow: `0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), -4px 0 6px -1px ${disertanteColor}20`
-                                       }}>
+                                  <div 
+                                    className="w-full h-full bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-3 border-l-4 hover:scale-[1.02] cursor-pointer group"
+                                    onClick={() => abrirModal(actividad)}
+                                    style={{ 
+                                      borderLeftColor: disertanteColor,
+                                      minHeight: `${Math.max(rowSpan * 76, 100)}px`,
+                                      boxShadow: `0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), -4px 0 6px -1px ${disertanteColor}20`
+                                    }}>
                                     
                                     {/* Categoría Tag */}
                                     <div className="flex items-center mb-2">
@@ -858,7 +879,8 @@ export default function Programa() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: idx * 0.1 }}
-                        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border-l-4"
+                        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border-l-4 cursor-pointer"
+                        onClick={() => abrirModal(actividad)}
                         style={{ 
                           borderLeftColor: disertanteColor,
                           boxShadow: `0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), -2px 0 4px -1px ${disertanteColor}20`
@@ -940,7 +962,139 @@ export default function Programa() {
         </div>
       </div>
 
-      {/* ...el resto del código permanece igual... */}
+      {/* Modal de Actividad estilo Nerdear.la */}
+      <AnimatePresence>
+        {isModalOpen && modalActividad && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={cerrarModal}
+          >
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+            
+            {/* Modal Content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header con imagen y categoría */}
+              <div 
+                className="relative h-64 bg-gradient-to-br from-congress-blue to-congress-cyan overflow-hidden"
+                style={{ 
+                  background: `linear-gradient(135deg, ${TRACK_CATEGORIES[modalActividad.categoria as keyof typeof TRACK_CATEGORIES]?.bg || '#1e40af'} 0%, ${getDisertanteColor(modalActividad.disertante)} 100%)`
+                }}
+              >
+                {/* Botón de cierre */}
+                <button
+                  onClick={cerrarModal}
+                  className="absolute top-4 right-4 z-10 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-full p-2 transition-all duration-200"
+                >
+                  <Close className="text-white text-xl" />
+                </button>
+
+                {/* Imagen del disertante (placeholder) */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-32 h-32 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
+                    <Person className="text-white text-6xl" />
+                  </div>
+                </div>
+
+                {/* Logo/branding */}
+                <div className="absolute top-4 left-4">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-lg flex items-center justify-center">
+                    {(() => {
+                      const IconComponent = TRACK_CATEGORIES[modalActividad.categoria as keyof typeof TRACK_CATEGORIES]?.icon;
+                      return IconComponent ? <IconComponent className="text-white text-2xl" /> : <Category className="text-white text-2xl" />;
+                    })()}
+                  </div>
+                </div>
+
+                {/* Etiqueta VIRTUAL/PRESENCIAL */}
+                <div className="absolute bottom-4 right-4">
+                  <span className="bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    PRESENCIAL
+                  </span>
+                </div>
+              </div>
+
+              {/* Contenido */}
+              <div className="p-6">
+                {/* Título */}
+                <h2 className="text-2xl font-bold text-gray-900 mb-3 leading-tight">
+                  {modalActividad.titulo.replace(/\s*\(\d+h\)/gi, "")}
+                </h2>
+
+                {/* Horario y fecha */}
+                <div className="flex items-center gap-4 mb-4 text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <AccessTime className="text-lg" />
+                    <span className="font-medium">
+                      {modalActividad.inicio} - {modalActividad.fin} (GMT -3)
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <LocationOn className="text-lg" />
+                    <span className="font-medium">{modalActividad.aula}</span>
+                  </div>
+                </div>
+
+                {/* Disertante */}
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                    {modalActividad.disertante}
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Especialista en {modalActividad.categoria.toLowerCase()}
+                  </p>
+                </div>
+
+                {/* Descripción */}
+                {modalActividad.descripcion && (
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-gray-800 mb-2">Descripción</h4>
+                    <p className="text-gray-700 leading-relaxed">
+                      {modalActividad.descripcion}
+                    </p>
+                  </div>
+                )}
+
+                {/* Categoría chip */}
+                <div className="flex items-center gap-2">
+                  <span 
+                    className="px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide flex items-center gap-2"
+                    style={{ 
+                      backgroundColor: TRACK_CATEGORIES[modalActividad.categoria as keyof typeof TRACK_CATEGORIES]?.bg || '#1e40af',
+                      color: TRACK_CATEGORIES[modalActividad.categoria as keyof typeof TRACK_CATEGORIES]?.text || 'white'
+                    }}
+                  >
+                    {(() => {
+                      const IconComponent = TRACK_CATEGORIES[modalActividad.categoria as keyof typeof TRACK_CATEGORIES]?.icon;
+                      return IconComponent ? <IconComponent className="text-lg" /> : null;
+                    })()}
+                    {modalActividad.categoria}
+                  </span>
+                </div>
+
+                {/* Botón de acción (opcional) */}
+                <div className="mt-6 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={cerrarModal}
+                    className="w-full bg-congress-blue hover:bg-congress-blue/90 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200"
+                  >
+                    CERRAR
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
