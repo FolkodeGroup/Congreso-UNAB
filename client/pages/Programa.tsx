@@ -520,72 +520,72 @@ export default function Programa() {
       </div>
 
       {/* Filtros Modernos con MUI */}
-      <Box sx={{ position: 'sticky', top: 0, zIndex: 40, background: 'transparent', py: 2 }}>
-        <Card sx={{ maxWidth: 900, mx: 'auto', boxShadow: 6, borderRadius: 4, background: '#fff', px: { xs: 2, md: 4 }, py: 2 }}>
-          <CardContent sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', justifyContent: 'center' }}>
-            {/* Categoría */}
-            <FormControl sx={{ minWidth: 180 }} size="small">
-              <InputLabel id="categoria-label"><Category sx={{ mr: 1, fontSize: 18 }} />Categoría</InputLabel>
-              <Select
-                labelId="categoria-label"
-                value={filtroCategoria}
-                label="Categoría"
-                onChange={(e) => setFiltroCategoria(e.target.value)}
-                sx={{ borderRadius: 2, fontWeight: 500 }}
-              >
-                <MenuItem value="TODOS">
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Category sx={{ color: '#666', fontSize: 18 }} />
-                    Todos los tracks
-                  </Box>
-                </MenuItem>
-                {categorias.map(cat => {
-                  const IconComponent = TRACK_CATEGORIES[cat as keyof typeof TRACK_CATEGORIES]?.icon;
-                  return (
-                    <MenuItem key={cat} value={cat}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {IconComponent && <IconComponent sx={{ color: TRACK_CATEGORIES[cat as keyof typeof TRACK_CATEGORIES]?.bg, fontSize: 18 }} />}
-                        {cat}
-                      </Box>
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-            {/* Aula */}
-            <FormControl sx={{ minWidth: 160 }} size="small">
-              <InputLabel id="aula-label"><School sx={{ mr: 1, fontSize: 18 }} />Aula</InputLabel>
-              <Select
-                labelId="aula-label"
-                value={filtroAula}
-                label="Aula"
-                onChange={(e) => setFiltroAula(e.target.value)}
-                sx={{ borderRadius: 2, fontWeight: 500 }}
-              >
-                <MenuItem value="TODAS">Todas las aulas</MenuItem>
-                {AULAS.slice(0, 9).map(aula => (
-                  <MenuItem key={aula} value={aula}>
+      <Box sx={{ position: 'sticky', top: 0, zIndex: 40, background: 'transparent', py: 3, display: 'flex', justifyContent: 'center' }}>
+        <Card sx={{ maxWidth: 1200, width: '100%', boxShadow: 6, borderRadius: 4, background: '#fff', px: { xs: 3, md: 6 }, py: 3 }}>
+          <CardContent sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, alignItems: 'center', justifyContent: 'center', px: 0, mx: 'auto', width: '100%' }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+              {/* Categoría */}
+              <FormControl sx={{ minWidth: 200 }} size="small" variant="outlined">
+                <InputLabel id="categoria-label" sx={{ background: '#fff', px: 0.5, ml: -0.5 }}><Category sx={{ mr: 1, fontSize: 18 }} />Categoría</InputLabel>
+                <Select
+                  labelId="categoria-label"
+                  value={filtroCategoria}
+                  label="Categoría"
+                  onChange={(e) => setFiltroCategoria(e.target.value)}
+                  sx={{ borderRadius: 2, fontWeight: 500, minWidth: 200 }}
+                >
+                  <MenuItem value="TODOS">
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <School sx={{ color: AULA_COLORS[aula]?.border, fontSize: 18 }} />
-                      {aula}
+                      <Category sx={{ color: '#666', fontSize: 18 }} />
+                      Todos los tracks
                     </Box>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {/* Disertante */}
-            <Autocomplete
-              options={["TODOS", ...disertantesUnicos]}
-              value={filtroDisertante}
-              onChange={(_, value) => setFiltroDisertante(value || "TODOS")}
-              size="small"
-              sx={{ minWidth: 200 }}
-              renderInput={(params) => (
-                <TextField {...params} label={<><Person sx={{ mr: 1, fontSize: 18 }} />Disertante</>} variant="outlined" />
-              )}
-            />
-            {/* Chips de filtros activos */}
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center', ml: 2 }}>
+                  {categorias.map(cat => {
+                    const IconComponent = TRACK_CATEGORIES[cat as keyof typeof TRACK_CATEGORIES]?.icon;
+                    return (
+                      <MenuItem key={cat} value={cat}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          {IconComponent && <IconComponent sx={{ color: TRACK_CATEGORIES[cat as keyof typeof TRACK_CATEGORIES]?.bg, fontSize: 18 }} />}
+                          {cat}
+                        </Box>
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              {/* Aula */}
+              <FormControl sx={{ minWidth: 180 }} size="small" variant="outlined">
+                <InputLabel id="aula-label" sx={{ background: '#fff', px: 0.5, ml: -0.5 }}><School sx={{ mr: 1, fontSize: 18 }} />Aula</InputLabel>
+                <Select
+                  labelId="aula-label"
+                  value={filtroAula}
+                  label="Aula"
+                  onChange={(e) => setFiltroAula(e.target.value)}
+                  sx={{ borderRadius: 2, fontWeight: 500, minWidth: 180 }}
+                >
+                  <MenuItem value="TODAS">Todas las aulas</MenuItem>
+                  {AULAS.slice(0, 9).map(aula => (
+                    <MenuItem key={aula} value={aula}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <School sx={{ color: AULA_COLORS[aula]?.border, fontSize: 18 }} />
+                        {aula}
+                      </Box>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {/* Disertante */}
+              <Autocomplete
+                options={["TODOS", ...disertantesUnicos]}
+                value={filtroDisertante}
+                onChange={(_, value) => setFiltroDisertante(value || "TODOS")}
+                size="small"
+                sx={{ minWidth: 220 }}
+                renderInput={(params) => (
+                  <TextField {...params} label={<><Person sx={{ mr: 1, fontSize: 18 }} />Disertante</>} variant="outlined" sx={{ background: '#fff' }} />
+                )}
+              />
+              {/* Chips de filtros activos */}
               {filtroCategoria !== "TODOS" && (() => {
                 const IconComponent = TRACK_CATEGORIES[filtroCategoria as keyof typeof TRACK_CATEGORIES]?.icon;
                 return (
@@ -699,7 +699,7 @@ export default function Programa() {
                                        }}>
                                     
                                     {/* Categoría Tag */}
-                                    <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center mb-2">
                                       <span 
                                         className="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wide flex items-center gap-1"
                                         style={{ 
@@ -713,9 +713,6 @@ export default function Programa() {
                                         })()}
                                         {actividad.categoria}
                                       </span>
-                                      <span className="text-xs text-gray-500 font-mono">
-                                        {actividad.inicio} - {actividad.fin}
-                                      </span>
                                     </div>
 
                                     {/* Título */}
@@ -725,7 +722,7 @@ export default function Programa() {
                                           WebkitLineClamp: 2,
                                           WebkitBoxOrient: 'vertical'
                                         }}>
-                                      {actividad.titulo}
+                                      {actividad.titulo.replace(/\s*\(\d+h\)/gi, "")}
                                     </h3>
 
                                     {/* Speaker */}
