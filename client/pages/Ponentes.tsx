@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -177,7 +178,20 @@ export default function Ponentes() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-12 z-10">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-12 z-10"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.25,
+                },
+              },
+            }}
+          >
             {disertantes.map((disertante, idx) => {
               const rotations = [
                 "-rotate-2",
@@ -193,9 +207,13 @@ export default function Ponentes() {
                 fotoUrl = `http://127.0.0.1:8000/media/${cleanPath}`;
               }
               return (
-                <div
+                <motion.div
                   key={`${disertante.nombre}-${idx}`}
                   className="flex flex-col items-center group"
+                  variants={{
+                    hidden: { opacity: 0, y: 80 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } },
+                  }}
                 >
                   {/* Modern Polaroid Card */}
                   <div
@@ -226,10 +244,10 @@ export default function Ponentes() {
                       {disertante.bio}
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         )}
       </div>
     </>
