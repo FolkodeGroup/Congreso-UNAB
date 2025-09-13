@@ -1,4 +1,15 @@
 import { useState, useEffect } from "react";
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Chip from '@mui/material/Chip';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import { Category, School, Person } from '@mui/icons-material';
 import { motion } from "framer-motion";
 
 // Nueva estructura de datos para actividades con hora de inicio y fin
@@ -496,52 +507,78 @@ export default function Programa() {
         </div>
       </div>
 
-      {/* Filtros */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-wrap gap-4 items-center justify-center">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Categoría:</span>
-              <select
+      {/* Filtros Modernos con MUI */}
+      <Box sx={{ position: 'sticky', top: 0, zIndex: 40, background: 'transparent', py: 2 }}>
+        <Card sx={{ maxWidth: 900, mx: 'auto', boxShadow: 6, borderRadius: 4, background: '#fff', px: { xs: 2, md: 4 }, py: 2 }}>
+          <CardContent sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', justifyContent: 'center' }}>
+            {/* Categoría */}
+            <FormControl sx={{ minWidth: 180 }} size="small">
+              <InputLabel id="categoria-label"><Category sx={{ mr: 1, fontSize: 18 }} />Categoría</InputLabel>
+              <Select
+                labelId="categoria-label"
                 value={filtroCategoria}
+                label="Categoría"
                 onChange={(e) => setFiltroCategoria(e.target.value)}
-                className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-congress-blue focus:outline-none"
+                sx={{ borderRadius: 2, fontWeight: 500 }}
               >
-                <option value="TODOS">Todos los tracks ▼</option>
+                <MenuItem value="TODOS">Todos los tracks</MenuItem>
                 {categorias.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
+                  <MenuItem key={cat} value={cat}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Category sx={{ color: TRACK_CATEGORIES[cat]?.bg, fontSize: 18 }} />
+                      {cat}
+                    </Box>
+                  </MenuItem>
                 ))}
-              </select>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Aula:</span>
-              <select
+              </Select>
+            </FormControl>
+            {/* Aula */}
+            <FormControl sx={{ minWidth: 160 }} size="small">
+              <InputLabel id="aula-label"><School sx={{ mr: 1, fontSize: 18 }} />Aula</InputLabel>
+              <Select
+                labelId="aula-label"
                 value={filtroAula}
+                label="Aula"
                 onChange={(e) => setFiltroAula(e.target.value)}
-                className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-congress-blue focus:outline-none"
+                sx={{ borderRadius: 2, fontWeight: 500 }}
               >
-                <option value="TODAS">Todas las aulas ▼</option>
+                <MenuItem value="TODAS">Todas las aulas</MenuItem>
                 {AULAS.slice(0, 9).map(aula => (
-                  <option key={aula} value={aula}>{aula}</option>
+                  <MenuItem key={aula} value={aula}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <School sx={{ color: AULA_COLORS[aula]?.border, fontSize: 18 }} />
+                      {aula}
+                    </Box>
+                  </MenuItem>
                 ))}
-              </select>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Disertante:</span>
-              <select
-                value={filtroDisertante}
-                onChange={(e) => setFiltroDisertante(e.target.value)}
-                className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-congress-blue focus:outline-none"
-              >
-                <option value="TODOS">Todos los disertantes ▼</option>
-                {disertantesUnicos.map(dis => (
-                  <option key={dis} value={dis}>{dis}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
+              </Select>
+            </FormControl>
+            {/* Disertante */}
+            <Autocomplete
+              options={["TODOS", ...disertantesUnicos]}
+              value={filtroDisertante}
+              onChange={(_, value) => setFiltroDisertante(value || "TODOS")}
+              size="small"
+              sx={{ minWidth: 200 }}
+              renderInput={(params) => (
+                <TextField {...params} label={<><Person sx={{ mr: 1, fontSize: 18 }} />Disertante</>} variant="outlined" />
+              )}
+            />
+            {/* Chips de filtros activos */}
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center', ml: 2 }}>
+              {filtroCategoria !== "TODOS" && (
+                <Chip label={filtroCategoria} color="primary" size="small" sx={{ bgcolor: TRACK_CATEGORIES[filtroCategoria]?.bg, color: '#fff', fontWeight: 500 }} onDelete={() => setFiltroCategoria("TODOS")} />
+              )}
+              {filtroAula !== "TODAS" && (
+                <Chip label={filtroAula} color="secondary" size="small" sx={{ bgcolor: AULA_COLORS[filtroAula]?.border, color: '#fff', fontWeight: 500 }} onDelete={() => setFiltroAula("TODAS")} />
+              )}
+              {filtroDisertante !== "TODOS" && (
+                <Chip label={filtroDisertante} color="default" size="small" sx={{ bgcolor: '#374151', color: '#fff', fontWeight: 500 }} onDelete={() => setFiltroDisertante("TODOS")} />
+              )}
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
 
       {/* Grilla Moderna de Agenda */}
       <div className="bg-gray-50 min-h-screen py-8">
