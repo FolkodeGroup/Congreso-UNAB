@@ -11,7 +11,7 @@ class ProgramaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Programa
-        fields = ['titulo', 'disertante', 'hora_inicio', 'hora_fin', 'dia', 'descripcion', 'aula']
+        fields = ['titulo', 'disertante', 'hora_inicio', 'hora_fin', 'dia', 'descripcion', 'aula', 'categoria']
 
 class EmpresaSerializer(serializers.ModelSerializer):
     class Meta:

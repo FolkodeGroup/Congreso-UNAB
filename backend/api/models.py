@@ -31,6 +31,18 @@ class Programa(models.Model):
         ("Aula 9", "Aula 9"),
         ("Aula 10", "Aula 10"),
     ]
+    
+    CATEGORIA_CHOICES = [
+        ("LOGÍSTICA", "Logística"),
+        ("TRANSPORTE", "Transporte"),
+        ("SUPPLY CHAIN", "Supply Chain"),
+        ("TECNOLOGÍA", "Tecnología"),
+        ("SOSTENIBILIDAD", "Sostenibilidad"),
+        ("INNOVACIÓN", "Innovación"),
+        ("GESTIÓN", "Gestión"),
+        ("NETWORKING", "Networking"),
+    ]
+    
     titulo = models.CharField(max_length=255, verbose_name="Título del Evento")
     disertante = models.ForeignKey(Disertante, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Disertante")
     hora_inicio = models.TimeField(verbose_name="Hora de Inicio")
@@ -38,6 +50,7 @@ class Programa(models.Model):
     dia = models.DateField(verbose_name="Día del Evento")
     descripcion = models.TextField(blank=True, verbose_name="Descripción")
     aula = models.CharField(max_length=30, choices=AULA_CHOICES, verbose_name="Aula")
+    categoria = models.CharField(max_length=20, choices=CATEGORIA_CHOICES, default="LOGÍSTICA", verbose_name="Categoría")
 
     def __str__(self):
         return f"{self.titulo} - {self.dia} {self.hora_inicio}"
