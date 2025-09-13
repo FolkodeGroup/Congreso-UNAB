@@ -17,11 +17,13 @@ export default function Ponentes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
   useEffect(() => {
     const fetchDisertantes = async () => {
       try {
         // Apuntamos a la URL de la API de Django
-        const response = await fetch("http://127.0.0.1:8000/api/disertantes/");
+        const response = await fetch(`${apiUrl}/api/disertantes/`);
         if (!response.ok) {
           throw new Error("Error al cargar los datos de los ponentes.");
         }
@@ -62,7 +64,7 @@ export default function Ponentes() {
               id: idx + 1,
               nombre,
               bio: ejemploBio,
-              foto_url: `http://127.0.0.1:8000/media/ponencias/${archivo}`,
+              foto_url: `${apiUrl}/media/ponencias/${archivo}`,
               tema_presentacion: ejemploTema,
             };
           });
@@ -102,7 +104,7 @@ export default function Ponentes() {
             id: idx + 1,
             nombre,
             bio: ejemploBio,
-            foto_url: `http://127.0.0.1:8000/media/ponencias/${archivo}`,
+            foto_url: `${apiUrl}/media/ponencias/${archivo}`,
             tema_presentacion: ejemploTema,
           };
         });
@@ -179,7 +181,7 @@ export default function Ponentes() {
               if (fotoUrl && !fotoUrl.startsWith("http")) {
                 // Elimina prefijos innecesarios y construye la URL absoluta
                 const cleanPath = fotoUrl.replace(/^.*media\//, "");
-                fotoUrl = `http://127.0.0.1:8000/media/${cleanPath}`;
+                fotoUrl = `${apiUrl}/media/${cleanPath}`;
               }
               return (
                 <div

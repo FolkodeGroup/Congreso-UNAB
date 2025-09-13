@@ -87,7 +87,8 @@ export default function EscaneoQR() {
 
   const descargarCertificado = () => {
     if (certId) {
-      const url = `http://127.0.0.1:8000/api/certificado/${certId}/`;
+      const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+      const url = `${apiUrl}/api/certificado/${certId}/`;
       window.open(url, "_blank");
     }
   };
