@@ -55,9 +55,6 @@ const LargeLogoCarousel: React.FC = () => {
   return (
     <section className="py-16 bg-gray-100 overflow-hidden relative">
       <div className="w-full px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-          Nuestras Empresas Participantes
-        </h2>
         <div className="relative w-full h-[400px]">
           {" "}
           {/* Fixed height for carousel container */}

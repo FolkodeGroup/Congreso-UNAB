@@ -29,6 +29,46 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 
+// Data for participation modalities to unify styles
+const PARTICIPATION_MODALITIES = [
+  {
+    id: "expositor",
+    icon: FiUsers,
+    title: "Expositor con Stand",
+    description:
+      "Presenta tu empresa, servicios o proyectos en un espacio dedicado. Conecta directamente con profesionales del sector y genera nuevas oportunidades de negocio.",
+    gradient: "from-congress-blue/90 to-congress-cyan/80",
+    iconGradient: "from-congress-blue to-congress-cyan",
+  },
+  {
+    id: "tecnologia",
+    icon: FiAward,
+    title: "Presentador de Tecnología",
+    description:
+      "Muestra vehículos, maquinaria o tecnologías innovadoras. Demuestra las últimas innovaciones que están transformando el sector logístico y de transporte.",
+    gradient: "from-congress-cyan/90 to-congress-blue/80",
+    iconGradient: "from-congress-cyan to-congress-cyan-light",
+  },
+  {
+    id: "taller",
+    icon: FiClock,
+    title: "Coordinador de Taller",
+    description:
+      "Lidera un taller práctico o instancia demostrativa. Comparte tu expertise y conocimientos prácticos con otros profesionales del sector.",
+    gradient: "from-congress-blue-dark/90 to-congress-cyan/80",
+    iconGradient: "from-congress-blue-dark to-congress-blue",
+  },
+  {
+    id: "otras",
+    icon: FiUsers,
+    title: "Otras Modalidades",
+    description:
+      "¿Tienes una propuesta diferente? Nos encantaría conocer otras modalidades que consideres relevantes y de interés para el sector. Contáctanos para conversarlo.",
+    gradient: "from-congress-cyan-light/90 to-congress-blue-dark/80",
+    iconGradient: "from-congress-cyan-light to-congress-blue",
+  },
+];
+
 export default function Index() {
   const mapRef = useRef(null);
   const location = useLocation();
@@ -143,77 +183,28 @@ export default function Index() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card className="group border-2 border-congress-blue/20 hover:border-congress-blue hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-br from-white to-congress-blue/5 card-enhanced relative overflow-hidden">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
-                    <FiUsers className="w-8 h-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-blue transition-colors">
-                    Expositor con Stand
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base text-gray-600 leading-relaxed">
-                    Presenta tu empresa, servicios o proyectos en un espacio
-                    dedicado. Conecta directamente con profesionales del sector
-                    y genera nuevas oportunidades de negocio.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card className="group border-2 border-congress-cyan/20 hover:border-congress-cyan hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-br from-white to-congress-cyan/5 card-enhanced relative overflow-hidden">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
-                    <FiAward className="w-8 h-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-cyan transition-colors">
-                    Presentador de Tecnología
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base text-gray-600 leading-relaxed">
-                    Muestra vehículos, maquinaria o tecnologías innovadoras.
-                    Demuestra las últimas innovaciones que están transformando
-                    el sector logístico y de transporte.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card className="group border-2 border-congress-blue/20 hover:border-congress-blue hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-br from-white to-congress-blue/5 card-enhanced relative overflow-hidden">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
-                    <FiClock className="w-8 h-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-blue transition-colors">
-                    Coordinador de Taller
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base text-gray-600 leading-relaxed">
-                    Lidera un taller práctico o instancia demostrativa. Comparte
-                    tu expertise y conocimientos prácticos con otros
-                    profesionales del sector.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-
-              <Card className="group border-2 border-congress-cyan/20 hover:border-congress-cyan hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-br from-white to-congress-cyan/5 card-enhanced relative overflow-hidden">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
-                    <FiUsers className="w-8 h-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl text-congress-blue-dark group-hover:text-congress-cyan transition-colors">
-                    Otras Modalidades
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base text-gray-600 leading-relaxed">
-                    ¿Tienes una propuesta diferente? Nos encantaría conocer
-                    otras modalidades que consideres relevantes y de interés
-                    para el sector. Contáctanos para conversarlo.
-                  </CardDescription>
-                </CardContent>
-              </Card>
+              {PARTICIPATION_MODALITIES.map((modality) => (
+                <Card
+                  key={modality.id}
+                  className={`group flex h-full flex-col transform border-0 bg-gradient-to-br p-6 text-center shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl ${modality.gradient} rounded-2xl`}
+                >
+                  <CardHeader className="mb-4 flex flex-col items-center justify-center">
+                    <div
+                      className={`mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br shadow-lg transition-all duration-300 group-hover:shadow-xl ${modality.iconGradient}`}
+                    >
+                      <modality.icon className="h-10 w-10 text-white" />
+                    </div>
+                    <CardTitle className="text-2xl font-bold text-white transition-colors">
+                      {modality.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <CardDescription className="text-center text-lg leading-relaxed text-congress-white/90">
+                      {modality.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
 
             <div className="text-center mt-12">
@@ -286,17 +277,17 @@ export default function Index() {
             <Accordion
               type="single"
               collapsible
-              className="w-full max-w-4xl mx-auto bg-white rounded-lg shadow border border-congress-cyan"
+              className="w-full max-w-4xl mx-auto bg-white overflow-hidden rounded-lg shadow border border-congress-cyan"
             >
               <AccordionItem
                 value="caba"
-                className="border-b border-congress-cyan"
+                className="border-b border-congress-cyan bg-congress-cyan"
               >
-                <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
+                <AccordionTrigger className="px-6 py-4 text-white font-semibold hover:bg-congress-blue data-[state=open]:bg-congress-blue transition-colors">
                   Desde CABA (Obelisco)
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
-                  <ul className="space-y-2">
+                <AccordionContent className="px-6 pt-4 pb-6 text-gray-700 bg-white leading-relaxed">
+                  <ul className="space-y-4">
                     <li>
                       <strong>Transporte Público:</strong> Tomar Subte hasta
                       Constitución, luego Tren Roca (ramales A. Korn, Glew)
@@ -318,8 +309,8 @@ export default function Index() {
                 <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
                   Desde Adrogué
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
-                  <ul className="space-y-2">
+                <AccordionContent className="px-6 pt-4 pb-6 text-gray-700 bg-congress-cyan/5 leading-relaxed">
+                  <ul className="space-y-4">
                     <li>
                       <strong>506 (Gendarmería - Por Bynnon):</strong> Av Espora
                       - esq. Ricardo Rojas
@@ -337,13 +328,13 @@ export default function Index() {
               </AccordionItem>
               <AccordionItem
                 value="burzaco"
-                className="border-b border-congress-cyan"
+                className="border-b border-congress-cyan bg-congress-cyan"
               >
-                <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
+                <AccordionTrigger className="px-6 py-4 text-white font-semibold hover:bg-congress-blue data-[state=open]:bg-congress-blue transition-colors">
                   Desde Burzaco
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
-                  <ul className="space-y-2">
+                <AccordionContent className="px-6 pt-4 pb-6 text-gray-700 bg-white leading-relaxed">
+                  <ul className="space-y-4">
                     <li>
                       <strong>506 (Gendarmería - Por Bynnon):</strong> Av Espora
                       - esq. Ricardo Rojas
@@ -364,8 +355,8 @@ export default function Index() {
                 <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
                   Desde Longchamps
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
-                  <ul className="space-y-2">
+                <AccordionContent className="px-6 pt-4 pb-6 text-gray-700 bg-congress-cyan/5 leading-relaxed">
+                  <ul className="space-y-4">
                     <li>
                       <strong>79 (San Vicente):</strong> Constitución (Chiesa y
                       Francia)
@@ -379,12 +370,12 @@ export default function Index() {
               </AccordionItem>
               <AccordionItem
                 value="tren"
-                className="border-b border-congress-cyan"
+                className="border-b border-congress-cyan bg-congress-cyan"
               >
-                <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
+                <AccordionTrigger className="px-6 py-4 text-white font-semibold hover:bg-congress-blue data-[state=open]:bg-congress-blue transition-colors">
                   En Tren (Línea Roca)
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
+                <AccordionContent className="px-6 pt-4 pb-6 text-gray-700 bg-white leading-relaxed">
                   <p>
                     Las estaciones más cercanas son <strong>Adrogué</strong>,{" "}
                     <strong>Burzaco</strong> y <strong>Longchamps</strong>.
@@ -403,7 +394,7 @@ export default function Index() {
                 <AccordionTrigger className="px-6 py-4 text-congress-blue font-semibold hover:bg-congress-cyan/20 data-[state=open]:bg-congress-cyan/10 transition-colors">
                   En Auto
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-700 bg-congress-cyan/5">
+                <AccordionContent className="px-6 pt-4 pb-6 text-gray-700 bg-congress-cyan/5 leading-relaxed">
                   <p>
                     <strong>Acceso principal:</strong> Por Av. Espora, a 3
                     cuadras de la Ruta Provincial 4 (Camino de Cintura).

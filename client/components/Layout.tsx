@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { ChevronDown } from "lucide-react";
 import CongressLogo from "./CongressLogo";
 import MobileNav from "./MobileNav";
+import { FiMail, FiMapPin, FiCalendar } from "react-icons/fi";
 
 interface LayoutProps {
   children: ReactNode;
@@ -200,25 +201,25 @@ export default function Layout({ children }: LayoutProps) {
                 transporte
               </h3>
             </div>
-            <div>
+            <div className="text-left">
               <h3 className="text-lg font-bold mb-4">Información del Evento</h3>
-              <p className="text-gray-300 mb-2 flex items-start">
-                <span className="text-white mr-2">📅</span>
+              <p className="text-gray-300 mb-2 flex items-center justify-start">
+                <FiCalendar className="text-white mr-2 flex-shrink-0" />
                 <span>15 de Noviembre de 2025</span>
               </p>
-              <p className="text-gray-300 mb-2 notranslate flex items-start">
-                <span className="text-white mr-2">📍</span>
+              <p className="text-gray-300 mb-2 notranslate flex items-center justify-start">
+                <FiMapPin className="text-white mr-2 flex-shrink-0" />
                 <span>Campus UNaB, Blas Parera 132, Burzaco</span>
               </p>
               <p className="text-gray-300 notranslate">
                 <a
                   href="mailto:congresologisticaytransporte@unab.edu.ar"
-                  className="text-gray-300 hover:underline flex items-start"
+                  className="text-gray-300 hover:underline flex items-center justify-start"
                 >
-                  <span className="text-white mr-2">✉️</span>
+                  <FiMail className="text-white mr-2 flex-shrink-0" />
                   <span>
                     congresologisticaytransporte
-                    <br />
+                    <br className="md:hidden" />
                     @unab.edu.ar
                   </span>
                 </a>
