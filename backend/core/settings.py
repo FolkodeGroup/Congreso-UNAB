@@ -20,10 +20,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2zba+jiuh_gqthifa5*y7illxqrj8oz03yv005)g0-wfpi@o1d'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-2zba+jiuh_gqthifa5*y7illxqrj8oz03yv005)g0-wfpi@o1d') # Usar variable de entorno o un valor por defecto
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'  # Leer de variable de entorno, default False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.101', 'folkode.pythonanywhere.com']
 
@@ -167,11 +165,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS settings
 import socket
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
+    'http://localhost:5173',  # Para desarrollo local
     'https://congresologisticaytransporteunab.netlify.app',
     'http://localhost:8080',
     f'http://{socket.gethostbyname(socket.gethostname())}:8080',
-]
+] + [os.environ.get('FRONTEND_URL', '')]  # Permitir origen desde variable de entorno
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
@@ -189,5 +187,3 @@ CORS_ALLOW_HEADERS = [
 # Media files (PDFs, imágenes, etc)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
