@@ -35,7 +35,9 @@ export default function Ponentes() {
         }
         const data = await response.json();
         if (Array.isArray(data) && data.length > 0) {
-          setDisertantes(data);
+            // Ordenar alfabéticamente por nombre
+            const dataOrdenada = [...data].sort((a, b) => a.nombre.localeCompare(b.nombre));
+            setDisertantes(dataOrdenada);
         } else {
           // Si no hay datos, generar disertantes desde los archivos locales
           const archivos = [
@@ -43,14 +45,19 @@ export default function Ponentes() {
             "alexander-machado.png",
             "ana-gaude.png",
             "argenis-soto.png",
+            "arnaldo-ventancu.png",
+            "boris-villalon.png",
             "claudia-freed.png",
             "cristian-ruiz.png",
             "delfina-salgado.png",
             "diego-plumaris.png",
+            "ernesto-castagnet.png",
             "ezequiel-grillo.png",
             "federico-carlos.png",
             "felipe-rios.png",
             "gabriel-luchessi.png",
+            "ignacio-villalon.png",
+            "john-doe.png",
             "jorge-golfieri.png",
             "jorge-metz.png",
             "juan-sanchez.png",
@@ -60,21 +67,23 @@ export default function Ponentes() {
           ];
           const ejemploTema = "Título de la Presentación";
           const ejemploBio = "Descripción de ejemplo del disertante.";
-          const disertantesAuto = archivos.map((archivo, idx) => {
-            const nombreBase = archivo.replace(/\.[^/.]+$/, "");
-            const nombre = nombreBase
-              .split("-")
-              .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-              .join(" ");
-            return {
-              id: idx + 1,
-              nombre,
-              bio: ejemploBio,
-              foto_url: `${apiUrl}/media/ponencias/${archivo}`,
-              tema_presentacion: ejemploTema,
-            };
-          });
-          setDisertantes(disertantesAuto);
+            const disertantesAuto = archivos.map((archivo, idx) => {
+              const nombreBase = archivo.replace(/\.[^/.]+$/, "");
+              const nombre = nombreBase
+                .split("-")
+                .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                .join(" ");
+              return {
+                id: idx + 1,
+                nombre,
+                bio: ejemploBio,
+                foto_url: `${apiUrl}/media/ponencias/${archivo}`,
+                tema_presentacion: ejemploTema,
+              };
+            });
+            // Ordenar alfabéticamente por nombre
+            const disertantesAutoOrdenados = [...disertantesAuto].sort((a, b) => a.nombre.localeCompare(b.nombre));
+            setDisertantes(disertantesAutoOrdenados);
         }
       } catch (err) {
         // Si hay error, mostrar los disertantes de ejemplo
@@ -83,14 +92,19 @@ export default function Ponentes() {
           "alexander-machado.png",
           "ana-gaude.png",
           "argenis-soto.png",
+          "arnaldo-ventancu.png",
+          "boris-villalon.png",
           "claudia-freed.png",
           "cristian-ruiz.png",
           "delfina-salgado.png",
           "diego-plumaris.png",
+          "ernesto-castagnet.png",
           "ezequiel-grillo.png",
           "federico-carlos.png",
           "felipe-rios.png",
           "gabriel-luchessi.png",
+          "ignacio-villalon.png",
+          "john-doe.png",
           "jorge-golfieri.png",
           "jorge-metz.png",
           "juan-sanchez.png",
@@ -114,7 +128,9 @@ export default function Ponentes() {
             tema_presentacion: ejemploTema,
           };
         });
-        setDisertantes(disertantesAuto);
+        // Ordenar alfabéticamente por nombre
+        const disertantesAutoOrdenados = [...disertantesAuto].sort((a, b) => a.nombre.localeCompare(b.nombre));
+        setDisertantes(disertantesAutoOrdenados);
         setError(null);
       } finally {
         setLoading(false);
