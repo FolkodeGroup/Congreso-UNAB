@@ -63,7 +63,7 @@ const RegistroEmpresas: React.FC = () => {
     { id: "stand", label: "Stand/Exhibición", description: "Espacio para mostrar productos y servicios" },
     { id: "sponsorship", label: "Patrocinio", description: "Apoyo financiero con beneficios de marca" },
     { id: "speaking", label: "Ponencia/Charla", description: "Presentación técnica o caso de éxito" },
-    { id: "workshop", label: "Taller", description: "Sesión práctica interactiva" },
+    { id: "visitor", label: "Visitante", description: "Participación como asistente al evento" },
   ];
 
   const handleParticipationChange = (optionId: string, checked: boolean) => {
