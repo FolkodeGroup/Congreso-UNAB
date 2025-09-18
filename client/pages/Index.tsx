@@ -110,7 +110,7 @@ export default function Index() {
                   </Button>
                 </Link>
               </div>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left opacity-80 mb-10">
+              {/* <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left opacity-80 mb-10">
                 <img
                   src="/images/Logo_unab2.png"
                   alt="UNaB Logo"
@@ -119,7 +119,7 @@ export default function Index() {
                 <span className="text-lg font-medium">
                   Universidad Nacional Guillermo Brown
                 </span>
-              </div>
+              </div> */}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center mt-10">
