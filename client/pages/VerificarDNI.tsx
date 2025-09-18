@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,10 +9,12 @@ import { toast } from "sonner";
 import { CheckCircle, AlertCircle } from "lucide-react";
 
 export default function VerificarDNI() {
+  const navigate = useNavigate();
   const [dni, setDni] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [confirmed, setConfirmed] = useState<boolean>(false);
   const [asistente, setAsistente] = useState<any>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,12 +42,13 @@ export default function VerificarDNI() {
 
       const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(
-          result.message || "Error desconocido en la verificación",
-        );
+      if (response.status === 404) {
+        setShowModal(true);
+        return;
       }
-
+      if (!response.ok) {
+        throw new Error(result.message || "Error desconocido en la verificación");
+      }
       setConfirmed(true);
       setAsistente(result.asistente);
       toast.success("¡Asistencia Confirmada!", {
@@ -104,15 +108,11 @@ export default function VerificarDNI() {
     <Layout>
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-2xl mx-auto text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Confirmar Asistencia
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Confirmar Asistencia</h1>
           <p className="text-xl text-gray-600">
-            Ingresa tu DNI para confirmar tu asistencia al congreso y recibir tu
-            certificado.
+            Ingresa tu DNI para confirmar tu asistencia al congreso y recibir tu certificado.
           </p>
         </div>
-
         <Card className="max-w-md mx-auto">
           <CardHeader>
             <CardTitle className="text-center">Verificación de DNI</CardTitle>
@@ -130,30 +130,47 @@ export default function VerificarDNI() {
                   maxLength={8}
                   pattern="[0-9]*"
                 />
-                <p className="text-sm text-gray-500">
-                  Ingresa tu DNI sin puntos ni espacios
-                </p>
+                <p className="text-sm text-gray-500">Ingresa tu DNI sin puntos ni espacios</p>
               </div>
-
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Verificando..." : "Confirmar Asistencia"}
               </Button>
             </form>
-
             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
               <div className="flex items-start space-x-2">
                 <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
                 <div className="text-sm text-blue-800">
                   <p className="font-semibold">Importante:</p>
                   <p>
-                    Solo puedes confirmar tu asistencia una vez. Tu certificado
-                    será enviado automáticamente a tu email registrado.
+                    Solo puedes confirmar tu asistencia una vez. Tu certificado será enviado automáticamente a tu email registrado.
                   </p>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
+        {/* Modal para DNI no encontrado */}
+        {showModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 text-center animate-fade-in">
+              <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-red-600 mb-2">DNI no registrado</h2>
+              <p className="text-gray-700 mb-6">
+                No encontramos tu DNI en la base de datos.<br />
+                Por favor, realiza tu inscripción rápida para poder confirmar tu asistencia.
+              </p>
+              <Button
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg py-2 rounded"
+                onClick={() => {
+                  setShowModal(false);
+                  navigate("/registro-rapido");
+                }}
+              >
+                Ir a Registro Rápido
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

@@ -126,32 +126,32 @@ export default function GenerarQRs() {
           </div> */}
 
           {qrData && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* QR para confirmar asistencia */}
-              <Card>
+            <div className="flex flex-col items-center justify-center min-h-[60vh]">
+              <Card className="shadow-2xl border-2 border-blue-100 bg-gradient-to-br from-white to-blue-50 p-8 max-w-lg w-full">
                 <CardHeader>
-                  <CardTitle className="text-center text-blue-600">
+                  <CardTitle className="text-center text-blue-700 text-2xl font-bold mb-2">
                     QR para Confirmar Asistencia
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-center space-y-4">
-                  <div className="bg-white p-4 rounded-lg inline-block">
+                <CardContent className="flex flex-col items-center space-y-6">
+                  <div className="bg-white p-6 rounded-xl shadow-lg">
                     <img
                       src={qrData.checkin_qr.image_base64}
                       alt="QR Confirmar Asistencia"
-                      className="w-64 h-64 mx-auto"
+                      className="w-80 h-80 mx-auto"
+                      style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.10)' }}
                     />
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-base text-gray-700 font-medium">
                     {qrData.checkin_qr.description}
                   </p>
                   <p className="text-xs text-gray-500 font-mono break-all">
                     {qrData.checkin_qr.url}
                   </p>
-                  <div className="flex gap-3 justify-center">
+                  <div className="flex gap-4 w-full justify-center">
                     <Button
                       variant="outline"
-                      className="w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      className="w-1/2 bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-bold px-8 py-3 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                       size="lg"
                       onClick={() =>
                         downloadQR(
@@ -165,65 +165,12 @@ export default function GenerarQRs() {
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full bg-congress-cyan hover:bg-congress-blue-dark text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      className="w-1/2 bg-congress-cyan hover:bg-congress-blue-dark text-white font-bold px-8 py-3 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                       size="lg"
                       onClick={() =>
                         printQR(
                           qrData.checkin_qr.image_base64,
                           "QR para Confirmar Asistencia",
-                        )
-                      }
-                    >
-                      Imprimir
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* QR para registro in-situ */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-center text-blue-600">
-                    QR para Registro in-situ
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-center space-y-4">
-                  <div className="bg-white p-4 rounded-lg inline-block">
-                    <img
-                      src={qrData.registro_qr.image_base64}
-                      alt="QR Registro Rápido"
-                      className="w-64 h-64 mx-auto"
-                    />
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    {qrData.registro_qr.description}
-                  </p>
-                  <p className="text-xs text-gray-500 font-mono break-all">
-                    {qrData.registro_qr.url}
-                  </p>
-                  <div className="flex gap-3 justify-center">
-                    <Button
-                      variant="outline"
-                      className="w-full bg-congress-blue-dark hover:bg-congress-cyan-light text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                      size="lg"
-                      onClick={() =>
-                        downloadQR(
-                          qrData.registro_qr.image_base64,
-                          "QR-Registro-Rapido.png",
-                        )
-                      }
-                    >
-                      <Download className="mr-2 h-5 w-5" />
-                      Descargar
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="w-full bg-congress-cyan hover:bg-congress-blue-dark text-white font-bold px-10 py-4 text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                      onClick={() =>
-                        printQR(
-                          qrData.registro_qr.image_base64,
-                          "QR para Registro in-situ",
                         )
                       }
                     >
