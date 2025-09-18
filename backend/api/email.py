@@ -37,7 +37,7 @@ def send_confirmation_email(inscripcion_instance):
     email = EmailMultiAlternatives(
         subject='Confirmación de Inscripción al Congreso de Logística UNAB',
         body=text_content,
-        from_email=settings.DEFAULT_FROM_EMAIL,
+        from_email=f"Congreso UNAB <{settings.EMAIL_HOST_USER}>",
         to=[asistente.email],
     )
     email.attach_alternative(html_content, "text/html")
@@ -89,7 +89,7 @@ def send_certificate_email(certificado_instance):
         email = EmailMultiAlternatives(
             subject='Certificado de Asistencia al Congreso de Logística UNAB',
             body='Adjuntamos tu certificado de asistencia al Congreso de Logística UNAB.',
-            from_email=settings.DEFAULT_FROM_EMAIL,
+            from_email=f"Congreso UNAB <{settings.EMAIL_HOST_USER}>",
             to=[asistente.email],
         )
         email.attach(
