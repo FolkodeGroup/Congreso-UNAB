@@ -1,3 +1,12 @@
+// Función para registrar empresa
+// Función para registrar empresa con archivos
+export async function registrarEmpresa(data: FormData) {
+  const res = await fetch(`${API_BASE}/registro-empresas/`, {
+    method: "POST",
+    body: data,
+  });
+  return await res.json();
+}
 const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
 // Función para verificar DNI y confirmar asistencia

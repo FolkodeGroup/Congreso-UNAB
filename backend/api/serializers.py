@@ -14,10 +14,29 @@ class ProgramaSerializer(serializers.ModelSerializer):
         fields = ['titulo', 'disertante', 'hora_inicio', 'hora_fin', 'dia', 'descripcion', 'aula', 'categoria']
 
 class EmpresaSerializer(serializers.ModelSerializer):
+    def to_internal_value(self, data):
+        # Convierte el campo 'participacion_opciones' a JSON si viene como string
+        import json
+        if 'participacion_opciones' in data:
+            value = data['participacion_opciones']
+            if isinstance(value, str):
+                try:
+                    data['participacion_opciones'] = json.loads(value)
+                except Exception:
+                    pass  # Deja el valor como está si no se puede parsear
+        return super().to_internal_value(data)
+
     class Meta:
         model = Empresa
         fields = [
             'nombre_empresa',
+            'cuit',
+            'direccion',
+            'telefono_empresa',
+            'email_empresa',
+            'sitio_web',
+            'descripcion',
+            'logo',
             'nombre_contacto',
             'email_contacto',
             'celular_contacto',

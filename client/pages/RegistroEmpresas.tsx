@@ -30,13 +30,10 @@ const companyRegistrationSchema = z.object({
   companyAddress: z.string().min(1, "La dirección de la empresa es requerida"),
   companyPhone: z.string().min(1, "El teléfono de la empresa es requerido"),
   companyEmail: z.string().email("Debe ser un correo electrónico válido"),
-  contactPersonName: z
-    .string()
-    .min(1, "El nombre de la persona de contacto es requerido"),
+  contactPersonName: z.string().min(1, "El nombre de la persona de contacto es requerido"),
   contactPersonEmail: z.string().email("Debe ser un correo electrónico válido"),
-  contactPersonPhone: z
-    .string()
-    .min(1, "El teléfono de la persona de contacto es requerido"),
+  contactPersonPhone: z.string().min(1, "El teléfono de la persona de contacto es requerido"),
+  cargoContacto: z.string().min(1, "El cargo en la empresa es requerido"),
   logo: z.any().optional(),
   participationOptions: z.array(z.string()).optional(),
   companyDescription: z.string().optional(),
@@ -78,12 +75,50 @@ const RegistroEmpresas: React.FC = () => {
   };
 
   const onSubmit = async (data: CompanyRegistrationFormData) => {
-    console.log("Formulario de Empresa Enviado:", data);
-    // Aquí iría la llamada real a la API
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulación de delay
-    setShowModal(true);
-    reset();
-    setParticipationTypes([]);
+    // Crear FormData para enviar datos y archivo
+    const formData = new FormData();
+    formData.append("nombre_empresa", data.companyName);
+    formData.append("cuit", data.companyCUIT);
+    formData.append("direccion", data.companyAddress);
+    formData.append("telefono_empresa", data.companyPhone);
+    formData.append("email_empresa", data.companyEmail);
+    // Normaliza el sitio web: agrega https:// si falta
+    let sitioWeb = data.website || "";
+    if (sitioWeb && !/^https?:\/\//i.test(sitioWeb)) {
+      sitioWeb = "https://" + sitioWeb;
+    }
+    formData.append("sitio_web", sitioWeb);
+    formData.append("descripcion", data.companyDescription || "");
+    formData.append("nombre_contacto", data.contactPersonName);
+    formData.append("email_contacto", data.contactPersonEmail);
+    formData.append("celular_contacto", data.contactPersonPhone);
+    formData.append("cargo_contacto", data.cargoContacto);
+    // Si no hay opciones, envía un array vacío
+    formData.append("participacion_opciones", JSON.stringify(Array.isArray(data.participationOptions) ? data.participationOptions : []));
+    formData.append("participacion_otra", "");
+    if (data.logo && data.logo[0]) {
+      formData.append("logo", data.logo[0]);
+    }
+    try {
+      const response = await import("@/lib/api").then(api => api.registrarEmpresa(formData));
+      if (response.status === "success") {
+        setShowModal(true);
+        reset();
+        setParticipationTypes([]);
+      } else {
+        let errorMsg = "Intente nuevamente.";
+        if (response.message) {
+          if (typeof response.message === "object") {
+            errorMsg = JSON.stringify(response.message, null, 2);
+          } else {
+            errorMsg = response.message;
+          }
+        }
+        alert("Error al registrar la empresa: " + errorMsg);
+      }
+    } catch (err) {
+      alert("Error de conexión al registrar la empresa. " + (err?.message || ""));
+    }
   };
 
   const handleCloseModal = () => {
@@ -202,6 +237,13 @@ const RegistroEmpresas: React.FC = () => {
                 {...register("contactPersonName")}
                 error={errors.contactPersonName?.message}
               />
+              <FormInput
+                label="Cargo en la Empresa"
+                icon={<Briefcase className="h-4 w-4" />}
+                placeholder="Ej: Gerente de RRHH"
+                {...register("cargoContacto")}
+                error={errors.cargoContacto?.message}
+              />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormInput
@@ -232,8 +274,10 @@ const RegistroEmpresas: React.FC = () => {
                 label="Logo"
                 accept="image/*"
                 hint="Formatos aceptados: PNG, JPG, SVG. Tamaño máximo: 5MB"
-                {...register("logo")}
                 error={errors.logo?.message as string}
+                onChange={e => {
+                  setValue("logo", e.target.files);
+                }}
               />
             </FormSection>
 

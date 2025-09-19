@@ -58,6 +58,13 @@ class Programa(models.Model):
 class Empresa(models.Model):
     # Main Info
     nombre_empresa = models.CharField(max_length=255, verbose_name="Nombre de la empresa o institución")
+    cuit = models.CharField(max_length=15, blank=True, null=True, verbose_name="CUIT de la empresa")
+    direccion = models.CharField(max_length=500, blank=True, null=True, verbose_name="Dirección de la empresa")
+    telefono_empresa = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono de la empresa")
+    email_empresa = models.EmailField(blank=True, null=True, verbose_name="Email corporativo de la empresa")
+    sitio_web = models.URLField(blank=True, null=True, verbose_name="Sitio web de la empresa")
+    descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción de la empresa")
+    logo = models.ImageField(upload_to='logos_empresas/', blank=True, null=True, verbose_name="Logo de la empresa")
 
     # Contact Person
     nombre_contacto = models.CharField(max_length=255, verbose_name="Nombre completo de la persona de contacto")
