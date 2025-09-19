@@ -5,7 +5,6 @@ import * as z from "zod";
 import { 
   FormInput, 
   FormButton, 
-  FormCheckbox, 
   FormCard, 
   FormSection,
   FormFileInput,
@@ -63,16 +62,7 @@ const RegistroEmpresas: React.FC = () => {
     { id: "visitor", label: "Visitante", description: "Participación como asistente al evento" },
   ];
 
-  const handleParticipationChange = (optionId: string, checked: boolean) => {
-    let updatedOptions;
-    if (checked) {
-      updatedOptions = [...participationTypes, optionId];
-    } else {
-      updatedOptions = participationTypes.filter(id => id !== optionId);
-    }
-    setParticipationTypes(updatedOptions);
-    setValue("participationOptions", updatedOptions);
-  };
+
 
   const onSubmit = async (data: CompanyRegistrationFormData) => {
     // Crear FormData para enviar datos y archivo
@@ -93,12 +83,10 @@ const RegistroEmpresas: React.FC = () => {
     formData.append("email_contacto", data.contactPersonEmail);
     formData.append("celular_contacto", data.contactPersonPhone);
     formData.append("cargo_contacto", data.cargoContacto);
-    // Si no hay opciones, envía un array vacío
-    // Siempre enviar un array válido, nunca string vacío, undefined o null
-    let opciones = Array.isArray(data.participationOptions) ? data.participationOptions : [];
-    if (!opciones || typeof opciones !== "object") {
-      opciones = [];
-    }
+    
+    // Usar participationTypes directamente - es un array simple
+    const opciones = participationTypes || [];
+    console.log("Opciones de participación:", opciones);
     formData.append("participacion_opciones", JSON.stringify(opciones));
     formData.append("participacion_otra", "");
     if (data.logo && data.logo[0]) {
@@ -289,29 +277,88 @@ const RegistroEmpresas: React.FC = () => {
             {/* Tipo de Participación */}
             <FormSection 
               title="Tipo de Participación" 
-              description="Seleccione las modalidades de participación de su interés"
+              description="Seleccione las modalidades de participación de su interés (puede elegir múltiples opciones)"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {participationOptions.map((option) => (
-                  <div 
-                    key={option.id} 
-                    className="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors duration-200"
-                  >
-                    <FormCheckbox
-                      label={option.label}
-                      description={option.description}
-                      checked={participationTypes.includes(option.id)}
-                      onChange={(e) => handleParticipationChange(option.id, e.target.checked)}
-                    />
+              <div className="space-y-3">
+                <label className="text-sm font-semibold text-slate-800 tracking-wide">
+                  Modalidades de Participación
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {participationOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => {
+                        const isSelected = participationTypes.includes(option.id);
+                        let newSelection;
+                        if (isSelected) {
+                          newSelection = participationTypes.filter(id => id !== option.id);
+                        } else {
+                          newSelection = [...participationTypes, option.id];
+                        }
+                        setParticipationTypes(newSelection);
+                        setValue("participationOptions", newSelection);
+                      }}
+                      className={`
+                        relative p-4 rounded-xl border-2 text-left transition-all duration-200 
+                        ${participationTypes.includes(option.id)
+                          ? 'border-blue-500 bg-blue-50 shadow-md' 
+                          : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'
+                        }
+                      `}
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div className={`
+                          flex-shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center mt-0.5
+                          ${participationTypes.includes(option.id)
+                            ? 'border-blue-500 bg-blue-500' 
+                            : 'border-slate-300'
+                          }
+                        `}>
+                          {participationTypes.includes(option.id) && (
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className={`font-semibold text-sm ${participationTypes.includes(option.id) ? 'text-blue-700' : 'text-slate-800'}`}>
+                            {option.label}
+                          </h3>
+                          <p className={`text-xs mt-1 ${participationTypes.includes(option.id) ? 'text-blue-600' : 'text-slate-600'}`}>
+                            {option.description}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Mostrar selecciones actuales */}
+                {participationTypes.length > 0 && (
+                  <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm font-medium text-green-800">
+                      ✓ Modalidades seleccionadas: {participationTypes.length}
+                    </p>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {participationTypes.map((typeId) => {
+                        const option = participationOptions.find(opt => opt.id === typeId);
+                        return (
+                          <span key={typeId} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-100 text-green-700">
+                            {option?.label}
+                          </span>
+                        );
+                      })}
+                    </div>
                   </div>
-                ))}
+                )}
+                
+                {participationTypes.length === 0 && (
+                  <p className="text-sm text-slate-600 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    💡 Seleccione al menos una modalidad de participación para que podamos contactarnos con la propuesta más adecuada.
+                  </p>
+                )}
               </div>
-              
-              {participationTypes.length === 0 && (
-                <p className="text-sm text-slate-600 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  💡 Seleccione al menos una modalidad de participación para que podamos contactarnos con la propuesta más adecuada.
-                </p>
-              )}
             </FormSection>
 
             {/* Botón de envío */}

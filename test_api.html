@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API Empresa</title>
+</head>
+<body>
+    <h1>Test API Registro Empresa</h1>
+    <button onclick="testRegistroEmpresa()">Probar Registro</button>
+    <div id="result"></div>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:8000/api";
+        
+        async function testRegistroEmpresa() {
+            const formData = new FormData();
+            formData.append("nombre_empresa", "Empresa Frontend Test");
+            formData.append("cuit", "20-98765432-1");
+            formData.append("direccion", "Av Frontend 456");
+            formData.append("telefono_empresa", "11-5555-1234");
+            formData.append("email_empresa", "frontend@test.com");
+            formData.append("sitio_web", "https://frontend-test.com");
+            formData.append("descripcion", "Empresa de prueba desde frontend");
+            formData.append("nombre_contacto", "Ana García");
+            formData.append("email_contacto", "ana@frontend-test.com");
+            formData.append("celular_contacto", "11-8888-9999");
+            formData.append("cargo_contacto", "Desarrolladora");
+            formData.append("participacion_opciones", JSON.stringify(["visitor", "speaking"]));
+            formData.append("participacion_otra", "");
+
+            try {
+                const response = await fetch(`${API_BASE}/registro-empresas/`, {
+                    method: "POST",
+                    body: formData,
+                });
+                const result = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<pre>' + JSON.stringify(result, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<pre style="color: red;">Error: ' + error.message + '</pre>';
+            }
+        }
+    </script>
+</body>
+</html>

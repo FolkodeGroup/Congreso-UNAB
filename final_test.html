@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Final - Formulario Empresa</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 20px; background: #0066cc; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 15px; }
+        .checkbox-item { display: flex; align-items: center; gap: 5px; }
+        .checkbox-item input { width: auto; }
+        #result { margin-top: 20px; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .loading { background: #cce5ff; color: #0066cc; border: 1px solid #80ccff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Final - Formulario de Registro de Empresas</h1>
+        <p>Este test simula exactamente el comportamiento del formulario React para confirmar que el fix funciona.</p>
+        
+        <form id="empresaForm">
+            <div class="form-group">
+                <label for="companyName">Nombre de la Empresa *</label>
+                <input type="text" id="companyName" required value="Transportes Unidos SA">
+            </div>
+
+            <div class="form-group">
+                <label for="companyCUIT">CUIT *</label>
+                <input type="text" id="companyCUIT" required value="30-98765432-1">
+            </div>
+
+            <div class="form-group">
+                <label for="companyAddress">Dirección *</label>
+                <input type="text" id="companyAddress" required value="Av. Libertador 5678, Buenos Aires">
+            </div>
+
+            <div class="form-group">
+                <label for="companyPhone">Teléfono de la Empresa *</label>
+                <input type="tel" id="companyPhone" required value="011-4444-5555">
+            </div>
+
+            <div class="form-group">
+                <label for="companyEmail">Email Corporativo *</label>
+                <input type="email" id="companyEmail" required value="info@transportesunidos.com">
+            </div>
+
+            <div class="form-group">
+                <label for="website">Sitio Web</label>
+                <input type="url" id="website" value="www.transportesunidos.com">
+            </div>
+
+            <div class="form-group">
+                <label for="companyDescription">Descripción de la Empresa</label>
+                <textarea id="companyDescription" rows="3">Empresa líder en transporte de cargas con cobertura nacional e internacional. Especializada en logística integral y soluciones de supply chain.</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="contactPersonName">Nombre de la Persona de Contacto *</label>
+                <input type="text" id="contactPersonName" required value="Roberto Martínez">
+            </div>
+
+            <div class="form-group">
+                <label for="cargoContacto">Cargo en la Empresa *</label>
+                <input type="text" id="cargoContacto" required value="Director Comercial">
+            </div>
+
+            <div class="form-group">
+                <label for="contactPersonEmail">Email de Contacto *</label>
+                <input type="email" id="contactPersonEmail" required value="r.martinez@transportesunidos.com">
+            </div>
+
+            <div class="form-group">
+                <label for="contactPersonPhone">Teléfono de Contacto *</label>
+                <input type="tel" id="contactPersonPhone" required value="011-15-7777-8888">
+            </div>
+
+            <div class="form-group">
+                <label>Tipo de Participación:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stand" value="stand" checked>
+                        <label for="stand">Stand/Exhibición</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="sponsorship" value="sponsorship">
+                        <label for="sponsorship">Patrocinio</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="speaking" value="speaking" checked>
+                        <label for="speaking">Ponencia/Charla</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="visitor" value="visitor">
+                        <label for="visitor">Visitante</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn">Registrar Empresa</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Simular exactamente la lógica del componente React
+        const API_BASE = "http://127.0.0.1:8000/api";
+
+        document.getElementById('empresaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('result');
+            
+            // Deshabilitar botón y mostrar loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Registrando Empresa...';
+            
+            resultDiv.innerHTML = '<div class="loading">⏳ Enviando datos al servidor...</div>';
+
+            try {
+                // Recopilar datos del formulario como lo hace React Hook Form
+                const data = {
+                    companyName: document.getElementById('companyName').value,
+                    companyCUIT: document.getElementById('companyCUIT').value,
+                    companyAddress: document.getElementById('companyAddress').value,
+                    companyPhone: document.getElementById('companyPhone').value,
+                    companyEmail: document.getElementById('companyEmail').value,
+                    website: document.getElementById('website').value,
+                    companyDescription: document.getElementById('companyDescription').value,
+                    contactPersonName: document.getElementById('contactPersonName').value,
+                    cargoContacto: document.getElementById('cargoContacto').value,
+                    contactPersonEmail: document.getElementById('contactPersonEmail').value,
+                    contactPersonPhone: document.getElementById('contactPersonPhone').value,
+                };
+
+                // Recopilar opciones de participación
+                const participationOptions = [];
+                document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                    participationOptions.push(checkbox.value);
+                });
+                data.participationOptions = participationOptions;
+
+                // Crear FormData exactamente como en el componente React
+                const formData = new FormData();
+                formData.append("nombre_empresa", data.companyName);
+                formData.append("cuit", data.companyCUIT);
+                formData.append("direccion", data.companyAddress);
+                formData.append("telefono_empresa", data.companyPhone);
+                formData.append("email_empresa", data.companyEmail);
+                
+                // Normalizar sitio web como en React
+                let sitioWeb = data.website || "";
+                if (sitioWeb && !/^https?:\/\//i.test(sitioWeb)) {
+                    sitioWeb = "https://" + sitioWeb;
+                }
+                formData.append("sitio_web", sitioWeb);
+                formData.append("descripcion", data.companyDescription || "");
+                formData.append("nombre_contacto", data.contactPersonName);
+                formData.append("email_contacto", data.contactPersonEmail);
+                formData.append("celular_contacto", data.contactPersonPhone);
+                formData.append("cargo_contacto", data.cargoContacto);
+                
+                // Manejar opciones de participación exactamente como en React
+                let opciones = Array.isArray(data.participationOptions) ? data.participationOptions : [];
+                if (!opciones || typeof opciones !== "object") {
+                    opciones = [];
+                }
+                formData.append("participacion_opciones", JSON.stringify(opciones));
+                formData.append("participacion_otra", "");
+
+                console.log("Enviando a:", `${API_BASE}/registro-empresas/`);
+                console.log("Opciones de participación:", opciones);
+
+                // Llamar a la API usando fetch (simulando la función registrarEmpresa)
+                const response = await fetch(`${API_BASE}/registro-empresas/`, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const result = await response.json();
+                console.log("Respuesta del servidor:", result);
+
+                if (result.status === "success") {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ ¡Registro Exitoso!</h3>
+                            <p><strong>Empresa:</strong> ${data.companyName}</p>
+                            <p><strong>Contacto:</strong> ${data.contactPersonName} (${data.contactPersonEmail})</p>
+                            <p><strong>Participación:</strong> ${opciones.join(', ')}</p>
+                            <p><strong>ID asignado:</strong> ${result.id}</p>
+                            <p><strong>Mensaje:</strong> ${result.message}</p>
+                        </div>
+                    `;
+                    
+                    // Resetear formulario como en React
+                    setTimeout(() => {
+                        document.getElementById('empresaForm').reset();
+                        // Reestablecer valores por defecto
+                        document.getElementById('companyName').value = "Transportes Unidos SA";
+                        document.getElementById('companyCUIT').value = "30-98765432-1";
+                        // ... etc
+                    }, 2000);
+                } else {
+                    let errorMsg = "Intente nuevamente.";
+                    if (result.message) {
+                        if (typeof result.message === "object") {
+                            errorMsg = JSON.stringify(result.message, null, 2);
+                        } else {
+                            errorMsg = result.message;
+                        }
+                    }
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h3>❌ Error al registrar la empresa</h3>
+                            <p>${errorMsg}</p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>💥 Error de conexión</h3>
+                        <p>Error al registrar la empresa: ${err.message || err}</p>
+                        <p>Verifica que el servidor backend esté ejecutándose.</p>
+                    </div>
+                `;
+            } finally {
+                // Rehabilitar botón
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Registrar Empresa';
+            }
+        });
+    </script>
+</body>
+</html>
