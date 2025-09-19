@@ -94,7 +94,12 @@ const RegistroEmpresas: React.FC = () => {
     formData.append("celular_contacto", data.contactPersonPhone);
     formData.append("cargo_contacto", data.cargoContacto);
     // Si no hay opciones, envía un array vacío
-    formData.append("participacion_opciones", JSON.stringify(Array.isArray(data.participationOptions) ? data.participationOptions : []));
+    // Siempre enviar un array válido, nunca string vacío, undefined o null
+    let opciones = Array.isArray(data.participationOptions) ? data.participationOptions : [];
+    if (!opciones || typeof opciones !== "object") {
+      opciones = [];
+    }
+    formData.append("participacion_opciones", JSON.stringify(opciones));
     formData.append("participacion_otra", "");
     if (data.logo && data.logo[0]) {
       formData.append("logo", data.logo[0]);
