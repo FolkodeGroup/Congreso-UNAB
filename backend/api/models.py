@@ -17,6 +17,9 @@ class Disertante(models.Model):
     def __str__(self):
         return self.nombre
 
+    class Meta:
+        ordering = ['nombre']
+
 class Programa(models.Model):
     AULA_CHOICES = [
         ("Aula Magna", "Aula Magna"),
