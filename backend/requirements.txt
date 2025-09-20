@@ -1,0 +1,17 @@
+Django==5.2.5
+djangorestframework==3.16.1
+django-cors-headers==4.7.0
+sqlparse==0.5.3
+tzdata==2025.2
+
+# Para generación de QR
+qrcode[pil]==7.4.2
+
+# Para generación de PDF
+reportlab==4.2.0
+
+# Para variables de entorno
+python-dotenv==1.0.1
+
+# Para generación de PDF desde HTML
+xhtml2pdf
