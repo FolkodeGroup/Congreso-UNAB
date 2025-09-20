@@ -43,7 +43,8 @@ type CompanyRegistrationFormData = z.infer<typeof companyRegistrationSchema>;
 
 const RegistroEmpresas: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
-  const [participationTypes, setParticipationTypes] = useState<string[]>([]);
+  const [participationType, setParticipationType] = useState<string>("");
+  const [otraParticipacion, setOtraParticipacion] = useState("");
   
   const {
     register,
@@ -56,10 +57,11 @@ const RegistroEmpresas: React.FC = () => {
   });
 
   const participationOptions = [
-    { id: "stand", label: "Stand/Exhibición", description: "Espacio para mostrar productos y servicios" },
-    { id: "sponsorship", label: "Patrocinio", description: "Apoyo financiero con beneficios de marca" },
-    { id: "speaking", label: "Ponencia/Charla", description: "Presentación técnica o caso de éxito" },
-    { id: "visitor", label: "Visitante", description: "Participación como asistente al evento" },
+  { id: "stand", label: "Stand/Exhibición", description: "Espacio para mostrar productos y servicios" },
+  { id: "sponsorship", label: "Patrocinio", description: "Apoyo financiero con beneficios de marca" },
+  { id: "speaking", label: "Ponencia/Charla", description: "Presentación técnica o caso de éxito" },
+  { id: "visitor", label: "Visitante", description: "Participación como asistente al evento" },
+  { id: "otra", label: "Otra (especificar)", description: "Otra modalidad, escribir abajo" },
   ];
 
 
@@ -84,11 +86,9 @@ const RegistroEmpresas: React.FC = () => {
     formData.append("celular_contacto", data.contactPersonPhone);
     formData.append("cargo_contacto", data.cargoContacto);
     
-    // Usar participationTypes directamente - es un array simple
-    const opciones = participationTypes || [];
-    console.log("Opciones de participación:", opciones);
-    formData.append("participacion_opciones", JSON.stringify(opciones));
-    formData.append("participacion_otra", "");
+    // Enviar solo la opción seleccionada
+    formData.append("participacion_opciones", participationType);
+    formData.append("participacion_otra", participationType === "otra" ? otraParticipacion : "");
     if (data.logo && data.logo[0]) {
       formData.append("logo", data.logo[0]);
     }
@@ -97,7 +97,7 @@ const RegistroEmpresas: React.FC = () => {
       if (response.status === "success") {
         setShowModal(true);
         reset();
-        setParticipationTypes([]);
+        setParticipationType("");
       } else {
         let errorMsg = "Intente nuevamente.";
         if (response.message) {
@@ -147,7 +147,6 @@ const RegistroEmpresas: React.FC = () => {
             </div>
           </div>
         )}
-
         <FormCard 
           title="Registro Empresarial"
           description="Registre su empresa para participar como expositor, patrocinador o ponente en el Congreso de Logística y Transporte UNaB 2025"
@@ -174,7 +173,6 @@ const RegistroEmpresas: React.FC = () => {
                   error={errors.companyCUIT?.message}
                 />
               </div>
-              
               <FormInput
                 label="Dirección"
                 icon={<MapPin className="h-4 w-4" />}
@@ -182,7 +180,6 @@ const RegistroEmpresas: React.FC = () => {
                 {...register("companyAddress")}
                 error={errors.companyAddress?.message}
               />
-              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormInput
                   type="email"
@@ -201,7 +198,6 @@ const RegistroEmpresas: React.FC = () => {
                   error={errors.companyPhone?.message}
                 />
               </div>
-
               <FormInput
                 label="Sitio Web"
                 icon={<Building2 className="h-4 w-4" />}
@@ -209,7 +205,6 @@ const RegistroEmpresas: React.FC = () => {
                 {...register("website")}
                 error={errors.website?.message}
               />
-
               <FormTextArea
                 label="Descripción de la Empresa"
                 placeholder="Breve descripción de la empresa, productos y servicios (opcional)"
@@ -217,7 +212,6 @@ const RegistroEmpresas: React.FC = () => {
                 error={errors.companyDescription?.message}
               />
             </FormSection>
-
             {/* Persona de Contacto */}
             <FormSection 
               title="Persona de Contacto" 
@@ -237,7 +231,6 @@ const RegistroEmpresas: React.FC = () => {
                 {...register("cargoContacto")}
                 error={errors.cargoContacto?.message}
               />
-              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormInput
                   type="email"
@@ -257,7 +250,6 @@ const RegistroEmpresas: React.FC = () => {
                 />
               </div>
             </FormSection>
-
             {/* Logo de la Empresa */}
             <FormSection 
               title="Logo de la Empresa" 
@@ -273,94 +265,52 @@ const RegistroEmpresas: React.FC = () => {
                 }}
               />
             </FormSection>
-
             {/* Tipo de Participación */}
             <FormSection 
               title="Tipo de Participación" 
-              description="Seleccione las modalidades de participación de su interés (puede elegir múltiples opciones)"
+              description="Seleccione la modalidad de participación de su interés"
             >
               <div className="space-y-3">
                 <label className="text-sm font-semibold text-slate-800 tracking-wide">
-                  Modalidades de Participación
+                  Modalidad de Participación
                 </label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {participationOptions.map((option) => (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => {
-                        const isSelected = participationTypes.includes(option.id);
-                        let newSelection;
-                        if (isSelected) {
-                          newSelection = participationTypes.filter(id => id !== option.id);
-                        } else {
-                          newSelection = [...participationTypes, option.id];
-                        }
-                        setParticipationTypes(newSelection);
-                        setValue("participationOptions", newSelection);
-                      }}
-                      className={`
-                        relative p-4 rounded-xl border-2 text-left transition-all duration-200 
-                        ${participationTypes.includes(option.id)
-                          ? 'border-blue-500 bg-blue-50 shadow-md' 
-                          : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'
-                        }
-                      `}
-                    >
-                      <div className="flex items-start space-x-3">
-                        <div className={`
-                          flex-shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center mt-0.5
-                          ${participationTypes.includes(option.id)
-                            ? 'border-blue-500 bg-blue-500' 
-                            : 'border-slate-300'
-                          }
-                        `}>
-                          {participationTypes.includes(option.id) && (
-                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className={`font-semibold text-sm ${participationTypes.includes(option.id) ? 'text-blue-700' : 'text-slate-800'}`}>
-                            {option.label}
-                          </h3>
-                          <p className={`text-xs mt-1 ${participationTypes.includes(option.id) ? 'text-blue-600' : 'text-slate-600'}`}>
-                            {option.description}
-                          </p>
-                        </div>
-                      </div>
-                    </button>
+                <select
+                  className="w-full p-3 border rounded-lg"
+                  value={participationType}
+                  onChange={e => {
+                    setParticipationType(e.target.value);
+                    setValue("participationOptions", [e.target.value]);
+                    if (e.target.value !== "otra") setOtraParticipacion("");
+                  }}
+                  required
+                >
+                  <option value="">Seleccione una opción...</option>
+                  {participationOptions.map(option => (
+                    <option key={option.id} value={option.id}>{option.label}</option>
                   ))}
-                </div>
-                
-                {/* Mostrar selecciones actuales */}
-                {participationTypes.length > 0 && (
-                  <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="text-sm font-medium text-green-800">
-                      ✓ Modalidades seleccionadas: {participationTypes.length}
-                    </p>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {participationTypes.map((typeId) => {
-                        const option = participationOptions.find(opt => opt.id === typeId);
-                        return (
-                          <span key={typeId} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-100 text-green-700">
-                            {option?.label}
-                          </span>
-                        );
-                      })}
-                    </div>
+                </select>
+                {participationType === "otra" && (
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-slate-800 mb-1">Especifique la modalidad</label>
+                    <input
+                      type="text"
+                      className="w-full p-3 border rounded-lg"
+                      value={otraParticipacion}
+                      onChange={e => setOtraParticipacion(e.target.value)}
+                      placeholder="Describa la modalidad de participación"
+                      required
+                    />
                   </div>
                 )}
-                
-                {participationTypes.length === 0 && (
-                  <p className="text-sm text-slate-600 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    💡 Seleccione al menos una modalidad de participación para que podamos contactarnos con la propuesta más adecuada.
-                  </p>
+                {participationType && participationType !== "otra" && (
+                  <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm font-medium text-green-800">
+                      ✓ Modalidad seleccionada: {participationOptions.find(opt => opt.id === participationType)?.label}
+                    </p>
+                  </div>
                 )}
               </div>
             </FormSection>
-
             {/* Botón de envío */}
             <div className="pt-6 border-t border-slate-200">
               <FormButton
@@ -377,7 +327,9 @@ const RegistroEmpresas: React.FC = () => {
         </FormCard>
       </div>
     </div>
-  );
-};
+
+
+)
+}
 
 export default RegistroEmpresas;

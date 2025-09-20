@@ -15,15 +15,10 @@ class ProgramaSerializer(serializers.ModelSerializer):
 
 class EmpresaSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
-        # Convierte el campo 'participacion_opciones' a JSON si viene como string
-        import json
-        if 'participacion_opciones' in data:
-            value = data['participacion_opciones']
-            if isinstance(value, str):
-                try:
-                    data['participacion_opciones'] = json.loads(value)
-                except Exception:
-                    pass  # Deja el valor como está si no se puede parsear
+        value = data.get('participacion_opciones', None)
+        if not value or not isinstance(value, str):
+            raise serializers.ValidationError({'participacion_opciones': 'Debe seleccionar una modalidad válida.'})
+        data['participacion_opciones'] = value
         return super().to_internal_value(data)
 
     class Meta:

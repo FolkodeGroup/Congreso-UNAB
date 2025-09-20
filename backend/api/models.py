@@ -73,7 +73,7 @@ class Empresa(models.Model):
     cargo_contacto = models.CharField(max_length=255, verbose_name="Cargo que cumple en la empresa / institución")
 
     # Participation
-    participacion_opciones = models.JSONField(default=list, verbose_name="¿Cómo les gustaría participar?")
+    participacion_opciones = models.CharField(max_length=50, verbose_name="¿Cómo les gustaría participar?")
     participacion_otra = models.CharField(max_length=255, blank=True, null=True, verbose_name="Otra forma de participación")
 
     def __str__(self):
