@@ -26,6 +26,22 @@ class DisertanteViewSetTest(TestCase):
         self.assertEqual(response.data['nombre'], self.disertante_data['nombre'])
 
 class RegistroTests(TestCase):
+    @patch('api.email.send_empresa_confirmation_email')
+    def test_registro_empresas_envia_email_confirmacion(self, mock_send_email):
+        data = {
+            "nombre_empresa": "Empresa Test Email",
+            "nombre_contacto": "Ana",
+            "email_contacto": "ana@empresatest.com",
+            "celular_contacto": "123456789",
+            "cargo_contacto": "Gerente",
+            "participacion_opciones": "Sponsor",
+            "participacion_otra": "",
+        }
+        response = self.client.post(self.registro_empresas_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(mock_send_email.called)
+        empresa = Empresa.objects.get(nombre_empresa="Empresa Test Email")
+        mock_send_email.assert_called_once_with(empresa)
     def setUp(self):
         self.client = APIClient()
         self.registro_participantes_url = reverse('inscripcion-grupal') # Corrected URL name
@@ -328,7 +344,7 @@ class RegistroTests(TestCase):
             "email_contacto": "contacto@miempresa.com",
             "celular_contacto": "1122334455",
             "cargo_contacto": "Dueño",
-            "participacion_opciones": ["Sponsor"],
+            "participacion_opciones": "Sponsor",
             "participacion_otra": "",
         }
         response = self.client.post(self.registro_empresas_url, data, format='json')

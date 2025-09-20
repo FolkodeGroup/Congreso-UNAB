@@ -6,6 +6,43 @@ from django.conf import settings
 import io
 from xhtml2pdf import pisa
 from datetime import date
+def send_empresa_confirmation_email(empresa_instance):
+    # Contexto para la plantilla de email
+    context = {
+        'empresa_nombre': empresa_instance.nombre_empresa,
+        'contacto_nombre': empresa_instance.nombre_contacto,
+        'contacto_email': empresa_instance.email_contacto,
+        'year': 2025,
+        'evento_nombre': 'Congreso de Logística UNAB',
+        'evento_fecha': '25 de Octubre de 2025',
+        'evento_hora': '09:00',
+        'evento_ubicacion': 'Campus UNAB, Blas Parera 132, Burzaco, Buenos Aires',
+        'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251025T120000Z/20251025T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
+    }
+
+    # Renderizar la plantilla HTML
+    html_content = render_to_string('api/email/confirmacion.html', context)
+    text_content = strip_tags(html_content)
+
+    import os
+    from email.mime.image import MIMEImage
+    logo_env = os.getenv('LOGO_CONGRESO_PATH', 'media/logo.png')
+    logo_path = os.path.join(settings.BASE_DIR, logo_env)
+
+    email = EmailMultiAlternatives(
+        subject='Confirmación de Registro Empresarial - Congreso de Logística UNAB',
+        body=text_content,
+        from_email=f"Congreso UNAB <{settings.EMAIL_HOST_USER}>",
+        to=[empresa_instance.email_contacto],
+    )
+    email.attach_alternative(html_content, "text/html")
+    if os.path.exists(logo_path):
+        with open(logo_path, 'rb') as f:
+            logo_img = MIMEImage(f.read(), _subtype="png")
+            logo_img.add_header('Content-ID', '<logo_congreso>')
+            logo_img.add_header('Content-Disposition', 'inline', filename='logo-congreso.png')
+            email.attach(logo_img)
+    email.send()
 
 def send_confirmation_email(inscripcion_instance):
     asistente = inscripcion_instance.asistente

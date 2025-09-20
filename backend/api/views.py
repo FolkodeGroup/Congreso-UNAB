@@ -36,6 +36,12 @@ class RegistroEmpresasView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         try:
             serializer.is_valid(raise_exception=True)
             empresa = serializer.save()
+            # Enviar email de confirmación al contacto de la empresa
+            from .email import send_empresa_confirmation_email
+            try:
+                send_empresa_confirmation_email(empresa)
+            except Exception as e:
+                print(f"[ERROR] No se pudo enviar el email de confirmación a la empresa: {e}")
             return Response({'status': 'success', 'message': 'Registro de empresa realizado correctamente.', 'id': empresa.id}, status=status.HTTP_201_CREATED)
         except serializers.ValidationError as e:
             return Response({'status': 'error', 'message': e.detail}, status=status.HTTP_400_BAD_REQUEST)
