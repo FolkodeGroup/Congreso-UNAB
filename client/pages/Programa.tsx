@@ -86,14 +86,15 @@ function getHorariosFijos() {
 
 // Categorías de tracks del congreso de logística y transporte
 const TRACK_CATEGORIES = {
-  "LOGÍSTICA": { bg: "#1e40af", text: "#ffffff", icon: LocalShipping }, // azul institucional
-  "TRANSPORTE": { bg: "#059669", text: "#ffffff", icon: DirectionsCar }, // verde
-  "SUPPLY CHAIN": { bg: "#dc2626", text: "#ffffff", icon: Inventory }, // rojo
-  "TECNOLOGÍA": { bg: "#7c3aed", text: "#ffffff", icon: Computer }, // violeta
-  "SOSTENIBILIDAD": { bg: "#ea580c", text: "#ffffff", icon: Nature }, // naranja
-  "INNOVACIÓN": { bg: "#0891b2", text: "#ffffff", icon: Lightbulb }, // cyan
-  "GESTIÓN": { bg: "#be185d", text: "#ffffff", icon: Business }, // rosa
-  "NETWORKING": { bg: "#374151", text: "#ffffff", icon: Group }, // gris
+  "TECNOLOGIA": { bg: "#7c3aed", text: "#ffffff", icon: Computer }, // violeta
+  "LOGISTICA": { bg: "#1e40af", text: "#ffffff", icon: LocalShipping }, // azul institucional
+  "PUERTOS/COMERCIO EXTERIOR": { bg: "#dc2626", text: "#ffffff", icon: Inventory }, // rojo
+  "E-COMMERS": { bg: "#be185d", text: "#ffffff", icon: Business }, // rosa
+  "SUPPLY CHAIN": { bg: "#0891b2", text: "#ffffff", icon: Inventory }, // cyan
+  "CAPITAL HUMANO": { bg: "#059669", text: "#ffffff", icon: Group }, // verde
+  "RADIO": { bg: "#374151", text: "#ffffff", icon: Nature }, // gris
+  "SUSTENTABILIDAD": { bg: "#ea580c", text: "#ffffff", icon: Nature }, // naranja
+  "TRANSPORTE": { bg: "#0ea5e9", text: "#ffffff", icon: DirectionsCar }, // azul claro
 } as const;
 
 // Paleta para aulas (más suave para el fondo de las tarjetas)
