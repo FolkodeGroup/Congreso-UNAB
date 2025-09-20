@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { LogoItem } from "@/components/data/logos";
+import type { LogoItem } from "./data/logos";
 
 type Direction = "ltr" | "rtl";
 
@@ -35,7 +35,7 @@ export default function LogoMarquee({
           src={l.src}
           alt={l.alt}
           loading="lazy"
-          className={`${l.heightClass ?? "h-16"} w-auto object-contain grayscale-0 opacity-90 hover:opacity-100 transition-opacity`}
+          className={`h-24 w-auto object-contain grayscale-0 opacity-90 hover:opacity-100 transition-opacity`}
         />
       </div>
     ));
@@ -147,7 +147,7 @@ export default function LogoMarquee({
 
   return (
     <div className="marquee-frame">
-      <div className="relative w-full overflow-hidden py-4 bg-white rounded-[inherit]">
+      <div className="relative w-full overflow-hidden py-12 bg-white rounded-[inherit]">
         <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
 
