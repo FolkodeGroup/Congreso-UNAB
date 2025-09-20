@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Disertante, Empresa, Programa, Asistente, MiembroGrupo, Inscripcion
 from django.db import transaction
+from .email import send_group_confirmation_emails, send_individual_confirmation_email
 
 class DisertanteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -133,6 +134,21 @@ class AsistenteSerializer(serializers.ModelSerializer):
                     group_name=asistente.group_name,
                     group_municipality=asistente.group_municipality,
                 )
+            
+            # Enviar emails de confirmación a todos los miembros del grupo
+            try:
+                resultado_envio = send_group_confirmation_emails(asistente)
+                print(f"[INFO] Emails enviados: {resultado_envio['total_emails']}, Fallidos: {resultado_envio['total_fallidos']}")
+            except Exception as e:
+                print(f"[ERROR] Error enviando emails grupales: {e}")
+                # No interrumpimos el proceso de registro por fallos en el email
+        else:
+            # Para inscripciones individuales, enviar email de confirmación
+            try:
+                send_individual_confirmation_email(asistente)
+            except Exception as e:
+                print(f"[ERROR] Error enviando email individual: {e}")
+                # No interrumpimos el proceso de registro por fallos en el email
         
         return asistente
 
