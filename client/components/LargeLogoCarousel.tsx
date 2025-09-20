@@ -5,9 +5,10 @@ import {
   THIRD_CAROUSEL_LOGOS,
   DEFAULT_LOGOS,
   LogoItem,
-  chunk,
 } from "./data/logos";
+import { chunk } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Combine all logos and remove duplicates
 const allLogos: LogoItem[] = [
@@ -20,10 +21,13 @@ const allLogos: LogoItem[] = [
 );
 
 const LargeLogoCarousel: React.FC = () => {
-  const logosPerPage = 12; // 4 columns * 3 rows = 12 logos per page
+  const isMobile = useIsMobile();
+  const logosPerPage = isMobile ? 6 : 12; // 4 columns * 3 rows = 12 logos per page
   const chunkedLogos = chunk(allLogos, logosPerPage);
   const [currentPage, setCurrentPage] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [carouselHeight, setCarouselHeight] = useState(400);
 
   useEffect(() => {
     timeoutRef.current = setTimeout(() => {
@@ -34,6 +38,12 @@ const LargeLogoCarousel: React.FC = () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [currentPage, chunkedLogos.length]);
+
+  useEffect(() => {
+    if (gridRef.current) {
+      setCarouselHeight(gridRef.current.offsetHeight);
+    }
+  }, [currentPage, chunkedLogos]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -53,9 +63,9 @@ const LargeLogoCarousel: React.FC = () => {
   };
 
   return (
-    <section className="py-16 bg-gray-100 overflow-hidden relative">
+    <section className="py-8 bg-gray-100 overflow-hidden relative">
       <div className="w-full px-4">
-        <div className="relative w-full h-[400px]">
+        <div className="relative w-full" style={{ height: carouselHeight }}>
           {" "}
           {/* Fixed height for carousel container */}
           <AnimatePresence mode="wait">
@@ -63,8 +73,9 @@ const LargeLogoCarousel: React.FC = () => {
               (page, pageIndex) =>
                 pageIndex === currentPage && (
                   <motion.div
+                    ref={gridRef}
                     key={pageIndex}
-                    className="absolute top-0 left-0 w-full h-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 justify-items-center items-center"
+                    className="absolute top-0 left-0 w-full h-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 justify-items-center items-center"
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"

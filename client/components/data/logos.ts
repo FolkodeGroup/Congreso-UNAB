@@ -4,7 +4,7 @@ export type LogoItem = { src: string; alt: string; heightClass?: string };
 // This is the single source of truth for all logos.
 export const ALL_LOGOS: LogoItem[] = [
   { src: "/images/logos/AERONOVA.jpg", alt: "Aeronova", heightClass: "h-12" },
-  { src: "/images/logos/ARLOG.png", alt: "ARLOG", heightClass: "h-12" },
+  { src: "/images/logos/ARLOG.png", alt: "ARLOG", heightClass: "h-14" },
   { src: "/images/logos/LOGO-CARGO.png", alt: "Cargo", heightClass: "h-12" },
   { src: "/images/logos/CHAGA.png", alt: "CHAGA", heightClass: "h-14" },
   { src: "/images/logos/CITYONE.png", alt: "CityOne", heightClass: "h-12" },
@@ -19,7 +19,7 @@ export const ALL_LOGOS: LogoItem[] = [
   {
     src: "/images/logos/ESCUELA-CHOFERES.png",
     alt: "Escuela de Choferes",
-    heightClass: "h-10",
+    heightClass: "h-12",
   },
   {
     src: "/images/logos/Folkode_Group.webp",
@@ -31,11 +31,11 @@ export const ALL_LOGOS: LogoItem[] = [
     alt: "Genba Kaizen",
     heightClass: "h-16",
   },
-  { src: "/images/logos/GLI.jpg", alt: "GLI", heightClass: "h-14" },
+  { src: "/images/logos/GLI.jpg", alt: "GLI", heightClass: "h-16" },
   {
     src: "/images/logos/GRUAS-GOLISANO.png",
     alt: "Gruas Golisano",
-    heightClass: "h-12",
+    heightClass: "h-14",
   },
   { src: "/images/logos/ICI.png", alt: "ICI", heightClass: "h-12" },
   { src: "/images/logos/KMD.png", alt: "KMD Logística", heightClass: "h-12" },
@@ -60,7 +60,7 @@ export const ALL_LOGOS: LogoItem[] = [
   {
     src: "/images/logos/NYG-TRANSPORTES.PNG",
     alt: "N&G Transportes",
-    heightClass: "h-16",
+    heightClass: "h-20",
   },
   {
     src: "/images/logos/NUCLEO-LOGISTICO.jpeg",
@@ -72,7 +72,7 @@ export const ALL_LOGOS: LogoItem[] = [
     alt: "Performance Lube",
     heightClass: "h-12",
   },
-  { src: "/images/logos/PYB.jpg", alt: "PYB", heightClass: "h-16" },
+  { src: "/images/logos/PYB.jpg", alt: "PYB", heightClass: "h-20" },
   { src: "/images/logos/RASTA.png", alt: "Rasta", heightClass: "h-12" },
   {
     src: "/images/logos/RED-LOGISTICA.webp",
@@ -85,15 +85,15 @@ export const ALL_LOGOS: LogoItem[] = [
     heightClass: "h-12",
   },
   { src: "/images/logos/SHIAFFER.png", alt: "Shiaffer", heightClass: "h-12" },
-  { src: "/images/logos/STARGPS.png", alt: "StarGPS", heightClass: "h-10" },
+  { src: "/images/logos/STARGPS.png", alt: "StarGPS", heightClass: "h-12" },
   { src: "/images/logos/SURFRIGO.jpeg", alt: "Surfrigo", heightClass: "h-12" },
   { src: "/images/logos/TRADEN.png", alt: "Traden", heightClass: "h-14" },
   {
     src: "/images/logos/TRANSPORTE-DOMINGUEZ.png",
     alt: "Transporte Dominguez",
-    heightClass: "h-12",
+    heightClass: "h-14",
   },
-  { src: "/images/logos/UCASAL.png", alt: "UCASAL", heightClass: "h-12" },
+  { src: "/images/logos/UCASAL.png", alt: "UCASAL", heightClass: "h-14" },
   { src: "/images/logos/UNLAM.png", alt: "UNLaM", heightClass: "h-14" },
   { src: "/images/logos/UNLP.png", alt: "UNLP", heightClass: "h-12" },
   { src: "/images/logos/UNLZ.png", alt: "UNLZ", heightClass: "h-12" },
@@ -102,33 +102,32 @@ export const ALL_LOGOS: LogoItem[] = [
   {
     src: "/images/logos/VDM-LOGISTICS.jpg",
     alt: "VDM Logistics",
-    heightClass: "h-10",
+    heightClass: "h-12",
   },
   { src: "/images/logos/VIMA.png", alt: "VIMA", heightClass: "h-12" },
   { src: "/images/logos/VOS.jpeg", alt: "VOS", heightClass: "h-12" },
   { src: "/images/logos/XPERTS.jpeg", alt: "Xperts", heightClass: "h-12" },
   { src: "/images/logos/Zento.jpg", alt: "Zento", heightClass: "h-12" },
+  { src: "/images/logos/MINISCENICS.jpeg", alt: "Miniscenics", heightClass: "h-14" },
+  { src: "/images/logos/UNS.jpg", alt: "UNS", heightClass: "h-12" },
+  { src: "/images/logos/VELOX.jpeg", alt: "Velox", heightClass: "h-12" },
 ];
 
-// Split the main list into chunks for the carousels.
-const carouselChunkSize = Math.ceil(ALL_LOGOS.length / 3);
-export const FIRST_CAROUSEL_LOGOS: LogoItem[] = ALL_LOGOS.slice(
-  0,
-  carouselChunkSize
-);
-export const SECOND_CAROUSEL_LOGOS: LogoItem[] = ALL_LOGOS.slice(
-  carouselChunkSize,
-  2 * carouselChunkSize
-);
-export const THIRD_CAROUSEL_LOGOS: LogoItem[] = ALL_LOGOS.slice(
-  2 * carouselChunkSize
-);
+// Distribute logos into three balanced arrays for the carousels.
+export const FIRST_CAROUSEL_LOGOS: LogoItem[] = [];
+export const SECOND_CAROUSEL_LOGOS: LogoItem[] = [];
+export const THIRD_CAROUSEL_LOGOS: LogoItem[] = [];
+
+ALL_LOGOS.forEach((logo, index) => {
+  if (index % 3 === 0) {
+    FIRST_CAROUSEL_LOGOS.push(logo);
+  } else if (index % 3 === 1) {
+    SECOND_CAROUSEL_LOGOS.push(logo);
+  } else {
+    THIRD_CAROUSEL_LOGOS.push(logo);
+  }
+});
 
 // For compatibility, a default export is provided.
+// For compatibility, a default export is provided.
 export const DEFAULT_LOGOS: LogoItem[] = ALL_LOGOS;
-
-export function chunk<T>(arr: T[], size: number): T[][] {
-  const out: T[][] = [];
-  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
-  return out;
-}

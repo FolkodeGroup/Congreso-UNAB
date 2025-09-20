@@ -33,7 +33,7 @@ export default function Contacto() {
               <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
                 <Mail className="w-10 h-10 text-white" />
               </div>
-              <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-cyan transition-colors">
+              <CardTitle className="text-2xl font-bold text-white transition-colors">
                 Correo Electrónico
               </CardTitle>
             </CardHeader>
@@ -55,7 +55,7 @@ export default function Contacto() {
               <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
                 <Instagram className="w-10 h-10 text-white" />
               </div>
-              <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-blue transition-colors">
+              <CardTitle className="text-2xl font-bold text-white transition-colors">
                 Instagram
               </CardTitle>
             </CardHeader>
@@ -75,7 +75,7 @@ export default function Contacto() {
               <div className="w-16 h-16 bg-gradient-to-br from-congress-blue to-congress-blue-dark rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
                 <MapPin className="w-10 h-10 text-white" />
               </div>
-              <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-cyan transition-colors">
+              <CardTitle className="text-2xl font-bold text-white transition-colors">
                 Ubicación
               </CardTitle>
             </CardHeader>
@@ -97,7 +97,7 @@ export default function Contacto() {
               <div className="w-16 h-16 bg-gradient-to-br from-congress-cyan to-congress-cyan-light rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300 icon-float">
                 <Linkedin className="w-10 h-10 text-white" />
               </div>
-              <CardTitle className="text-2xl font-bold text-white group-hover:text-congress-blue transition-colors">
+              <CardTitle className="text-2xl font-bold text-white transition-colors">
                 LinkedIn
               </CardTitle>
             </CardHeader>
