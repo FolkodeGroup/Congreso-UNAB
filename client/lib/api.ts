@@ -63,3 +63,13 @@ export async function inscribirGrupal(data: any) {
   });
   return await res.json();
 }
+
+// Nueva función para el sistema mejorado de inscripción grupal
+export async function inscribirParticipante(data: any) {
+  const res = await fetch(`${API_BASE}/participantes/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return await res.json();
+}

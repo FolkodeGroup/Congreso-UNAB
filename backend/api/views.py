@@ -48,9 +48,10 @@ class RegistroEmpresasView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         except Exception as e:
             return Response({'status': 'error', 'message': f'Ha ocurrido un error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class RegistroParticipantesView(mixins.CreateModelMixin, viewsets.GenericViewSet):
+class RegistroParticipantesView(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     Vista para el registro de participantes individuales y grupales.
+    También permite listar asistentes con información de grupos.
     """
     queryset = Asistente.objects.all()
     serializer_class = AsistenteSerializer

@@ -110,6 +110,16 @@ class Asistente(models.Model):
     group_municipality = models.CharField(max_length=255, blank=True, null=True, verbose_name="Partido al que pertenece la institución")
     group_size = models.IntegerField(null=True, blank=True, verbose_name="Cantidad de personas en el grupo")
 
+    # --- Relación de Grupo ---
+    representante_grupo = models.ForeignKey(
+        'self', 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True, 
+        related_name='miembros_representados',
+        verbose_name="Representante del Grupo"
+    )
+
     # --- Campos de Estado para QR y Certificados ---
     asistencia_confirmada = models.BooleanField(default=False, verbose_name="Asistencia Confirmada")
     fecha_confirmacion = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Confirmación")
@@ -120,6 +130,28 @@ class Asistente(models.Model):
     @property
     def nombre_completo(self):
         return f"{self.first_name} {self.last_name}"
+    
+    @property
+    def es_representante_grupo(self):
+        """Verifica si este asistente es representante de un grupo"""
+        return self.profile_type == self.ProfileType.GROUP_REPRESENTATIVE
+    
+    @property
+    def es_miembro_grupo(self):
+        """Verifica si este asistente es miembro de un grupo"""
+        return self.representante_grupo is not None
+    
+    def get_miembros_grupo(self):
+        """Obtiene todos los miembros que representa este asistente"""
+        if self.es_representante_grupo:
+            return self.miembros_representados.all()
+        return Asistente.objects.none()
+    
+    def get_cantidad_miembros_actual(self):
+        """Obtiene la cantidad actual de miembros registrados"""
+        if self.es_representante_grupo:
+            return self.miembros_representados.count()
+        return 0
 
 class MiembroGrupo(models.Model):
     representante = models.ForeignKey(Asistente, on_delete=models.CASCADE, related_name='miembros_grupo')

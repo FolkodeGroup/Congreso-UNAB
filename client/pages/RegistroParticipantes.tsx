@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
-import { useForm, useFieldArray, FieldErrors } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { inscribirIndividual, inscribirGrupal } from "../lib/api";
+import { inscribirIndividual, inscribirGrupal, inscribirParticipante } from "../lib/api";
 import { 
   FormInput, 
   FormSelect, 
@@ -68,6 +68,7 @@ const groupRepresentativeSchema = participantSchema.extend({
   groupName: z.string().min(1, "El nombre del grupo es requerido"),
   groupMunicipality: z.string().optional(),
   institutionOrWorkplace: z.string().optional(),
+  groupSize: z.number().min(1, "Debe especificar al menos 1 integrante"),
   groupMembers: z
     .array(groupMemberSchema)
     .min(1, "Debe haber al menos un integrante en el grupo"),
@@ -109,6 +110,17 @@ const formSchema = z
         });
       }
     }
+
+    if (data.profileType === "groupRepresentative") {
+      // Asegurar que la cantidad de miembros coincida con groupSize
+      if (!Array.isArray(data.groupMembers) || data.groupMembers.length !== data.groupSize) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "La cantidad de integrantes debe coincidir con el número especificado",
+          path: ["groupMembers"],
+        });
+      }
+    }
   });
 
 type FormData = z.infer<typeof formSchema>;
@@ -117,6 +129,8 @@ const RegistroParticipantes: React.FC = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [profileType, setProfileType] = useState<FormData["profileType"]>("visitor");
+  const [groupSize, setGroupSize] = useState<number>(0);
+  const [hasDeclaredGroupSize, setHasDeclaredGroupSize] = useState(false);
 
   const {
     register,
@@ -147,10 +161,13 @@ const RegistroParticipantes: React.FC = () => {
     const currentValues = watch();
 
     if (profileType === "groupRepresentative") {
+      setGroupSize(0);
+      setHasDeclaredGroupSize(false);
       reset({
         ...currentValues,
         profileType,
-        groupMembers: [{ firstName: "", lastName: "", dni: "", email: "" }],
+        groupSize: 0,
+        groupMembers: [],
       } as FormData);
     } else if (profileType === "student") {
       reset({
@@ -170,20 +187,63 @@ const RegistroParticipantes: React.FC = () => {
     }
   }, [profileType, reset, watch]);
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "groupMembers" as const,
   });
+
+  // Función para actualizar la cantidad de miembros
+  const handleGroupSizeChange = (newSize: number) => {
+    setGroupSize(newSize);
+    setValue("groupSize", newSize);
+    
+    // Crear array de miembros vacíos según la cantidad especificada
+    const emptyMembers = Array(newSize).fill(null).map(() => ({
+      firstName: "",
+      lastName: "",
+      dni: "",
+      email: ""
+    }));
+    
+    replace(emptyMembers);
+    setHasDeclaredGroupSize(true);
+  };
 
   const onSubmit = async (data: FormData) => {
     try {
       let response;
       if (data.profileType === "groupRepresentative") {
+        // Validación adicional en el frontend
+        const membersWithData = data.groupMembers.filter(member => 
+          member.firstName && member.lastName && member.dni && member.email
+        );
+        
+        if (membersWithData.length !== data.groupSize) {
+          alert(`Error: Has especificado ${data.groupSize} integrantes, pero solo has completado los datos de ${membersWithData.length} integrantes. Por favor completa todos los campos de todos los integrantes.`);
+          return;
+        }
+        // Estructura para el nuevo sistema de inscripción grupal
+        // Enviamos directamente al endpoint de participantes
         const dataToSend = {
-          ...data,
-          group_size: data.groupMembers ? data.groupMembers.length : 0,
+          first_name: data.firstName,
+          last_name: data.lastName,
+          dni: data.dni,
+          email: data.email,
+          phone: data.phone,
+          profile_type: "GROUP_REPRESENTATIVE",
+          group_name: data.groupName,
+          group_municipality: data.groupMunicipality || "",
+          group_size: data.groupSize,
+          miembros_grupo_nuevos: data.groupMembers.map(member => ({
+            first_name: member.firstName,
+            last_name: member.lastName,
+            dni: member.dni,
+            email: member.email
+          }))
         };
-        response = await inscribirGrupal(dataToSend);
+
+        // Usar la nueva función de API para inscripción con participantes
+        response = await inscribirParticipante(dataToSend);
       } else {
         // Estructura esperada por el backend
         const profileTypeMap: Record<string, string> = {
@@ -200,7 +260,7 @@ const RegistroParticipantes: React.FC = () => {
           dni: data.dni,
           email: data.email,
           phone: data.phone,
-          profile_type: profileTypeMap[data.profileType] || data.profileType,
+          profile_type: profileTypeMap[data.profileType as string] || data.profileType,
         };
 
         // Agregar campos específicos según el tipo de participante
@@ -226,14 +286,26 @@ const RegistroParticipantes: React.FC = () => {
       if (response && response.status === "success") {
         setShowModal(true);
         reset();
+        setGroupSize(0);
+        setHasDeclaredGroupSize(false);
       } else {
         let errorMsg = "";
-        if (response && typeof response === "object") {
+        if (response && response.message && typeof response.message === "object") {
+          // Formatear errores de validación de manera más legible
+          const errors = response.message;
+          const errorList = Object.entries(errors).map(([field, msgs]: [string, any]) => {
+            const fieldName = field === 'group_size' ? 'Cantidad de miembros' : 
+                            field === 'miembros_grupo_nuevos' ? 'Datos de miembros' : field;
+            const message = Array.isArray(msgs) ? msgs[0] : msgs;
+            return `${fieldName}: ${message}`;
+          });
+          errorMsg = errorList.join('\n');
+        } else if (response && typeof response === "object") {
           errorMsg = JSON.stringify(response);
         } else {
           errorMsg = response?.message || "No se pudo inscribir.";
         }
-        alert("Error: " + errorMsg);
+        alert("Error en la inscripción:\n\n" + errorMsg);
       }
     } catch (error) {
       console.error("Error en la inscripción:", error);
@@ -293,14 +365,10 @@ const RegistroParticipantes: React.FC = () => {
           </div>
         )}
 
-        <FormCard 
-          title="Inscripción para Participantes"
-          description="Complete el formulario con sus datos para registrarse en el Congreso de Logística y Transporte UNaB 2025"
-        >
+        <FormCard>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Tipo de Participante */}
-            <FormSection title="Información del Participante" description="Seleccione el tipo de participante y complete sus datos personales">
-              <FormSelect
+            <FormSection title="Información Personal" description="Complete sus datos personales">
+                <FormSelect
                 label="Tipo de Participante"
                 icon={<Users className="h-4 w-4" />}
                 options={[
@@ -312,53 +380,45 @@ const RegistroParticipantes: React.FC = () => {
                 ]}
                 {...register("profileType")}
                 onChange={(e) => setProfileType(e.target.value as FormData["profileType"])}
-                error={errors.profileType?.message}
+                error={getErrorMessage("profileType")}
               />
-            </FormSection>
-
-            {/* Datos Personales */}
-            <FormSection title="Datos Personales">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormInput
                   label="Nombre"
                   icon={<User className="h-4 w-4" />}
                   placeholder="Ingrese su nombre"
                   {...register("firstName")}
-                  error={errors.firstName?.message}
+                  error={getErrorMessage("firstName")}
                 />
                 <FormInput
                   label="Apellido"
                   icon={<User className="h-4 w-4" />}
                   placeholder="Ingrese su apellido"
                   {...register("lastName")}
-                  error={errors.lastName?.message}
+                  error={getErrorMessage("lastName")}
                 />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormInput
                   label="DNI"
                   icon={<IdCard className="h-4 w-4" />}
                   placeholder="12345678"
                   {...register("dni")}
-                  error={errors.dni?.message}
+                  error={getErrorMessage("dni")}
                 />
                 <FormInput
                   label="Teléfono"
                   icon={<Phone className="h-4 w-4" />}
                   placeholder="11 1234-5678"
                   {...register("phone")}
-                  error={errors.phone?.message}
+                  error={getErrorMessage("phone")}
                 />
-              </div>
-              <FormInput
-                type="email"
-                label="Email"
-                icon={<Mail className="h-4 w-4" />}
-                placeholder="correo@ejemplo.com"
-                hint="Se enviará la confirmación de inscripción a este email"
-                {...register("email")}
-                error={errors.email?.message}
-              />
+                <FormInput
+                  type="email"
+                  label="Email"
+                  icon={<Mail className="h-4 w-4" />}
+                  placeholder="correo@ejemplo.com"
+                  hint="Se enviará la confirmación de inscripción a este email"
+                  {...register("email")}
+                  error={getErrorMessage("email")}
+                />
             </FormSection>
 
             {/* Campos condicionales por tipo de participante */}
@@ -524,33 +584,64 @@ const RegistroParticipantes: React.FC = () => {
                 />
 
                 <div className="border-t border-slate-200 pt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-slate-900">Integrantes del Grupo</h3>
-                    <FormButton
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => append({ firstName: "", lastName: "", dni: "", email: "" })}
-                    >
-                      + Agregar Integrante
-                    </FormButton>
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-slate-900 mb-4">Cantidad de Integrantes</h3>
+                    <div className="mb-4">
+                      <label htmlFor="groupSize" className="block text-sm font-medium text-slate-700 mb-2">
+                        ¿Cuántos integrantes tiene el grupo? (sin incluirse usted)
+                      </label>
+                      <input
+                        id="groupSize"
+                        type="number"
+                        min="1"
+                        max="50"
+                        value={groupSize || ""}
+                        onChange={(e) => {
+                          const newSize = parseInt(e.target.value) || 0;
+                          if (newSize > 0) {
+                            handleGroupSizeChange(newSize);
+                          }
+                        }}
+                        className="w-32 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="0"
+                      />
+                    </div>
+                    {getErrorMessage("groupSize") && (
+                      <p className="text-xs text-red-600 font-medium">
+                        {getErrorMessage("groupSize")}
+                      </p>
+                    )}
                   </div>
 
-                  <div className="space-y-6">
-                    {fields.map((item, index) => (
-                      <div key={item.id} className="bg-slate-50 rounded-xl p-6 space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-medium text-slate-900">Integrante #{index + 1}</h4>
-                          <FormButton
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remove(index)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            Remover
-                          </FormButton>
-                        </div>
+                  {hasDeclaredGroupSize && groupSize > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                        Datos de los {groupSize} Integrantes
+                      </h3>
+                      <p className="text-sm text-slate-600 mb-4">
+                        Complete los datos de cada integrante. Cada uno recibirá su QR y certificado individual.
+                      </p>
+                    </div>
+                  )}
+
+                  {hasDeclaredGroupSize && groupSize > 0 && (
+                    <div className="space-y-6">
+                      {fields.map((item, index) => {
+                        const member = watch(`groupMembers.${index}`);
+                        const completedFields = [member?.firstName, member?.lastName, member?.dni, member?.email].filter(Boolean).length;
+                        const isComplete = completedFields === 4;
+                        
+                        return (
+                        <div key={item.id} className={`rounded-xl p-6 space-y-4 ${isComplete ? 'bg-green-50 border-2 border-green-200' : 'bg-slate-50'}`}>
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-medium text-slate-900">
+                              Integrante #{index + 1}
+                              {isComplete && <span className="ml-2 text-green-600">✓</span>}
+                            </h4>
+                            <span className="text-sm text-slate-500">
+                              {completedFields}/4 campos completos
+                            </span>
+                          </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormInput
                             label="Nombre"
@@ -579,14 +670,16 @@ const RegistroParticipantes: React.FC = () => {
                           />
                         </div>
                       </div>
-                    ))}
+                      );
+                      })}
+                    
+                    {getErrorMessage("groupMembers") && (
+                      <p className="text-xs text-red-600 font-medium mt-4">
+                        {getErrorMessage("groupMembers")}
+                      </p>
+                    )}
                   </div>
-
-                  {getErrorMessage("groupMembers") && (
-                    <p className="text-xs text-red-600 font-medium mt-4">
-                      {getErrorMessage("groupMembers")}
-                    </p>
-                  )}
+                )}
                 </div>
               </FormSection>
             )}

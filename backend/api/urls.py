@@ -16,5 +16,6 @@ urlpatterns = [
     path('registro-empresas/', RegistroEmpresasView.as_view({'post': 'create'}), name='registro-empresas'),
     path('inscripcion/', InscripcionViewSet.as_view({'post': 'create'}), name='inscripcion-individual'),
     path('inscripcion-grupal/', RegistroParticipantesView.as_view({'post': 'create'}), name='inscripcion-grupal'),
+    path('participantes/', RegistroParticipantesView.as_view({'get': 'list', 'post': 'create'}), name='participantes'),
     path('registro-rapido/', RegistroRapidoView.as_view({'post': 'create'}), name='registro-rapido'),
 ]
