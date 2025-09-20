@@ -29,3 +29,5 @@ env/
 
 __pycache__/
 .vscode/
+
+backend/db.sqlite3
