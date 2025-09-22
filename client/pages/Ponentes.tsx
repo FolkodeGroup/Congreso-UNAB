@@ -286,11 +286,11 @@ export default function Ponentes() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 z-50 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 z-10 w-full">
             {renderSkeletons()}
           </div>
         ) : error ? (
-          <div className="text-center text-red-500 bg-red-100 p-4 rounded-xl shadow-md z-50">
+          <div className="text-center text-red-500 bg-red-100 p-4 rounded-xl shadow-md z-10">
             <p>
               <strong>Error:</strong> {error}
             </p>
@@ -300,12 +300,12 @@ export default function Ponentes() {
             </p>
           </div>
         ) : disertantes.length === 0 ? (
-          <div className="text-center text-gray-500 bg-gray-100 p-4 rounded-xl shadow-md z-50">
+          <div className="text-center text-gray-500 bg-gray-100 p-4 rounded-xl shadow-md z-10">
             <p>No hay disertantes para mostrar.</p>
           </div>
         ) : (
           <motion.div
-            className="flex flex-row gap-6 z-50 w-full overflow-x-auto pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:overflow-x-visible"
+            className="flex flex-row gap-6 z-10 w-full overflow-x-auto pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:overflow-x-visible"
             style={{ WebkitOverflowScrolling: 'touch' }}
             initial="hidden"
             whileInView="visible"

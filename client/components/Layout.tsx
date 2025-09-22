@@ -44,11 +44,11 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-white" lang="es" translate="no">
       {/* Header */}
-      <header className="bg-congress-blue text-white shadow-lg">
+      <header className="bg-congress-blue text-white shadow-lg relative z-30">
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
             {/* Logo and Title */}
-            <div className="flex-shrink-0">
+            <div className="flex items-center gap-4 flex-shrink-0">
               <Link
                 to="/"
                 onClick={() => {
@@ -56,10 +56,16 @@ export default function Layout({ children }: LayoutProps) {
                     window.scrollTo(0, 0);
                   }
                 }}
+                className="flex items-center gap-4"
               >
                 <img
                   src="/images/LogoUnab.png"
                   alt="UNaB Logo"
+                  className="h-20 w-auto"
+                />
+                <img
+                  src="/images/logos/LOGO_CONGRESO.png"
+                  alt="Congreso Logo"
                   className="h-20 w-auto"
                 />
               </Link>
@@ -96,7 +102,7 @@ export default function Layout({ children }: LayoutProps) {
                   />
                 </Button>
                 {isDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-40 border border-gray-200">
                     <Link
                       to="/programa"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-congress-blue hover:text-white"
@@ -193,7 +199,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4 md:pl-16 md:pr-8">
+        <div className="container mx-auto px-4 md:pl-8 md:pr-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-lg font-bold mb-4">
@@ -218,9 +224,9 @@ export default function Layout({ children }: LayoutProps) {
                 >
                   <FiMail className="text-white mr-2 flex-shrink-0" />
                   <span>
-                    congresologisticaytransporte
-                    <br className="md:hidden" />
-                    @unab.edu.ar
+                    congresologisticaytransporte@
+                    <br />
+                    unab.edu.ar
                   </span>
                 </a>
               </p>
@@ -244,12 +250,6 @@ export default function Layout({ children }: LayoutProps) {
                     className="h-16 w-auto"
                   />
                 </Link>
-                <div>
-                  <div className="text-white font-semibold">UNaB</div>
-                  <div className="text-gray-300 text-sm">
-                    Universidad Nacional
-                  </div>
-                </div>
               </div>
               <p className="text-gray-300">
                 Comprometida con la educación y la investigación en logística y
