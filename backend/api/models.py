@@ -85,6 +85,9 @@ class Empresa(models.Model):
             return self.nombre_empresa
         return f"Empresa sin nombre (ID: {self.id})"
 
+    class Meta:
+        ordering = ['nombre_empresa']
+
 class Asistente(models.Model):
     class ProfileType(models.TextChoices):
         VISITOR = 'VISITOR', 'Visitante'
