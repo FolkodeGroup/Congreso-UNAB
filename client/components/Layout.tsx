@@ -44,7 +44,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-white" lang="es" translate="no">
       {/* Header */}
-      <header className="bg-congress-blue text-white shadow-lg">
+  <header className="bg-congress-blue text-white shadow-lg fixed top-0 left-0 w-full z-50">
   <div className="py-6 pl-5 mx-5">
           <div className="flex justify-between items-center">
             {/* Logo and Title */}
@@ -188,8 +188,8 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1">{children}</main>
+  {/* Main Content */}
+  <main className="flex-1 mt-28">{children}</main>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
