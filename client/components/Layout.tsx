@@ -59,13 +59,13 @@ export default function Layout({ children }: LayoutProps) {
                 className="flex items-center gap-4"
               >
                 <img
-                  src="/images/LogoUnab.png"
-                  alt="UNaB Logo"
+                  src="/images/logos/logo-congreso-v1.png"
+                  alt="Logo Congreso"
                   className="h-20 w-auto"
                 />
                 <img
-                  src="/images/logos/LOGO_CONGRESO.png"
-                  alt="Congreso Logo"
+                  src="/images/LogoUnab.png"
+                  alt="UNaB Logo"
                   className="h-20 w-auto"
                 />
               </Link>
