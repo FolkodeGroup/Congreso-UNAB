@@ -637,7 +637,7 @@ export default function Programa() {
       </div>
 
       {/* Filtros Modernos con MUI */}
-      <Box sx={{ position: 'sticky', top: 0, zIndex: 40, background: 'transparent', py: 3, display: 'flex', justifyContent: 'center' }}>
+  <Box sx={{ position: 'sticky', top: 144, zIndex: 40, background: 'transparent', py: 0, display: 'flex', justifyContent: 'center' }}>
         <Card sx={{ maxWidth: 1200, width: '100%', boxShadow: 6, borderRadius: 4, background: '#fff', px: { xs: 2, md: 6 }, py: { xs: 2, md: 3 } }}>
           <CardContent sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 2, md: 3 }, alignItems: 'center', justifyContent: 'center', px: 0, mx: 'auto', width: '100%' }}>
             <Box sx={{ 
