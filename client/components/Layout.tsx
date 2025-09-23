@@ -189,7 +189,7 @@ export default function Layout({ children }: LayoutProps) {
       </header>
 
   {/* Main Content */}
-  <main className="flex-1 mt-[144px]">{children}</main>
+  <main className="flex-1 mt-[124px]">{children}</main>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
