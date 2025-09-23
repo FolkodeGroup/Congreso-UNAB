@@ -626,33 +626,22 @@ export default function Programa() {
           className="max-w-4xl mx-auto text-center"
         >
           {/* Banner principal */}
-          <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
-            {/* Imagen de fondo del auditorio */}
-            <div className="absolute inset-0">
-              <img 
-                src="/images/congress-audience.jpg" 
+          <div className="relative rounded-3xl shadow-2xl overflow-hidden min-h-[600px] flex items-center justify-center">
+            {/* Imagen de fondo tipo hero */}
+            <div className="absolute inset-0 w-full h-full">
+              <img
+                src="/images/congress-audience.jpg"
                 alt="Auditorio del congreso"
-                className="w-full h-full object-cover opacity-25"
-                onLoad={() => console.log('Imagen cargada exitosamente')}
-                onError={(e) => {
-                  console.log('Error loading image, using fallback pattern');
-                  e.currentTarget.style.display = 'none';
-                  // Fallback pattern
-                  const parent = e.currentTarget.parentElement;
-                  if (parent) {
-                    parent.innerHTML = `
-                      <div class="w-full h-full opacity-5" style="background-image: radial-gradient(circle at 25% 25%, #1e40af 2px, transparent 2px), radial-gradient(circle at 75% 75%, #0891b2 2px, transparent 2px); background-size: 40px 40px; background-position: 0 0, 20px 20px;"></div>
-                    `;
-                  }
-                }}
+                className="w-full h-full object-cover object-center scale-105 opacity-70"
+                draggable="false"
+                loading="eager"
+                style={{ pointerEvents: 'none', userSelect: 'none' }}
               />
+              {/* Overlay para legibilidad */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-congress-blue/5" />
             </div>
-            
-            {/* Gradiente superpuesto para mejor legibilidad */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/96 via-white/92 to-congress-blue/8"></div>
-            
-            {/* Contenido con padding */}
-            <div className="relative p-8 md:p-16">
+            {/* Contenido con padding y posición relativa */}
+            <div className="relative z-10 p-8 md:p-16 w-full flex flex-col items-center justify-center">
             
             {/* Patrón decorativo */}
             <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
