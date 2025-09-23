@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from django.db import transaction
 from .models import Disertante, Inscripcion, Programa, Certificado, Asistente, Empresa, MiembroGrupo
-from .serializers import DisertanteSerializer, InscripcionSerializer, AsistenteSerializer, ProgramaSerializer, EmpresaSerializer, MiembroGrupoSerializer
+from .serializers import DisertanteSerializer, InscripcionSerializer, AsistenteSerializer, ProgramaSerializer, EmpresaSerializer, MiembroGrupoSerializer, EmpresaLogoSerializer
 from django.utils import timezone
 from .email import send_certificate_email, send_confirmation_email
 
@@ -180,3 +180,13 @@ class RegistroRapidoView(mixins.CreateModelMixin, viewsets.GenericViewSet):
             return Response({'status': 'error', 'message': e.detail}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'status': 'error', 'message': f'Ha ocurrido un error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class EmpresaViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    ViewSet para ver la lista de empresas participantes.
+    Solo permite lectura (GET) para mostrar logos en carrusel/slider.
+    """
+    queryset = Empresa.objects.filter(logo__isnull=False).exclude(logo='').order_by('nombre_empresa')  # Solo empresas con logo
+    serializer_class = EmpresaLogoSerializer
+    permission_classes = [AllowAny]

@@ -56,6 +56,7 @@ export const ALL_LOGOS: LogoItem[] = [
     heightClass: "h-16",
   },
   { src: "/images/logos/M-RRHH.jpeg", alt: "M-RRHH", heightClass: "h-12" },
+  { src: "/images/logos/MINISCENICS.jpeg", alt: "Miniscenics", heightClass: "h-12" },
   { src: "/images/logos/MUVON.png", alt: "Muvon", heightClass: "h-12" },
   {
     src: "/images/logos/NYG-TRANSPORTES.PNG",
@@ -97,6 +98,7 @@ export const ALL_LOGOS: LogoItem[] = [
   { src: "/images/logos/UNLAM.png", alt: "UNLaM", heightClass: "h-14" },
   { src: "/images/logos/UNLP.png", alt: "UNLP", heightClass: "h-12" },
   { src: "/images/logos/UNLZ.png", alt: "UNLZ", heightClass: "h-12" },
+  { src: "/images/logos/UNS.jpg", alt: "UNS", heightClass: "h-12" },
   { src: "/images/logos/UPE.png", alt: "UPE", heightClass: "h-12" },
   { src: "/images/logos/UTN.png", alt: "UTN", heightClass: "h-12" },
   {
@@ -104,6 +106,7 @@ export const ALL_LOGOS: LogoItem[] = [
     alt: "VDM Logistics",
     heightClass: "h-10",
   },
+  { src: "/images/logos/VELOX.jpeg", alt: "Velox", heightClass: "h-12" },
   { src: "/images/logos/VIMA.png", alt: "VIMA", heightClass: "h-12" },
   { src: "/images/logos/VOS.jpeg", alt: "VOS", heightClass: "h-12" },
   { src: "/images/logos/XPERTS.jpeg", alt: "Xperts", heightClass: "h-12" },

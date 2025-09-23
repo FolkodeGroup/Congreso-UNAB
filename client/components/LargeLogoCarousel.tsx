@@ -1,27 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  FIRST_CAROUSEL_LOGOS,
-  SECOND_CAROUSEL_LOGOS,
-  THIRD_CAROUSEL_LOGOS,
-  DEFAULT_LOGOS,
-  LogoItem,
-  chunk,
-} from "./data/logos";
+import { LogoItem, chunk } from "./data/logos";
 import { motion, AnimatePresence } from "framer-motion";
-
-// Combine all logos and remove duplicates
-const allLogos: LogoItem[] = [
-  ...DEFAULT_LOGOS,
-  ...FIRST_CAROUSEL_LOGOS,
-  ...SECOND_CAROUSEL_LOGOS,
-  ...THIRD_CAROUSEL_LOGOS,
-].filter(
-  (logo, index, self) => index === self.findIndex((l) => l.src === logo.src),
-);
+import { useEmpresas } from "@/hooks/use-empresas";
 
 const LargeLogoCarousel: React.FC = () => {
+  const { logosForCarousel, loading, error } = useEmpresas();
   const logosPerPage = 12; // 4 columns * 3 rows = 12 logos per page
-  const chunkedLogos = chunk(allLogos, logosPerPage);
+  const chunkedLogos = chunk(logosForCarousel, logosPerPage);
   const [currentPage, setCurrentPage] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -51,6 +36,40 @@ const LargeLogoCarousel: React.FC = () => {
     visible: { y: 0, opacity: 1, scale: 1 },
     exit: { y: -20, opacity: 0, scale: 0.9 },
   };
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-gray-100">
+        <div className="w-full px-4 flex justify-center items-center h-[400px]">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-16 bg-gray-100">
+        <div className="w-full px-4 flex justify-center items-center h-[400px]">
+          <div className="text-center text-red-600">
+            Error al cargar las empresas: {error}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (chunkedLogos.length === 0) {
+    return (
+      <section className="py-16 bg-gray-100">
+        <div className="w-full px-4 flex justify-center items-center h-[400px]">
+          <div className="text-center text-gray-600">
+            No hay empresas disponibles.
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 bg-gray-100 overflow-hidden relative">

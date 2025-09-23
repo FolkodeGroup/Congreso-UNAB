@@ -1,12 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import DisertanteViewSet, VerificarDNIView, ProgramaViewSet, RegistroEmpresasView, RegistroParticipantesView, InscripcionViewSet, RegistroRapidoView
+from .views import DisertanteViewSet, VerificarDNIView, ProgramaViewSet, RegistroEmpresasView, RegistroParticipantesView, InscripcionViewSet, RegistroRapidoView, EmpresaViewSet
 from .qr_views import GenerateStaticQRView
 
 # Se crea un router para registrar los ViewSets
 router = DefaultRouter()
 router.register(r'disertantes', DisertanteViewSet, basename='disertante')
 router.register(r'programa', ProgramaViewSet, basename='programa')
+router.register(r'empresas', EmpresaViewSet, basename='empresa')
 
 # Las URLs de la API son determinadas automáticamente por el router
 urlpatterns = [

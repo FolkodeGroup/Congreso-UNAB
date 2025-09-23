@@ -170,7 +170,9 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'https://congresologisticaytransporteunab.netlify.app',
     'http://localhost:8080',
+    'http://localhost:8081',
     f'http://{socket.gethostbyname(socket.gethostname())}:8080',
+    f'http://{socket.gethostbyname(socket.gethostname())}:8081',
 ]
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True

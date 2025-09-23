@@ -53,6 +53,16 @@ class EmpresaSerializer(serializers.ModelSerializer):
             'participacion_otra'
         ]
 
+
+class EmpresaLogoSerializer(serializers.ModelSerializer):
+    """
+    Serializador simplificado para mostrar empresas en carrusel/slider.
+    Solo incluye campos necesarios para mostrar logos.
+    """
+    class Meta:
+        model = Empresa
+        fields = ['id', 'nombre_empresa', 'logo', 'sitio_web', 'descripcion']
+
 class MiembroGrupoSerializer(serializers.ModelSerializer):
     class Meta:
         model = MiembroGrupo
