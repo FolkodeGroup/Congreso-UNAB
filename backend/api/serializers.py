@@ -6,7 +6,7 @@ from .email import send_group_confirmation_emails, send_individual_confirmation_
 class DisertanteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Disertante
-        fields = ['nombre', 'bio', 'foto_url', 'tema_presentacion']
+        fields = ['nombre', 'bio', 'foto_url', 'tema_presentacion', 'linkedin']
 
 class ProgramaSerializer(serializers.ModelSerializer):
     disertante = DisertanteSerializer(read_only=True)
