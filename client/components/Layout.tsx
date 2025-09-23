@@ -45,10 +45,10 @@ export default function Layout({ children }: LayoutProps) {
     <div className="min-h-screen bg-white" lang="es" translate="no">
       {/* Header */}
       <header className="bg-congress-blue text-white shadow-lg">
-        <div className="container mx-auto px-4 py-6">
+  <div className="py-6 pl-5 mx-5">
           <div className="flex justify-between items-center">
             {/* Logo and Title */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 ml-0">
               <Link
                 to="/"
                 onClick={() => {
@@ -58,8 +58,8 @@ export default function Layout({ children }: LayoutProps) {
                 }}
               >
                 <img
-                  src="/images/LogoUnab.png"
-                  alt="UNaB Logo"
+                  src="/images/logo-congreso.png"
+                  alt="Logo Congreso"
                   className="h-20 w-auto"
                 />
               </Link>
@@ -239,7 +239,7 @@ export default function Layout({ children }: LayoutProps) {
                   }}
                 >
                   <img
-                    src="/images/LogoUnab.png"
+                    src="/images/Logo_2.webp"
                     alt="UNaB Logo"
                     className="h-16 w-auto"
                   />
