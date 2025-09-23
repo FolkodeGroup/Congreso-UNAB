@@ -184,6 +184,9 @@ export default function Programa() {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Variable para controlar si se muestra el programa completo o el banner "próximamente"
+  const programaDisponible = import.meta.env.VITE_PROGRAMA_DISPONIBLE === 'true' || false;
 
   // Fetch de la API de Django
   useEffect(() => {
@@ -612,31 +615,207 @@ export default function Programa() {
     return !!actividad;
   }
 
-  return (
-    <>
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-congress-blue via-congress-blue/90 to-congress-cyan min-h-[40vh] flex items-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
+  // Componente del banner "Próximamente"
+  const BannerProximamente = () => (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="container mx-auto px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="max-w-4xl mx-auto text-center"
+        >
+          {/* Banner principal */}
+          <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
+            {/* Imagen de fondo del auditorio */}
+            <div className="absolute inset-0">
+              <img 
+                src="/images/congress-audience.jpg" 
+                alt="Auditorio del congreso"
+                className="w-full h-full object-cover opacity-25"
+                onLoad={() => console.log('Imagen cargada exitosamente')}
+                onError={(e) => {
+                  console.log('Error loading image, using fallback pattern');
+                  e.currentTarget.style.display = 'none';
+                  // Fallback pattern
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    parent.innerHTML = `
+                      <div class="w-full h-full opacity-5" style="background-image: radial-gradient(circle at 25% 25%, #1e40af 2px, transparent 2px), radial-gradient(circle at 75% 75%, #0891b2 2px, transparent 2px); background-size: 40px 40px; background-position: 0 0, 20px 20px;"></div>
+                    `;
+                  }
+                }}
+              />
+            </div>
+            
+            {/* Gradiente superpuesto para mejor legibilidad */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/96 via-white/92 to-congress-blue/8"></div>
+            
+            {/* Contenido con padding */}
+            <div className="relative p-8 md:p-16">
+            
+            {/* Patrón decorativo */}
+            <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
+              <svg viewBox="0 0 200 200" className="w-full h-full">
+                <defs>
+                  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="1"/>
+                  </pattern>
+                </defs>
+                <rect width="200" height="200" fill="url(#grid)" className="text-congress-blue"/>
+              </svg>
+            </div>
+            
+              {/* Contenido principal */}
+              <div className="relative z-10">
+              {/* Icono principal con mayor contraste */}
+              <motion.div 
+                initial={{ rotate: -10, scale: 0.8 }}
+                animate={{ rotate: 0, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="mb-8"
+              >
+                <div className="w-28 h-28 mx-auto bg-gradient-to-br from-congress-blue to-congress-cyan rounded-full flex items-center justify-center shadow-2xl border-4 border-white/50">
+                  <svg className="w-14 h-14 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </motion.div>
+              
+              {/* Título principal */}
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-congress-blue via-congress-cyan to-purple-600 bg-clip-text text-transparent mb-6 drop-shadow-sm"
+              >
+                Próximamente
+              </motion.h1>
+              
+              {/* Subtítulo */}
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+                className="text-xl md:text-3xl font-bold text-gray-900 mb-8 drop-shadow-sm"
+              >
+                Programa Completo del Congreso
+              </motion.h2>
+              
+              {/* Descripción */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.9 }}
+                className="space-y-4 mb-12 text-gray-700"
+              >
+                <p className="text-lg md:text-xl leading-relaxed font-medium drop-shadow-sm">
+                  Estamos finalizando los últimos detalles del programa académico para ofrecerte la mejor experiencia posible.
+                </p>
+                <p className="text-base md:text-lg drop-shadow-sm">
+                  Pronto podrás conocer todas las conferencias, talleres y actividades que hemos preparado para ti.
+                </p>
+              </motion.div>
+              
+              {/* Características destacadas */}
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 1.1 }}
+                className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+              >
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl">
+                  <div className="w-12 h-12 bg-congress-blue rounded-xl flex items-center justify-center mb-4 mx-auto">
+                    <Person className="text-white text-xl" />
+                  </div>
+                  <h3 className="font-bold text-gray-800 mb-2">Ponentes Expertos</h3>
+                  <p className="text-sm text-gray-600">Los mejores profesionales del sector</p>
+                </div>
+                
+                <div className="bg-gradient-to-br from-cyan-50 to-cyan-100 p-6 rounded-2xl">
+                  <div className="w-12 h-12 bg-congress-cyan rounded-xl flex items-center justify-center mb-4 mx-auto">
+                    <School className="text-white text-xl" />
+                  </div>
+                  <h3 className="font-bold text-gray-800 mb-2">Múltiples Aulas</h3>
+                  <p className="text-sm text-gray-600">Actividades paralelas especializadas</p>
+                </div>
+                
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-2xl">
+                  <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                    <Category className="text-white text-xl" />
+                  </div>
+                  <h3 className="font-bold text-gray-800 mb-2">Temas Diversos</h3>
+                  <p className="text-sm text-gray-600">Tecnología, logística y más</p>
+                </div>
+              </motion.div>
+              
+              {/* Call to action */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 1.3 }}
+                className="bg-gradient-to-r from-congress-blue to-congress-cyan p-6 rounded-2xl text-white"
+              >
+                <h3 className="text-xl font-bold mb-2">¿Ya te inscribiste?</h3>
+                <p className="mb-4 text-white/90">Asegura tu lugar en este evento único</p>
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-white text-congress-blue px-8 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors"
+                  onClick={() => window.location.href = '/inscripcion'}
+                >
+                  Inscribirme Ahora
+                </motion.button>
+              </motion.div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Información adicional */}
+          <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
+            transition={{ duration: 1, delay: 1.5 }}
+            className="mt-12 text-center"
           >
-            <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
-              Agenda_
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto font-light">
-              Charlas y actividades por aula • de 10:00 a 18:00 hs
+            <p className="text-gray-500 text-sm">
+              El programa estará disponible próximamente. Mantente atento a nuestras actualizaciones.
             </p>
-            {loading && (
-              <div className="text-white/80 mt-6 text-lg">Cargando agenda...</div>
-            )}
-            {error && <div className="text-red-200 mt-6 bg-red-500/20 p-4 rounded-lg max-w-2xl mx-auto">{error}</div>}
           </motion.div>
-        </div>
+        </motion.div>
       </div>
+    </div>
+  );
+
+  return (
+    <>
+      {!programaDisponible ? (
+        <BannerProximamente />
+      ) : (
+        <>
+          {/* Hero Section */}
+          <div className="bg-gradient-to-br from-congress-blue via-congress-blue/90 to-congress-cyan min-h-[40vh] flex items-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="container mx-auto px-4 relative z-10">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-center"
+              >
+                <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
+                  Agenda_
+                </h1>
+                <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto font-light">
+                  Charlas y actividades por aula • de 10:00 a 18:00 hs
+                </p>
+                {loading && (
+                  <div className="text-white/80 mt-6 text-lg">Cargando agenda...</div>
+                )}
+                {error && <div className="text-red-200 mt-6 bg-red-500/20 p-4 rounded-lg max-w-2xl mx-auto">{error}</div>}
+              </motion.div>
+            </div>
+          </div>
 
       {/* Filtros Modernos con MUI */}
   <Box sx={{ position: 'sticky', top: 144, zIndex: 40, background: 'transparent', py: 0, display: 'flex', justifyContent: 'center' }}>
@@ -1201,6 +1380,8 @@ export default function Programa() {
           </motion.div>
         )}
       </AnimatePresence>
+        </>
+      )}
     </>
   );
 }
