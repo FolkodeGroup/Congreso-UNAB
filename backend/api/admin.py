@@ -59,7 +59,18 @@ class ProgramaAdmin(admin.ModelAdmin):
     search_fields = ('titulo', 'disertante__nombre')
     list_editable = ('categoria',)
 
-admin.site.register(Disertante)
+@admin.register(Disertante)
+class DisertanteAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('nombre', 'foto_url', 'tema_presentacion', 'linkedin')
+        }),
+        ('Información opcional', {
+            'classes': ('collapse',),
+            'fields': ('bio',),
+        }),
+    )
+    list_display = ('nombre', 'tema_presentacion', 'linkedin')
 @admin.register(Empresa)
 class EmpresaAdmin(admin.ModelAdmin):
     fieldsets = (

@@ -12,6 +12,7 @@ class Disertante(models.Model):
     nombre = models.CharField(max_length=200)
     bio = models.TextField(verbose_name="Biografía")
     foto_url = models.CharField(max_length=300, blank=True, verbose_name="URL de la Foto")
+    linkedin = models.URLField(blank=True, null=True, verbose_name="Perfil de LinkedIn")
     tema_presentacion = models.CharField(max_length=255, verbose_name="Título de la Presentación")
 
     def __str__(self):
