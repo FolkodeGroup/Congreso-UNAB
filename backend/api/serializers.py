@@ -19,19 +19,14 @@ class EmpresaSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         errors = {}
         required_fields = [
-            'nombre_empresa', 'nombre_contacto', 'email_contacto', 'celular_contacto', 'cargo_contacto', 'participacion_opciones'
+            'nombre_empresa', 'logo'
         ]
         for field in required_fields:
             value = data.get(field, None)
             if not value or (isinstance(value, str) and not value.strip()):
                 errors[field] = f'Este campo es obligatorio.'
-        # Validar modalidad
-        value = data.get('participacion_opciones', None)
-        if not value or not isinstance(value, str):
-            errors['participacion_opciones'] = 'Debe seleccionar una modalidad válida.'
         if errors:
             raise serializers.ValidationError(errors)
-        data['participacion_opciones'] = value
         return super().to_internal_value(data)
 
     class Meta:

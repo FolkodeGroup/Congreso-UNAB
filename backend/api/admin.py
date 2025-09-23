@@ -60,7 +60,22 @@ class ProgramaAdmin(admin.ModelAdmin):
     list_editable = ('categoria',)
 
 admin.site.register(Disertante)
-admin.site.register(Empresa)
+@admin.register(Empresa)
+class EmpresaAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('nombre_empresa', 'logo')
+        }),
+        ('Información opcional', {
+            'classes': ('collapse',),
+            'fields': (
+                'cuit', 'direccion', 'telefono_empresa', 'email_empresa', 'sitio_web', 'descripcion',
+                'nombre_contacto', 'email_contacto', 'celular_contacto', 'cargo_contacto',
+                'participacion_opciones', 'participacion_otra',
+            ),
+        }),
+    )
+    list_display = ('nombre_empresa', 'logo')
 admin.site.register(Asistente, AsistenteAdmin)
 admin.site.register(Inscripcion, InscripcionAdmin)
 admin.site.register(Certificado, CertificadoAdmin)

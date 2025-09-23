@@ -71,13 +71,13 @@ class Empresa(models.Model):
     logo = models.ImageField(upload_to='logos_empresas/', blank=True, null=True, verbose_name="Logo de la empresa")
 
     # Contact Person
-    nombre_contacto = models.CharField(max_length=255, verbose_name="Nombre completo de la persona de contacto")
-    email_contacto = models.EmailField(unique=True, verbose_name="Correo electrónico de la persona de contacto")
-    celular_contacto = models.CharField(max_length=20, verbose_name="Número de celular de contacto")
-    cargo_contacto = models.CharField(max_length=255, verbose_name="Cargo que cumple en la empresa / institución")
+    nombre_contacto = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nombre completo de la persona de contacto")
+    email_contacto = models.EmailField(unique=False, blank=True, null=True, verbose_name="Correo electrónico de la persona de contacto")
+    celular_contacto = models.CharField(max_length=20, blank=True, null=True, verbose_name="Número de celular de contacto")
+    cargo_contacto = models.CharField(max_length=255, blank=True, null=True, verbose_name="Cargo que cumple en la empresa / institución")
 
     # Participation
-    participacion_opciones = models.CharField(max_length=50, verbose_name="¿Cómo les gustaría participar?")
+    participacion_opciones = models.CharField(max_length=50, blank=True, null=True, verbose_name="¿Cómo les gustaría participar?")
     participacion_otra = models.CharField(max_length=255, blank=True, null=True, verbose_name="Otra forma de participación")
 
     def __str__(self):
