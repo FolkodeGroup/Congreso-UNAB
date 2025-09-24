@@ -82,7 +82,7 @@ class AsistenteSerializer(serializers.ModelSerializer):
             'is_unab_student', 'institution', 'career', 'year_of_study',
             'career_taught', 'work_area', 'occupation', 'company_name',
             'group_name', 'group_municipality', 'group_size', 'representante_grupo',
-            'miembros_grupo', 'miembros_grupo_nuevos', 'miembros_representados'
+            'miembros_grupo', 'miembros_grupo_nuevos', 'miembros_representados', 'rol_especifico'
         ]
         read_only_fields = ['id', 'miembros_representados']
     

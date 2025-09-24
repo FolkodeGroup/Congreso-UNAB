@@ -96,14 +96,19 @@ class Asistente(models.Model):
         TEACHER = 'TEACHER', 'Docente'
         PROFESSIONAL = 'PROFESSIONAL', 'Profesional'
         GROUP_REPRESENTATIVE = 'GROUP_REPRESENTATIVE', 'Representante de Grupo'
+        GRADUADO = 'GRADUADO', 'Graduado'
+        OTRO = 'OTRO', 'Otro'
 
     # --- Información Principal (Común a todos) ---
     first_name = models.CharField(max_length=100, verbose_name="Nombre")
     last_name = models.CharField(max_length=100, verbose_name="Apellido")
     email = models.EmailField(unique=True, verbose_name="Correo electrónico")
     phone = models.CharField(max_length=20, verbose_name="Número de celular")
-    dni = models.CharField(max_length=10, unique=True, verbose_name="DNI")
+    dni = models.CharField(max_length=10, unique=True, null=True, blank=True, verbose_name="DNI")
     profile_type = models.CharField(max_length=30, choices=ProfileType.choices, verbose_name="Tipo de Perfil")
+    
+    # Campo adicional para roles específicos (ej: "Colaborador/a Estudiante", "Colaborador/a Docente")
+    rol_especifico = models.CharField(max_length=255, blank=True, null=True, verbose_name="Rol Específico")
 
     # --- Campos Condicionales ---
     is_unab_student = models.BooleanField(null=True, blank=True, verbose_name="¿Perteneces a la UNaB?")
