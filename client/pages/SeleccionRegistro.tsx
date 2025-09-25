@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 
 export default function SeleccionRegistro() {
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-xl mx-auto">
+    <div className="flex-1 flex items-center justify-center px-4 py-8">
+      <div className="max-w-xl w-full">
         <Card>
           <CardHeader>
             <CardTitle>¿Cómo deseas registrarte?</CardTitle>

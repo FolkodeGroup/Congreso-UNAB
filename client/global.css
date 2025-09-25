@@ -450,3 +450,18 @@
 .icon-float:hover {
   animation: float-icon 1s ease-in-out infinite;
 }
+
+/* Layout utility classes */
+@layer utilities {
+  .layout-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
