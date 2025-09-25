@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2zba+jiuh_gqthifa5*y7illxqrj8oz03yv005)g0-wfpi@o1d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.101', 'folkode.pythonanywhere.com']
+ALLOWED_HOSTS = ['www.congresologistica.unab.edu.ar', 'congresologistica.unab.edu.ar', '170.210.44.238']
 
 
 
@@ -91,8 +91,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_NAME', 'congreso'),
+        'USER': os.getenv('DB_USER', 'congreso_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 
@@ -173,8 +177,10 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:8081',
     f'http://{socket.gethostbyname(socket.gethostname())}:8080',
     f'http://{socket.gethostbyname(socket.gethostname())}:8081',
+    'https://www.congresologistica.unab.edu.ar',
+    'https://congresologistica.unab.edu.ar',
 ]
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     'accept',
