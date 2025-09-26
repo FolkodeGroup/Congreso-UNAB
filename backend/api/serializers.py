@@ -4,9 +4,11 @@ from django.db import transaction
 from .email import send_group_confirmation_emails, send_individual_confirmation_email
 
 class DisertanteSerializer(serializers.ModelSerializer):
+    foto = serializers.ImageField(read_only=True)
+
     class Meta:
         model = Disertante
-        fields = ['nombre', 'bio', 'foto_url', 'tema_presentacion', 'linkedin']
+        fields = ['nombre', 'bio', 'foto_url', 'foto', 'tema_presentacion', 'linkedin']
 
 class ProgramaSerializer(serializers.ModelSerializer):
     disertante = DisertanteSerializer(read_only=True)

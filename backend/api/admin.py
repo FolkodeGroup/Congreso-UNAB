@@ -63,7 +63,7 @@ class ProgramaAdmin(admin.ModelAdmin):
 class DisertanteAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': ('nombre', 'foto_url', 'tema_presentacion', 'linkedin')
+            'fields': ('nombre', 'foto', 'foto_url', 'tema_presentacion', 'linkedin')
         }),
         ('Información opcional', {
             'classes': ('collapse',),

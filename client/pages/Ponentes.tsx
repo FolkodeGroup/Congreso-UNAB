@@ -11,6 +11,7 @@ type Disertante = {
   nombre: string;
   bio: string;
   foto_url: string;
+  foto?: string; // Nuevo campo opcional para la imagen subida
   tema_presentacion: string;
   linkedin?: string;
 };
@@ -242,14 +243,32 @@ export default function Ponentes() {
                 "rotate-0",
               ];
               const rotation = rotations[idx % rotations.length];
-              let fotoUrl = disertante.foto_url;
-              if (fotoUrl && !fotoUrl.startsWith("http")) {
-                const cleanPath = fotoUrl.replace(/^.*media\//, "");
-                // Si estamos en desarrollo y no hay backend, usar /media/ local
-                if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-                  fotoUrl = `/media/${cleanPath}`;
+              // Prioridad: foto (subida) > foto_url
+              let fotoUrl = "";
+              if (disertante.foto) {
+                // Si la imagen subida existe, usarla
+                if (disertante.foto.startsWith("http")) {
+                  fotoUrl = disertante.foto;
                 } else {
-                  fotoUrl = `${apiUrl}/media/${cleanPath}`;
+                  // Si es un path relativo, construir la URL completa
+                  const cleanPath = disertante.foto.replace(/^.*media\//, "");
+                  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                    fotoUrl = `/media/${cleanPath}`;
+                  } else {
+                    fotoUrl = `${apiUrl}/media/${cleanPath}`;
+                  }
+                }
+              } else if (disertante.foto_url) {
+                // Si no hay imagen subida, usar la URL existente
+                if (disertante.foto_url.startsWith("http")) {
+                  fotoUrl = disertante.foto_url;
+                } else {
+                  const cleanPath = disertante.foto_url.replace(/^.*media\//, "");
+                  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                    fotoUrl = `/media/${cleanPath}`;
+                  } else {
+                    fotoUrl = `${apiUrl}/media/${cleanPath}`;
+                  }
                 }
               }
               return (
