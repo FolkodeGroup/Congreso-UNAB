@@ -104,7 +104,7 @@ class Asistente(models.Model):
     last_name = models.CharField(max_length=100, verbose_name="Apellido")
     email = models.EmailField(unique=True, verbose_name="Correo electrónico")
     phone = models.CharField(max_length=20, verbose_name="Número de celular")
-    dni = models.CharField(max_length=10, unique=True, null=True, blank=True, verbose_name="DNI")
+    dni = models.CharField(max_length=32, unique=True, null=True, blank=True, verbose_name="DNI")
     profile_type = models.CharField(max_length=30, choices=ProfileType.choices, verbose_name="Tipo de Perfil")
     
     # Campo adicional para roles específicos (ej: "Colaborador/a Estudiante", "Colaborador/a Docente")
