@@ -119,10 +119,10 @@ def send_individual_confirmation_email(asistente):
             'empresa': None,
             'year': 2025,
             'evento_nombre': 'Congreso de Logística UNAB',
-            'evento_fecha': '25 de Octubre de 2025',
+            'evento_fecha': '15 de Noviembre de 2025',
             'evento_hora': '09:00',
             'evento_ubicacion': 'Campus UNAB, Blas Parera 132, Burzaco, Buenos Aires',
-            'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251025T120000Z/20251025T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
+            'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251115T120000Z/20251115T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
         }
         
         html_content = render_to_string('api/email/confirmacion.html', context)
@@ -273,10 +273,10 @@ def send_group_confirmation_emails(representante):
             'empresa': None,
             'year': 2025,
             'evento_nombre': 'Congreso de Logística UNAB',
-            'evento_fecha': '25 de Octubre de 2025',
+            'evento_fecha': '15 de Noviembre de 2025',
             'evento_hora': '09:00',
             'evento_ubicacion': 'Campus UNAB, Blas Parera 132, Burzaco, Buenos Aires',
-            'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251025T120000Z/20251025T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
+            'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251115T120000Z/20251115T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
         }
         
         html_content = render_to_string('api/email/confirmacion.html', context_representante)
@@ -321,10 +321,10 @@ def send_group_confirmation_emails(representante):
                 'empresa': None,
                 'year': 2025,
                 'evento_nombre': 'Congreso de Logística UNAB',
-                'evento_fecha': '25 de Octubre de 2025',
+                'evento_fecha': '15 de Noviembre de 2025',
                 'evento_hora': '09:00',
                 'evento_ubicacion': 'Campus UNAB, Blas Parera 132, Burzaco, Buenos Aires',
-                'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251025T120000Z/20251025T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
+                'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251115T120000Z/20251115T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
             }
             
             html_content = render_to_string('api/email/confirmacion.html', context_miembro)
