@@ -222,5 +222,14 @@ CORS_ALLOW_HEADERS = [
 # Media files (PDFs, imágenes, etc)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# =================== SEGURIDAD CSRF Y COOKIES ===================
+if not DEBUG:
+    CSRF_TRUSTED_ORIGINS = [
+        'https://www.congresologistica.unab.edu.ar',
+        'https://congresologistica.unab.edu.ar',
+    ]
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
