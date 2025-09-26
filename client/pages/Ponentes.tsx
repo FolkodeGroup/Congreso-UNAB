@@ -36,103 +36,16 @@ export default function Ponentes() {
         }
         const data = await response.json();
         if (Array.isArray(data) && data.length > 0) {
-            // Ordenar alfabéticamente por nombre
-            const dataOrdenada = [...data].sort((a, b) => a.nombre.localeCompare(b.nombre));
-            setDisertantes(dataOrdenada);
+          // Ordenar alfabéticamente por nombre
+          const dataOrdenada = [...data].sort((a, b) => a.nombre.localeCompare(b.nombre));
+          setDisertantes(dataOrdenada);
         } else {
-          // Si no hay datos, generar disertantes desde los archivos locales
-          const archivos = [
-            "agustin-varamo.png",
-            "alexander-machado.png",
-            "ana-gaude.png",
-            "argenis-soto.png",
-            "arnaldo-ventancu.png",
-            "boris-villalon.png",
-            "claudia-freed.png",
-            "cristian-ruiz.png",
-            "delfina-salgado.png",
-            "diego-plumaris.png",
-            "ernesto-castagnet.png",
-            "ezequiel-grillo.png",
-            "federico-carlos.png",
-            "felipe-rios.png",
-            "gabriel-luchessi.png",
-            "ignacio-villalon.png",
-            "john-doe.png",
-            "jorge-golfieri.png",
-            "jorge-metz.png",
-            "juan-sanchez.png",
-            "mariano-caiban.png",
-            "martin-boris.png",
-            "natalia-gonzalez.png",
-          ];
-          const ejemploTema = "Título de la Presentación";
-          const ejemploBio = "Descripción de ejemplo del disertante.";
-            const disertantesAuto = archivos.map((archivo, idx) => {
-              const nombreBase = archivo.replace(/\.[^/.]+$/, "");
-              const nombre = nombreBase
-                .split("-")
-                .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                .join(" ");
-              return {
-                id: idx + 1,
-                nombre,
-                bio: ejemploBio,
-                foto_url: `${apiUrl}/media/ponencias/${archivo}`,
-                tema_presentacion: ejemploTema,
-              };
-            });
-            // Ordenar alfabéticamente por nombre
-            const disertantesAutoOrdenados = [...disertantesAuto].sort((a, b) => a.nombre.localeCompare(b.nombre));
-            setDisertantes(disertantesAutoOrdenados);
+          // No hay disertantes en la base de datos
+          setError("No hay disertantes disponibles en la base de datos.");
         }
       } catch (err) {
-        // Si hay error, mostrar los disertantes de ejemplo
-        const archivos = [
-          "agustin-varamo.png",
-          "alexander-machado.png",
-          "ana-gaude.png",
-          "argenis-soto.png",
-          "arnaldo-ventancu.png",
-          "boris-villalon.png",
-          "claudia-freed.png",
-          "cristian-ruiz.png",
-          "delfina-salgado.png",
-          "diego-plumaris.png",
-          "ernesto-castagnet.png",
-          "ezequiel-grillo.png",
-          "federico-carlos.png",
-          "felipe-rios.png",
-          "gabriel-luchessi.png",
-          "ignacio-villalon.png",
-          "john-doe.png",
-          "jorge-golfieri.png",
-          "jorge-metz.png",
-          "juan-sanchez.png",
-          "mariano-caiban.png",
-          "martin-boris.png",
-          "natalia-gonzalez.png",
-        ];
-        const ejemploTema = "Título de la Presentación";
-        const ejemploBio = "Descripción de ejemplo del disertante.";
-        const disertantesAuto = archivos.map((archivo, idx) => {
-          const nombreBase = archivo.replace(/\.[^/.]+$/, "");
-          const nombre = nombreBase
-            .split("-")
-            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(" ");
-          return {
-            id: idx + 1,
-            nombre,
-            bio: ejemploBio,
-            foto_url: `${apiUrl}/media/ponencias/${archivo}`,
-            tema_presentacion: ejemploTema,
-          };
-        });
-        // Ordenar alfabéticamente por nombre
-        const disertantesAutoOrdenados = [...disertantesAuto].sort((a, b) => a.nombre.localeCompare(b.nombre));
-        setDisertantes(disertantesAutoOrdenados);
-        setError(null);
+        console.error("Error al cargar disertantes:", err);
+        setError("Error al conectar con el servidor. Verifique que el backend esté funcionando.");
       } finally {
         setLoading(false);
       }

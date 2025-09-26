@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import * as React from "react";
-import { chunk, DEFAULT_LOGOS, type LogoItem } from "./data/logos";
+import { chunk, type LogoItem } from "./data/logos";
+import { useEmpresas } from "@/hooks/use-empresas";
 
 type Direction = "ltr" | "rtl";
 
 interface TruckCarouselProps {
-  logos?: LogoItem[];
   direction?: Direction; // default 'rtl'
   durationSec?: number; // full cross duration
   startDelaySec?: number; // offset start between carousels
@@ -82,12 +82,17 @@ const Truck: React.FC<{ logos: LogoItem[]; color: "blue" | "cyan" }> = ({
 };
 
 export const TruckCarousel: React.FC<TruckCarouselProps> = ({
-  logos = DEFAULT_LOGOS,
   direction = "rtl",
   durationSec = 18,
   startDelaySec = 0,
 }) => {
-  const groups = chunk(logos.slice(0, 12), 4); // 3 groups of 4
+  const { logosForCarousel, loading, error } = useEmpresas();
+  
+  if (loading || error || logosForCarousel.length === 0) {
+    return null; // No renderizar nada si no hay logos disponibles
+  }
+
+  const groups = chunk(logosForCarousel.slice(0, 12), 4); // 3 groups of 4
   const initialX = direction === "rtl" ? "110%" : "-110%";
   const targetX = direction === "rtl" ? "-130%" : "130%";
 
@@ -112,7 +117,7 @@ export const TruckCarousel: React.FC<TruckCarouselProps> = ({
           }}
         >
           <Truck
-            logos={groups[i] ?? []}
+            logos={(groups[i] as LogoItem[]) ?? []}
             color={i % 2 === 0 ? "blue" : "cyan"}
           />
         </motion.div>

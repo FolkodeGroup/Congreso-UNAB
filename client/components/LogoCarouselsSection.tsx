@@ -36,6 +36,23 @@ export default function LogoCarouselsSection() {
     );
   }
 
+  if (logosForCarousel.length === 0) {
+    return (
+      <section className="bg-white py-10">
+        <div className="w-full px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">
+            Empresas e Instituciones Participantes
+          </h2>
+          <div className="text-center text-gray-600 py-4">
+            No hay empresas disponibles en este momento.
+            <br />
+            Las empresas se mostrarán una vez que sean cargadas desde el panel de administración.
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   // Dividir logos en tres grupos para los carruseles
   const chunkSize = Math.ceil(logosForCarousel.length / 3);
   const logoGroups = chunk(logosForCarousel, chunkSize);
