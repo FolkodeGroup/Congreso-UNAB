@@ -219,8 +219,7 @@ export default function Ponentes() {
           </div>
         ) : (
           <motion.div
-            className="flex flex-row gap-6 z-10 w-full overflow-x-auto pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:overflow-x-visible max-w-7xl mx-auto"
-            style={{ WebkitOverflowScrolling: 'touch' }}
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 z-10 w-full max-w-7xl mx-auto"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.15 }}
