@@ -14,10 +14,10 @@ def send_empresa_confirmation_email(empresa_instance):
         'contacto_email': empresa_instance.email_contacto,
         'year': 2025,
         'evento_nombre': 'Congreso de Logística UNAB',
-        'evento_fecha': '25 de Octubre de 2025',
-        'evento_hora': '09:00',
-        'evento_ubicacion': 'Campus UNAB, Blas Parera 132, Burzaco, Buenos Aires',
-        'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251025T120000Z/20251025T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
+    'evento_fecha': '15 de Noviembre de 2025',
+    'evento_hora': '09:00',
+    'evento_ubicacion': 'Campus UNAB, Blas Parera 132, Burzaco, Buenos Aires',
+    'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251115T120000Z/20251115T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
     }
 
     # Renderizar la plantilla HTML
@@ -54,10 +54,10 @@ def send_confirmation_email(inscripcion_instance):
         'empresa': inscripcion_instance.empresa.nombre_empresa if inscripcion_instance.empresa else None,
         'year': 2025, # Puedes hacerlo dinámico si lo necesitas
         'evento_nombre': 'Congreso de Logística UNAB',
-        'evento_fecha': '25 de Octubre de 2025', # Actualiza según corresponda
-        'evento_hora': '09:00', # Actualiza según corresponda
-        'evento_ubicacion': 'Campus UNAB, Blas Parera 132, Burzaco, Buenos Aires', # Actualiza según corresponda
-    'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251025T120000Z/20251025T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
+        'evento_fecha': '15 de Noviembre de 2025',
+        'evento_hora': '09:00',
+        'evento_ubicacion': 'Campus UNAB, Blas Parera 132, Burzaco, Buenos Aires',
+        'google_calendar_url': "https://www.google.com/calendar/render?action=TEMPLATE&text=Congreso+de+Logística+UNAB&dates=20251115T120000Z/20251115T210000Z&details=Congreso+de+Logística+UNAB+2025&location=Campus+UNAB,+Buenos+Aires"
     }
 
     # Renderizar la plantilla HTML
