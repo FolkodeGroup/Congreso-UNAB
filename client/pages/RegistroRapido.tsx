@@ -10,6 +10,7 @@ import {
   FormCard, 
   FormSection
 } from "@/components/ui/modern-form";
+import { API_HOST } from "@/lib/api";
 import { 
   User, 
   Mail, 
@@ -67,8 +68,7 @@ export default function RegistroRapido() {
     };
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-      const response = await fetch(`${apiUrl}/api/registro-rapido/`,
+      const response = await fetch(`${API_HOST}/api/registro-rapido/`,
         {
           method: "POST",
           headers: {

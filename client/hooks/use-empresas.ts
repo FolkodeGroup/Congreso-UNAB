@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE } from '@/lib/api';
 
 export interface EmpresaAPI {
   id: number;
@@ -14,8 +15,8 @@ export interface LogoItem {
   heightClass?: string;
 }
 
-// Detectar la URL base del API según el entorno
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// API base normalizada (siempre termina en /api)
+const API_BASE_URL = API_BASE;
 
 export const useEmpresas = () => {
   const [empresas, setEmpresas] = useState<EmpresaAPI[]>([]);
@@ -25,7 +26,7 @@ export const useEmpresas = () => {
   useEffect(() => {
     const fetchEmpresas = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/empresas/`);
+  const response = await fetch(`${API_BASE_URL}/empresas/`);
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }

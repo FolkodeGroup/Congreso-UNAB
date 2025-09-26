@@ -1,4 +1,40 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+// Compute API base consistently: VITE_API_URL should be the host (no trailing /api)
+// and we append /api here. Falls back to localhost for development.
+// API URL resolver
+// VITE_API_URL can be either the host (e.g. https://www.example.com) or the full /api base
+// We normalize it so API_HOST = scheme://host[:port] and API_BASE = API_HOST + /api
+function normalizeUrl(url: string) {
+  return url.replace(/\/$/, "");
+}
+
+function resolveApiHost(): string {
+  const env = (import.meta.env?.VITE_API_URL as string | undefined)?.trim();
+  if (env) {
+    // If env already ends with /api, strip it to get the host
+    const cleaned = normalizeUrl(env);
+    const host = cleaned.endsWith('/api') ? cleaned.slice(0, -4) : cleaned;
+    const normalized = normalizeUrl(host);
+    // If env points to localhost/127/0.0.0.0 but we're in a browser with a non-local origin, prefer window origin
+    if (
+      typeof window !== 'undefined' &&
+      window.location?.origin &&
+      !/^(https?:\/\/)?(localhost|127\.0\.0\.1|0\.0\.0\.0)(:\d+)?$/i.test(window.location.origin) &&
+      /^(https?:\/\/)?(localhost|127\.0\.0\.1|0\.0\.0\.0)(:\d+)?$/i.test(normalized)
+    ) {
+      return normalizeUrl(window.location.origin);
+    }
+    return normalized;
+  }
+  // Fallback to current site origin when running in the browser
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return normalizeUrl(window.location.origin);
+  }
+  // Last resort: localhost for dev tools without a window
+  return 'http://127.0.0.1:8000';
+}
+
+export const API_HOST = resolveApiHost();
+export const API_BASE = `${API_HOST}/api`;
 
 // Función para registrar empresa
 // Función para registrar empresa con archivos

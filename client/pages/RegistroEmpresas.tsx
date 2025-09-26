@@ -22,6 +22,7 @@ import {
   Crown,
   Users
 } from "lucide-react";
+import { registrarEmpresa } from "@/lib/api";
 
 const companyRegistrationSchema = z.object({
   companyName: z.string().min(1, "El nombre de la empresa es requerido"),
@@ -93,7 +94,7 @@ const RegistroEmpresas: React.FC = () => {
       formData.append("logo", data.logo[0]);
     }
     try {
-      const response = await import("@/lib/api").then(api => api.registrarEmpresa(formData));
+      const response = await registrarEmpresa(formData);
       if (response.status === "success") {
         setShowModal(true);
         reset();

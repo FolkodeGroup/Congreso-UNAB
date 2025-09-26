@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useZxing } from "react-zxing";
 import { registrarAsistencia } from "../lib/api";
+import { API_HOST } from "@/lib/api";
 import { 
   FormInput, 
   FormButton, 
@@ -80,15 +81,13 @@ export default function EscaneoQR() {
         setError("Respuesta inesperada del servidor.");
       }
     } catch (err) {
-      console.error("Error:", err);
       setError("Error al conectar con el servidor.");
     }
   };
 
   const descargarCertificado = () => {
     if (certId) {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-      const url = `${apiUrl}/api/certificado/${certId}/`;
+      const url = `${API_HOST}/api/certificado/${certId}/`;
       window.open(url, "_blank");
     }
   };

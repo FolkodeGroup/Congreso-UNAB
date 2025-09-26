@@ -67,8 +67,8 @@ export default function RegistroRapido() {
     };
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-      const response = await fetch(`${apiUrl}/api/registro-rapido/`,
+      const { API_HOST } = await import("@/lib/api");
+      const response = await fetch(`${API_HOST}/api/registro-rapido/`,
         {
           method: "POST",
           headers: {

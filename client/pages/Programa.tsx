@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_HOST } from "@/lib/api";
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -152,7 +153,7 @@ function getDisertanteColor(disertante: string): string {
 function getDisertanteImageUrl(fotoUrl: string): string {
   if (!fotoUrl) return "";
   
-  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+  const apiUrl = API_HOST;
   
   // Si la URL ya incluye la ruta completa, normalizarla
   if (fotoUrl.includes("Congreso-UNAB/backend/media/")) {
@@ -192,7 +193,7 @@ export default function Programa() {
   useEffect(() => {
     const fetchPrograma = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+  const apiUrl = API_HOST;
         const response = await fetch(`${apiUrl}/api/programa/`);
         if (!response.ok)
           throw new Error("No se pudo cargar la agenda desde el backend.");

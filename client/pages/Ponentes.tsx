@@ -3,6 +3,7 @@ import { motion, useAnimation, useScroll, useTransform } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { API_HOST } from "@/lib/api";
 
 // Definimos el tipo de dato para un disertante, basado en el modelo de Django
 type Disertante = {
@@ -24,7 +25,7 @@ export default function Ponentes() {
   const backgroundY = useTransform(scrollY, [0, 1000], [0, -200]);
   const circleY1 = useTransform(scrollY, [0, 1000], [0, -150]);
   const circleY2 = useTransform(scrollY, [0, 1000], [0, -100]);
-  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+  const apiUrl = API_HOST;
 
   useEffect(() => {
     const fetchDisertantes = async () => {
