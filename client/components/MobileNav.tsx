@@ -39,7 +39,6 @@ export default function MobileNav() {
       ],
     },
     { name: "Registro", path: "/registro", isDropdown: false },
-    { name: "Generar QRs", path: "/generar-qrs", isDropdown: false },
     { name: "Contacto", path: "/contacto", isDropdown: false },
     {
       name: "Historia del Campus",

@@ -142,18 +142,6 @@ export default function Layout({ children }: LayoutProps) {
                   Registro
                 </Button>
               </Link>
-              <Link to="/generar-qrs">
-                <Button
-                  variant={isActive("/generar-qrs") ? "secondary" : "ghost"}
-                  className={
-                    isActive("/generar-qrs")
-                      ? "bg-white text-congress-blue"
-                      : "text-white hover:bg-congress-blue-dark"
-                  }
-                >
-                  Generar QRs
-                </Button>
-              </Link>
               <Link to="/contacto">
                 <Button
                   variant={isActive("/contacto") ? "secondary" : "ghost"}
