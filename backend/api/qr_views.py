@@ -15,8 +15,8 @@ class GenerateStaticQRView(View):
     """
     
     def get(self, request):
-        # URLs base del frontend
-        frontend_base = "http://localhost:8081"  # Puerto actualizado según Vite
+        # URLs base del frontend (producción)
+        frontend_base = "https://www.congresologistica.unab.edu.ar"
 
         # URLs para los QRs estáticos
         checkin_url = f"{frontend_base}/verificar-dni"
