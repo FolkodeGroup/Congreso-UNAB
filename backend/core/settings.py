@@ -227,9 +227,15 @@ if not DEBUG:
     CSRF_TRUSTED_ORIGINS = [
         'https://www.congresologistica.unab.edu.ar',
         'https://congresologistica.unab.edu.ar',
+        'http://www.congresologistica.unab.edu.ar',
+        'http://congresologistica.unab.edu.ar',
+        'http://170.210.44.238',
     ]
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_DOMAIN = '.congresologistica.unab.edu.ar'
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    # Asegurar que CSRF funcione con diferentes orígenes
+    CSRF_USE_SESSIONS = True
 
 
