@@ -308,6 +308,7 @@ const RegistroParticipantes: React.FC = () => {
                   { value: "student", label: "Estudiante" },
                   { value: "teacher", label: "Docente" },
                   { value: "professional", label: "Profesional" },
+                  { value: "press", label: "Prensa" },
                   { value: "groupRepresentative", label: "Representante de Grupo" }
                 ]}
                 {...register("profileType")}

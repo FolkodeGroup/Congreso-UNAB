@@ -96,6 +96,7 @@ class Asistente(models.Model):
         STUDENT = 'STUDENT', 'Estudiante'
         TEACHER = 'TEACHER', 'Docente'
         PROFESSIONAL = 'PROFESSIONAL', 'Profesional'
+        PRESS = 'PRESS', 'Prensa'
         GROUP_REPRESENTATIVE = 'GROUP_REPRESENTATIVE', 'Representante de Grupo'
         GRADUADO = 'GRADUADO', 'Graduado'
         OTRO = 'OTRO', 'Otro'
