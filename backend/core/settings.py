@@ -231,11 +231,21 @@ if not DEBUG:
         'http://congresologistica.unab.edu.ar',
         'http://170.210.44.238',
     ]
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_DOMAIN = '.congresologistica.unab.edu.ar'
+    # Comentamos estas configuraciones para resolver el problema de CSRF
+    # CSRF_COOKIE_SECURE = True
+    # SESSION_COOKIE_SECURE = True
+    # CSRF_COOKIE_DOMAIN = '.congresologistica.unab.edu.ar'
+    
+    # Estas configuraciones son críticas para que funcione correctamente
+    CSRF_COOKIE_HTTPONLY = False  # Permite que JavaScript acceda a la cookie CSRF
+    SESSION_COOKIE_HTTPONLY = True  # Protege la cookie de sesión
+    CSRF_USE_SESSIONS = False  # Guarda el token CSRF en cookies, no en sesión
+    
+    # Configuración para proxy inverso
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-    # Asegurar que CSRF funcione con diferentes orígenes
-    CSRF_USE_SESSIONS = True
+    
+    # Otras configuraciones útiles
+    CSRF_COOKIE_SAMESITE = 'Lax'  # 'Lax' es un buen compromiso entre seguridad y usabilidad
+    SESSION_COOKIE_SAMESITE = 'Lax'
 
 
