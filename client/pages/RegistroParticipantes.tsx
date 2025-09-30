@@ -152,12 +152,15 @@ const RegistroParticipantes: React.FC = () => {
 
   // Cargar instituciones desde JSON
   const [instituciones, setInstituciones] = useState<{ label: string; value: string }[]>([]);
-  
+  // Estado para input personalizado de institución
+  const [otraInstitucion, setOtraInstitucion] = useState("");
+  const selectedInstitution = watch("institution");
+
   useEffect(() => {
     import("../data/instituciones-argentina.json").then((data) => {
-      setInstituciones(
-        (data.default || data).map((nombre: string) => ({ label: nombre, value: nombre }))
-      );
+      const lista = (data.default || data).map((nombre: string) => ({ label: nombre, value: nombre }));
+      lista.push({ label: "Otra", value: "Otra" });
+      setInstituciones(lista);
     });
   }, []);
 
@@ -446,10 +449,20 @@ const RegistroParticipantes: React.FC = () => {
                     <Select
                       options={instituciones}
                       placeholder="Buscar institución..."
-                      onChange={(option) => setValue("institution", option?.value || "")}
+                      onChange={(option) => {
+                        setValue("institution", option?.value || "");
+                        if (option?.value !== "Otra") setOtraInstitucion("");
+                      }}
+                      value={instituciones.find(opt => opt.value === selectedInstitution) || null}
                       className="react-select-container"
                       classNamePrefix="react-select"
                       isClearable
+                      noOptionsMessage={() => "Si tu institución no aparece, elige 'Otra' y escribe el nombre"}
+                      filterOption={(option, inputValue) => {
+                        if (option.value === "Otra") return true;
+                        if (!inputValue) return true;
+                        return option.label.toLowerCase().includes(inputValue.toLowerCase());
+                      }}
                       styles={{
                         control: (base, state) => ({
                           ...base,
@@ -467,6 +480,16 @@ const RegistroParticipantes: React.FC = () => {
                         })
                       }}
                     />
+                    {selectedInstitution === "Otra" && (
+                      <input
+                        type="text"
+                        className="mt-2 w-full border rounded-lg px-3 py-2"
+                        placeholder="Escriba el nombre de la institución..."
+                        value={otraInstitucion}
+                        onChange={e => setOtraInstitucion(e.target.value)}
+                        onBlur={() => setValue("institution", otraInstitucion)}
+                      />
+                    )}
                     {getErrorMessage("institution") && (
                       <p className="text-xs text-red-600 font-medium mt-1">
                         {getErrorMessage("institution")}
@@ -506,10 +529,20 @@ const RegistroParticipantes: React.FC = () => {
                   <Select
                     options={instituciones}
                     placeholder="Buscar institución..."
-                    onChange={(option) => setValue("institution", option?.value || "")}
+                    onChange={(option) => {
+                      setValue("institution", option?.value || "");
+                      if (option?.value !== "Otra") setOtraInstitucion("");
+                    }}
+                    value={instituciones.find(opt => opt.value === selectedInstitution) || null}
                     className="react-select-container"
                     classNamePrefix="react-select"
                     isClearable
+                    noOptionsMessage={() => "Si tu institución no aparece, elige 'Otra' y escribe el nombre"}
+                    filterOption={(option, inputValue) => {
+                      if (option.value === "Otra") return true;
+                      if (!inputValue) return true;
+                      return option.label.toLowerCase().includes(inputValue.toLowerCase());
+                    }}
                     styles={{
                       control: (base, state) => ({
                         ...base,
@@ -527,6 +560,16 @@ const RegistroParticipantes: React.FC = () => {
                       })
                     }}
                   />
+                  {selectedInstitution === "Otra" && (
+                    <input
+                      type="text"
+                      className="mt-2 w-full border rounded-lg px-3 py-2"
+                      placeholder="Escriba el nombre de la institución..."
+                      value={otraInstitucion}
+                      onChange={e => setOtraInstitucion(e.target.value)}
+                      onBlur={() => setValue("institution", otraInstitucion)}
+                    />
+                  )}
                   {getErrorMessage("institution") && (
                     <p className="text-xs text-red-600 font-medium mt-1">
                       {getErrorMessage("institution")}
