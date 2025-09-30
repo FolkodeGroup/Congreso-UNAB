@@ -85,7 +85,7 @@ export default function SobreElCongreso() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="text-center">
                 <div className="bg-congress-blue text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold">30+</span>
+                  <span className="text-2xl font-bold">+50</span>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   Empresas
@@ -97,7 +97,7 @@ export default function SobreElCongreso() {
 
               <div className="text-center">
                 <div className="bg-congress-cyan text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold">25+</span>
+                  <span className="text-2xl font-bold">+25</span>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   Disertantes
