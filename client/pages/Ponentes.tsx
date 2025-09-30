@@ -77,7 +77,7 @@ export default function Ponentes() {
 
   return (
     <>
-  <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-white to-congress-blue/10 px-2 py-16 flex flex-col items-center relative z-10 max-w-7xl mx-auto">
+  <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-white to-congress-blue/10 px-2 py-16 flex flex-col items-center relative z-10 max-w-7xl mx-auto overflow-x-auto sm:overflow-x-visible">
         {/* Fondo decorativo elegante con efecto parallax */}
         <motion.div 
           className="absolute inset-0 pointer-events-none z-0"
@@ -221,7 +221,8 @@ export default function Ponentes() {
           </div>
         ) : (
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-12 gap-y-14 z-10 w-full max-w-7xl mx-auto"
+            className="flex flex-row gap-6 z-10 w-full overflow-x-auto pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:gap-x-12 sm:gap-y-14 sm:overflow-x-visible max-w-7xl mx-auto"
+            style={{ WebkitOverflowScrolling: 'touch' }}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.15 }}
@@ -274,7 +275,7 @@ export default function Ponentes() {
               return (
                 <motion.div
                   key={`${disertante.nombre}-${idx}`}
-                  className="flex-shrink-0 flex flex-col items-center group w-full"
+                  className="flex-shrink-0 flex flex-col items-center group w-72 sm:w-full"
                   variants={{
                     hidden: { opacity: 0, y: 80 },
                     visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } },
@@ -282,7 +283,7 @@ export default function Ponentes() {
                 >
                   {/* Modern Polaroid Card */}
                   <div
-                    className={`relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-full h-64 flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5 ${rotation}`}
+                    className={`relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-64 h-64 sm:w-full sm:h-64 flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5 ${rotation}`}
                   >
                     <div className="absolute inset-0 rounded-2xl pointer-events-none border border-congress-blue/20"></div>
                     <img
@@ -298,7 +299,7 @@ export default function Ponentes() {
                     <span className="absolute bottom-2 right-2 w-2 h-2 bg-congress-blue/30 rounded-full border border-congress-blue/40 shadow-sm"></span>
                   </div>
                   {/* Data Card */}
-                  <div className="bg-white/95 border border-congress-blue/20 rounded-xl shadow-lg px-3 py-3 w-full text-center flex flex-col items-center backdrop-blur-sm group-hover:border-congress-blue/40 group-hover:shadow-xl">
+                  <div className="bg-white/95 border border-congress-blue/20 rounded-xl shadow-lg px-3 py-3 w-64 sm:w-full text-center flex flex-col items-center backdrop-blur-sm group-hover:border-congress-blue/40 group-hover:shadow-xl">
                     <h2 className="text-lg font-extrabold text-congress-blue tracking-wide mb-1 uppercase drop-shadow-sm group-hover:text-congress-blue/80">
                       {disertante.nombre}
                     </h2>
