@@ -19,7 +19,7 @@ export default function SobreElCongreso() {
             <p className="text-lg text-white leading-relaxed">
               El Congreso de Logística y Transporte 2025 de la Universidad
               Nacional Guillermo Brown es un evento académico de alcance
-              nacional e internacional que reúne a más de 30 empresas del sector
+              nacional e internacional que reúne a más de 50 empresas del sector
               y más de 25 disertantes de primer nivel. Nuestro objetivo es crear
               un espacio de reflexión y debate sobre los principales desafíos y
               oportunidades en la logística y el transporte, promoviendo el

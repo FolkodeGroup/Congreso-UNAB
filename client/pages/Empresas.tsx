@@ -166,7 +166,7 @@ export default function Empresas() {
               Participa como <span className="text-congress-cyan">Empresa</span>
             </h1>
             <p className="text-xl mb-8 opacity-90">
-              Sumate a las más de 30 empresas líderes del sector que ya
+              Sumate a las más de 50 empresas líderes del sector que ya
               confirmaron su participación en el congreso más importante de
               logística y transporte del país.
             </p>

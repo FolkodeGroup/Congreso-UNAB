@@ -219,7 +219,7 @@ export default function Index() {
                     ¿Interesado en Participar como Empresa?
                   </h3>
                   <p className="text-congress-cyan-light mb-6 text-lg leading-relaxed max-w-2xl mx-auto">
-                    Sumate a las más de 30 empresas que ya confirmaron su
+                    Sumate a las más de 50 empresas que ya confirmaron su
                     participación. Es una excelente oportunidad para networking,
                     visibilidad y desarrollo de negocio.
                   </p>
