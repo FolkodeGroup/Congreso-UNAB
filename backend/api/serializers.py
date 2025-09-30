@@ -184,6 +184,9 @@ class AsistenteSerializer(serializers.ModelSerializer):
             if not data.get('occupation'):
                 raise serializers.ValidationError({"occupation": "El cargo es requerido para profesionales."})
 
+        elif profile_type == Asistente.ProfileType.PRESS:
+            # No hay campos obligatorios extra para prensa
+            pass
         elif profile_type == Asistente.ProfileType.GROUP_REPRESENTATIVE:
             if not data.get('group_name'):
                 raise serializers.ValidationError({"group_name": "El nombre del grupo o institución es requerido."})
