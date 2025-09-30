@@ -78,12 +78,17 @@ const visitorSchema = participantSchema.extend({
   profileType: z.literal("visitor"),
 });
 
+const pressSchema = participantSchema.extend({
+  profileType: z.literal("PRESS"),
+});
+
 const formSchema = z
   .discriminatedUnion("profileType", [
     visitorSchema,
     studentSchema,
     teacherSchema,
     professionalSchema,
+    pressSchema,
     groupRepresentativeSchema,
   ])
   .superRefine((data, ctx) => {
@@ -251,6 +256,7 @@ const RegistroParticipantes: React.FC = () => {
           student: "STUDENT",
           teacher: "TEACHER",
           professional: "PROFESSIONAL",
+          press: "PRESS",
           groupRepresentative: "GROUP_REPRESENTATIVE",
         };
         
@@ -260,7 +266,7 @@ const RegistroParticipantes: React.FC = () => {
           dni: data.dni,
           email: data.email,
           phone: data.phone,
-          profile_type: profileTypeMap[data.profileType as string] || data.profileType,
+          profile_type: profileTypeMap[data.profileType?.toLowerCase()] || data.profileType,
         };
 
         // Agregar campos específicos según el tipo de participante
