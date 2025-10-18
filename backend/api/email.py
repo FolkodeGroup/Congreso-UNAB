@@ -422,3 +422,65 @@ def send_certificate_email(certificado_instance):
         print(f"Error enviando certificado a {asistente.email}: {e}")
         # Re-raise para que el error se propague
         raise Exception(f"Error enviando certificado: {e}")
+
+def send_new_company_notification(empresa_instance):
+    """
+    Envía un email de notificación interna cuando se registra una nueva empresa.
+    El email se envía a una casilla fija con los datos y el logo adjunto.
+    """
+    try:
+        context = {
+            'empresa': empresa_instance,
+            'evento_nombre': 'Congreso de Logística UNAB',
+        }
+        html_content = render_to_string('api/email/notificacion_empresa.html', context)
+        text_content = strip_tags(html_content)
+
+        notification_email = 'congresologisticaytransporte@unab.edu.ar'
+
+        email = EmailMultiAlternatives(
+            subject=f'Nueva Empresa Registrada: {empresa_instance.nombre_empresa}',
+            body=text_content,
+            from_email=f"Sistema Congreso UNAB <{settings.EMAIL_HOST_USER}>",
+            to=[notification_email],
+        )
+        email.attach_alternative(html_content, "text/html")
+
+        if empresa_instance.logo and hasattr(empresa_instance.logo, 'read'):
+            empresa_instance.logo.seek(0)
+            email.attach(
+                empresa_instance.logo.name,
+                empresa_instance.logo.read(),
+                empresa_instance.logo.file.content_type
+            )
+
+        email.send(fail_silently=False)
+        print(f"[INFO] Notificación de nueva empresa enviada a: {notification_email}")
+    except Exception as e:
+        print(f"[ERROR] Error enviando notificación de nueva empresa: {e}")
+        # No relanzamos el error para no interrumpir el flujo principal
+
+def send_new_attendee_notification(asistente_instance):
+    """
+    Envía un email de notificación interna cuando se registra un nuevo asistente.
+    """
+    try:
+        context = {
+            'asistente': asistente_instance,
+            'evento_nombre': 'Congreso de Logística UNAB',
+        }
+        html_content = render_to_string('api/email/notificacion_asistente.html', context)
+        text_content = strip_tags(html_content)
+        notification_email = 'congresologisticaytransporte@unab.edu.ar'
+
+        email = EmailMultiAlternatives(
+            subject=f'Nuevo Asistente Registrado: {asistente_instance.nombre_completo}',
+            body=text_content,
+            from_email=f"Sistema Congreso UNAB <{settings.EMAIL_HOST_USER}>",
+            to=[notification_email],
+        )
+        email.attach_alternative(html_content, "text/html")
+        email.send(fail_silently=False)
+        print(f"[INFO] Notificación de nuevo asistente enviada a: {notification_email}")
+    except Exception as e:
+        print(f"[ERROR] Error enviando notificación de nuevo asistente: {e}")
