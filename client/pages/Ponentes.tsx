@@ -17,6 +17,23 @@ type Disertante = {
 };
 
 export default function Ponentes() {
+  // Devuelve la URL de la imagen del disertante, forzando https si es necesario
+  function getFotoUrl(disertante: Disertante): string {
+    let url = "";
+    if (disertante.foto && typeof disertante.foto === "string" && disertante.foto.length > 5) {
+      url = disertante.foto;
+    } else if (disertante.foto_url && typeof disertante.foto_url === "string" && disertante.foto_url.length > 5) {
+      if (disertante.foto_url.startsWith("http")) {
+        url = disertante.foto_url;
+      } else {
+        url = `${apiUrl}/media/${disertante.foto_url.replace(/^.*ponencias\//, "ponencias/")}`;
+      }
+    }
+    if (url.startsWith("http://")) {
+      url = url.replace("http://", "https://");
+    }
+    return url;
+  }
   const [disertantes, setDisertantes] = useState<Disertante[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -244,18 +261,8 @@ export default function Ponentes() {
                 "rotate-0",
               ];
               const rotation = rotations[idx % rotations.length];
-              // Prioridad: foto (URL absoluta) > foto_url (relativa o absoluta)
-              let fotoUrl = "";
-              if (disertante.foto && typeof disertante.foto === "string" && disertante.foto.length > 5) {
-                fotoUrl = disertante.foto;
-              } else if (disertante.foto_url && typeof disertante.foto_url === "string" && disertante.foto_url.length > 5) {
-                if (disertante.foto_url.startsWith("http")) {
-                  fotoUrl = disertante.foto_url;
-                } else {
-                  // Si es una ruta relativa, construir la URL completa
-                  fotoUrl = `${apiUrl}/media/${disertante.foto_url.replace(/^.*ponencias\//, "ponencias/")}`;
-                }
-              }
+              // Usar función unificada para obtener la URL de la foto y forzar https
+              const fotoUrl = getFotoUrl(disertante);
               return (
                 <motion.div
                   key={`${disertante.nombre}-${idx}`}
