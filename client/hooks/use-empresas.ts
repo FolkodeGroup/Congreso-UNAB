@@ -43,10 +43,17 @@ export const useEmpresas = () => {
   }, []);
 
   // Convertir empresas de la API al formato LogoItem esperado por los componentes
+  const DOMAIN_PROD = "https://www.congresologistica.unab.edu.ar";
   const logosForCarousel: LogoItem[] = empresas.map(empresa => {
     let src = empresa.logo;
-    if (typeof src === 'string' && src.startsWith('http://')) {
-      src = src.replace('http://', 'https://');
+    if (typeof src === 'string') {
+      if (src.startsWith('http://')) {
+        src = src.replace('http://', 'https://');
+      }
+      // Si es ruta relativa, anteponer dominio de producción
+      if (src.startsWith('/media/')) {
+        src = `${DOMAIN_PROD}${src}`;
+      }
     }
     return {
       src,
