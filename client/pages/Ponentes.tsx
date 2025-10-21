@@ -247,8 +247,8 @@ export default function Ponentes() {
           </div>
         ) : (
           <motion.div
-            className="flex flex-row gap-6 z-10 w-full overflow-x-auto pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:gap-x-12 sm:gap-y-14 sm:overflow-x-visible max-w-7xl mx-auto"
-            style={{ WebkitOverflowScrolling: 'touch', willChange: 'transform' }}
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 z-10 w-full max-w-7xl mx-auto"
+            style={{ willChange: 'transform' }}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.15 }}
@@ -256,7 +256,7 @@ export default function Ponentes() {
               hidden: {},
               visible: {
                 transition: {
-                  staggerChildren: 0.25,
+                  staggerChildren: 0.15,
                 },
               },
             }}
@@ -276,7 +276,7 @@ export default function Ponentes() {
               return (
                 <motion.div
                   key={`${disertante.nombre}-${idx}`}
-                  className="flex-shrink-0 flex flex-col items-center group w-72 sm:w-full"
+                  className="flex flex-col items-center group"
                   variants={{
                     hidden: { opacity: 0, y: 80 },
                     visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } },
@@ -284,8 +284,8 @@ export default function Ponentes() {
                 >
                   {/* Modern Polaroid Card */}
                   <div
-                    className={`relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-64 h-64 sm:w-full sm:h-64 flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5 ${rotation}`}
-                    style={{ minHeight: '256px', minWidth: '256px' }}
+                    className={`relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-full flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5 ${rotation}`}
+                    style={{ aspectRatio: '1/1', minHeight: '200px' }}
                   >
                     <div className="absolute inset-0 rounded-2xl pointer-events-none border border-congress-blue/20"></div>
                     {fotoUrl ? (
@@ -293,7 +293,7 @@ export default function Ponentes() {
                         src={fotoUrl}
                         alt={disertante.nombre}
                         className="w-full h-full object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl"
-                        style={{ willChange: 'transform', minHeight: '230px', minWidth: '230px' }}
+                        style={{ objectFit: 'cover', objectPosition: 'center' }}
                         loading="eager"
                         onError={e => { e.currentTarget.style.display = 'none'; }}
                         onLoad={e => { e.currentTarget.style.opacity = '1'; }}
@@ -312,7 +312,7 @@ export default function Ponentes() {
                     <span className="absolute bottom-2 right-2 w-2 h-2 bg-congress-blue/30 rounded-full border border-congress-blue/40 shadow-sm"></span>
                   </div>
                   {/* Data Card */}
-                  <div className="bg-white/95 border border-congress-blue/20 rounded-xl shadow-lg px-3 py-3 w-64 sm:w-full text-center flex flex-col items-center backdrop-blur-sm group-hover:border-congress-blue/40 group-hover:shadow-xl">
+                  <div className="bg-white/95 border border-congress-blue/20 rounded-xl shadow-lg px-3 py-3 w-full text-center flex flex-col items-center backdrop-blur-sm group-hover:border-congress-blue/40 group-hover:shadow-xl">
                     <h2 className="text-lg font-extrabold text-congress-blue tracking-wide mb-1 uppercase drop-shadow-sm group-hover:text-congress-blue/80">
                       {disertante.nombre}
                     </h2>
