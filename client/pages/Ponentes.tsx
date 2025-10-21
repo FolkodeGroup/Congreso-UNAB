@@ -17,6 +17,7 @@ type Disertante = {
 };
 
 export default function Ponentes() {
+  const [forceUpdate, setForceUpdate] = useState(0);
   // Devuelve la URL de la imagen del disertante, forzando https si es necesario
   function getFotoUrl(disertante: Disertante): string {
     let url = "";
@@ -58,6 +59,8 @@ export default function Ponentes() {
           // Ordenar alfabéticamente por nombre
           const dataOrdenada = [...data].sort((a, b) => a.nombre.localeCompare(b.nombre));
           setDisertantes(dataOrdenada);
+          // Forzar re-render tras cargar disertantes
+          setTimeout(() => setForceUpdate(f => f + 1), 100);
         } else {
           // No hay disertantes en la base de datos
           setError("No hay disertantes disponibles en la base de datos.");
@@ -281,8 +284,7 @@ export default function Ponentes() {
                       <img
                         src={fotoUrl}
                         alt={disertante.nombre}
-                        className="w-full max-w-[90%] h-auto aspect-square object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl"
-                        style={{ aspectRatio: "1/1" }}
+                        className="w-full h-full object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl"
                         onError={e => { e.currentTarget.style.display = 'none'; }}
                       />
                     ) : (
@@ -326,7 +328,9 @@ export default function Ponentes() {
               );
             })}
           </motion.div>
-        )}
+  )}
+  {/* Forzar re-render visual */}
+  <span style={{ display: 'none' }}>{forceUpdate}</span>
       </div>
     </>
   );
