@@ -249,6 +249,7 @@ export default function Ponentes() {
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 z-10 w-full max-w-7xl mx-auto"
             style={{ willChange: 'transform' }}
+            initial="hidden"
             animate="visible"
             variants={{
               hidden: {},
@@ -275,10 +276,10 @@ export default function Ponentes() {
                 <motion.div
                   key={`${disertante.nombre}-${idx}`}
                   className="flex flex-col items-center group"
-                  variants={{
-                    hidden: { opacity: 0, y: 80 },
-                    visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } },
-                  }}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                  variants={{}}
                 >
                   {/* Modern Polaroid Card */}
                   <div
