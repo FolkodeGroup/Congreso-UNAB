@@ -151,30 +151,24 @@ function getDisertanteColor(disertante: string): string {
 // Función para construir la URL completa de la imagen del disertante
 function getDisertanteImageUrl(fotoUrl: string): string {
   if (!fotoUrl) return "";
-  
-  const apiUrl = API_HOST;
-  
-  // Si la URL ya incluye la ruta completa, normalizarla
-  if (fotoUrl.includes("Congreso-UNAB/backend/media/")) {
-    // Extraer solo la parte de ponencias/imagen.png
-    const pathParts = fotoUrl.split("media/");
-    if (pathParts.length > 1) {
-      return `${apiUrl}/media/${pathParts[1]}`;
-    }
+  const DOMAIN_PROD = "https://www.congresologistica.unab.edu.ar";
+  let url = fotoUrl;
+  if (url.startsWith("http://")) {
+    url = url.replace("http://", "https://");
   }
-  
-  // Si es solo ponencias/imagen.png
-  if (fotoUrl.startsWith("ponencias/")) {
-    return `${apiUrl}/media/${fotoUrl}`;
+  if (url.startsWith("/media/")) {
+    url = `${DOMAIN_PROD}${url}`;
   }
-  
-  // Si es una URL completa ya
-  if (fotoUrl.startsWith("http")) {
-    return fotoUrl;
+  if (url.startsWith("ponencias/")) {
+    url = `${DOMAIN_PROD}/media/${url}`;
   }
-  
-  // Default: asumir que es una ruta relativa en media
-  return `${apiUrl}/media/${fotoUrl}`;
+  if (url.startsWith("https://")) {
+    return url;
+  }
+  if (url.startsWith("http://")) {
+    return url.replace("http://", "https://");
+  }
+  return `${DOMAIN_PROD}/media/${url}`;
 }
 
 // Estado para actividades y carga
