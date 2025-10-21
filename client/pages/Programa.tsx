@@ -50,7 +50,7 @@ type ActividadCalendar = {
   categoria: string; // Categoría del track
 };
 
-// Aulas de ejemplo (incluyendo Aula Magna y 4 aulas)
+// Aulas de ejemplo (sin Aula 8)
 const AULAS = [
   "Aula Magna",
   "Aula 1",
@@ -60,7 +60,7 @@ const AULAS = [
   "Aula 5",
   "Aula 6",
   "Aula 7",
-  "Aula 8",
+  // "Aula 8", // Eliminada
   "Aula 9",
   "Aula 10",
   "Aula 11",
@@ -69,15 +69,14 @@ const AULAS = [
   "Aula 14",
 ];
 
-// Generar horarios fijos cada 30 minutos de 10:00 a 19:00
+// Generar horarios fijos cada 15 minutos de 10:00 a 19:00
 function getHorariosFijos() {
   const horarios: string[] = [];
-  let h = 10,
-    m = 0;
+  let h = 10, m = 0;
   while (h < 19 || (h === 19 && m === 0)) {
     const hora = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
     horarios.push(hora);
-    m += 30;
+    m += 15;
     if (m === 60) {
       m = 0;
       h++;
@@ -245,18 +244,14 @@ export default function Programa() {
   }, []);
 
   // Para calcular el número de filas que ocupa una actividad
-  // Cada fila representa 30 minutos, así que necesitamos calcular cuántos intervalos de 30 min hay
+  // Cada fila representa 15 minutos
   function getRowSpan(inicio: string, fin: string) {
     const [h1, m1] = inicio.split(":").map(Number);
     const [h2, m2] = fin.split(":").map(Number);
-    
-    // Convertir a minutos totales desde medianoche
     const inicioMinutos = h1 * 60 + m1;
     const finMinutos = h2 * 60 + m2;
-    
-    // Calcular la diferencia en minutos y dividir por 30 (cada fila = 30 min)
     const duracionMinutos = finMinutos - inicioMinutos;
-    return Math.ceil(duracionMinutos / 30); // Usar ceil para asegurar que cubra todo el tiempo
+    return Math.ceil(duracionMinutos / 15); // 15 minutos por fila
   }
 
   // Usar solo los datos reales de la base de datos
@@ -715,7 +710,7 @@ export default function Programa() {
                       <th className="w-32 p-4 font-bold text-center border-r border-white/20">
                         Horario
                       </th>
-                      {AULAS.slice(0, 9).map((aula) => (
+                      {AULAS.filter(aula => aula !== "Aula 8").slice(0, 8).map((aula) => (
                         <th key={aula} className="p-4 font-bold text-center border-r border-white/20 last:border-r-0 text-sm">
                           {aula}
                         </th>
@@ -740,7 +735,7 @@ export default function Programa() {
                         </td>
 
                         {/* Columnas de aulas */}
-                        {AULAS.slice(0, 9).map((aula) => {
+                        {AULAS.filter(aula => aula !== "Aula 8").slice(0, 8).map((aula) => {
                           if (isCellCoveredFiltrado(aula, hora)) return null;
                           
                           const actividad = gridFiltrada[aula] && gridFiltrada[aula][hora];

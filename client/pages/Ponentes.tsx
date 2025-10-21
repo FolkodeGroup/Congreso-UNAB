@@ -244,32 +244,16 @@ export default function Ponentes() {
                 "rotate-0",
               ];
               const rotation = rotations[idx % rotations.length];
-              // Prioridad: foto (subida) > foto_url
+              // Prioridad: foto (URL absoluta) > foto_url (relativa o absoluta)
               let fotoUrl = "";
-              if (disertante.foto) {
-                // Si la imagen subida existe, usarla
-                if (disertante.foto.startsWith("http")) {
-                  fotoUrl = disertante.foto;
-                } else {
-                  // Si es un path relativo, construir la URL completa
-                  const cleanPath = disertante.foto.replace(/^.*media\//, "");
-                  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-                    fotoUrl = `/media/${cleanPath}`;
-                  } else {
-                    fotoUrl = `${apiUrl}/media/${cleanPath}`;
-                  }
-                }
-              } else if (disertante.foto_url) {
-                // Si no hay imagen subida, usar la URL existente
+              if (disertante.foto && typeof disertante.foto === "string" && disertante.foto.length > 5) {
+                fotoUrl = disertante.foto;
+              } else if (disertante.foto_url && typeof disertante.foto_url === "string" && disertante.foto_url.length > 5) {
                 if (disertante.foto_url.startsWith("http")) {
                   fotoUrl = disertante.foto_url;
                 } else {
-                  const cleanPath = disertante.foto_url.replace(/^.*media\//, "");
-                  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-                    fotoUrl = `/media/${cleanPath}`;
-                  } else {
-                    fotoUrl = `${apiUrl}/media/${cleanPath}`;
-                  }
+                  // Si es una ruta relativa, construir la URL completa
+                  fotoUrl = `${apiUrl}/media/${disertante.foto_url.replace(/^.*ponencias\//, "ponencias/")}`;
                 }
               }
               return (
@@ -286,12 +270,21 @@ export default function Ponentes() {
                     className={`relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-64 h-64 sm:w-full sm:h-64 flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5 ${rotation}`}
                   >
                     <div className="absolute inset-0 rounded-2xl pointer-events-none border border-congress-blue/20"></div>
-                    <img
-                      src={fotoUrl}
-                      alt={disertante.nombre}
-                      className="w-full max-w-[90%] h-auto aspect-square object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl"
-                      style={{ aspectRatio: "1/1" }}
-                    />
+                    {fotoUrl ? (
+                      <img
+                        src={fotoUrl}
+                        alt={disertante.nombre}
+                        className="w-full max-w-[90%] h-auto aspect-square object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl"
+                        style={{ aspectRatio: "1/1" }}
+                        onError={e => { e.currentTarget.style.display = 'none'; }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <svg className="text-congress-blue/40 w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                      </div>
+                    )}
                     {/* Minimalist screws */}
                     <span className="absolute top-2 left-2 w-2 h-2 bg-congress-blue/30 rounded-full border border-congress-blue/40 shadow-sm"></span>
                     <span className="absolute top-2 right-2 w-2 h-2 bg-congress-blue/30 rounded-full border border-congress-blue/40 shadow-sm"></span>
