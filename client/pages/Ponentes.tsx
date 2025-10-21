@@ -249,9 +249,7 @@ export default function Ponentes() {
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 z-10 w-full max-w-7xl mx-auto"
             style={{ willChange: 'transform' }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
+            animate="visible"
             variants={{
               hidden: {},
               visible: {
