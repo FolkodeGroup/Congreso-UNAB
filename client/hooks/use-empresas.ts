@@ -43,11 +43,17 @@ export const useEmpresas = () => {
   }, []);
 
   // Convertir empresas de la API al formato LogoItem esperado por los componentes
-  const logosForCarousel: LogoItem[] = empresas.map(empresa => ({
-    src: empresa.logo,
-    alt: empresa.nombre_empresa,
-    heightClass: "h-12" // Clase por defecto, se puede personalizar según la empresa
-  }));
+  const logosForCarousel: LogoItem[] = empresas.map(empresa => {
+    let src = empresa.logo;
+    if (typeof src === 'string' && src.startsWith('http://')) {
+      src = src.replace('http://', 'https://');
+    }
+    return {
+      src,
+      alt: empresa.nombre_empresa,
+      heightClass: "h-12"
+    };
+  });
 
   return {
     empresas,
