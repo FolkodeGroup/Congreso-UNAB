@@ -152,22 +152,33 @@ function getDisertanteColor(disertante: string): string {
 function getDisertanteImageUrl(fotoUrl: string): string {
   if (!fotoUrl) return "";
   const DOMAIN_PROD = "https://www.congresologistica.unab.edu.ar";
-  let url = fotoUrl;
+  let url = fotoUrl.trim();
+  // Forzar HTTPS si viene con http://
   if (url.startsWith("http://")) {
     url = url.replace("http://", "https://");
   }
+  // Si es ruta absoluta /media/...
   if (url.startsWith("/media/")) {
     url = `${DOMAIN_PROD}${url}`;
   }
+  // Si es solo ponencias/imagen.png
   if (url.startsWith("ponencias/")) {
     url = `${DOMAIN_PROD}/media/${url}`;
   }
+  // Si es una URL absoluta https://
   if (url.startsWith("https://")) {
     return url;
   }
+  // Si es una URL http (ya forzada arriba)
   if (url.startsWith("http://")) {
     return url.replace("http://", "https://");
   }
+  // Si es una ruta relativa tipo media/...
+  if (url.startsWith("media/")) {
+    url = `${DOMAIN_PROD}/${url}`;
+    return url;
+  }
+  // Default: asumir que es una ruta relativa en media
   return `${DOMAIN_PROD}/media/${url}`;
 }
 
