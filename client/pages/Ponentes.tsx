@@ -59,8 +59,14 @@ export default function Ponentes() {
           // Ordenar alfabéticamente por nombre
           const dataOrdenada = [...data].sort((a, b) => a.nombre.localeCompare(b.nombre));
           setDisertantes(dataOrdenada);
-          // Forzar re-render tras cargar disertantes
-          setTimeout(() => setForceUpdate(f => f + 1), 100);
+          // Forzar re-render y reflow tras cargar disertantes
+          setTimeout(() => {
+            setForceUpdate(f => f + 1);
+            // Forzar reflow del DOM
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('resize'));
+            }
+          }, 150);
         } else {
           // No hay disertantes en la base de datos
           setError("No hay disertantes disponibles en la base de datos.");
@@ -242,7 +248,7 @@ export default function Ponentes() {
         ) : (
           <motion.div
             className="flex flex-row gap-6 z-10 w-full overflow-x-auto pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:gap-x-12 sm:gap-y-14 sm:overflow-x-visible max-w-7xl mx-auto"
-            style={{ WebkitOverflowScrolling: 'touch' }}
+            style={{ WebkitOverflowScrolling: 'touch', willChange: 'transform' }}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.15 }}
@@ -254,6 +260,7 @@ export default function Ponentes() {
                 },
               },
             }}
+            key={forceUpdate}
           >
             {disertantes.map((disertante, idx) => {
               const rotations = [
@@ -278,6 +285,7 @@ export default function Ponentes() {
                   {/* Modern Polaroid Card */}
                   <div
                     className={`relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-64 h-64 sm:w-full sm:h-64 flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5 ${rotation}`}
+                    style={{ minHeight: '256px', minWidth: '256px' }}
                   >
                     <div className="absolute inset-0 rounded-2xl pointer-events-none border border-congress-blue/20"></div>
                     {fotoUrl ? (
@@ -285,7 +293,10 @@ export default function Ponentes() {
                         src={fotoUrl}
                         alt={disertante.nombre}
                         className="w-full h-full object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl"
+                        style={{ willChange: 'transform', minHeight: '230px', minWidth: '230px' }}
+                        loading="eager"
                         onError={e => { e.currentTarget.style.display = 'none'; }}
+                        onLoad={e => { e.currentTarget.style.opacity = '1'; }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
