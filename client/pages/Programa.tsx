@@ -206,11 +206,8 @@ export default function Programa() {
         const mapped: ActividadCalendar[] = data.map((item: any) => {
           // Extraer información completa del disertante
           let disertante = "";
-          let disertanteInfo = null;
-          
-          if (typeof item.disertante === "string") {
-            disertante = item.disertante;
-          } else if (item.disertante && typeof item.disertante === "object") {
+          let disertanteInfo: DisertanteInfo | null = null;
+          if (item.disertante && typeof item.disertante === "object") {
             disertante = item.disertante.nombre || "";
             disertanteInfo = {
               nombre: item.disertante.nombre || "",
@@ -219,15 +216,26 @@ export default function Programa() {
               tema_presentacion: item.disertante.tema_presentacion || "",
               linkedin: item.disertante.linkedin || ""
             };
+          } else if (typeof item.disertante === "string" && item.disertante.length > 0) {
+            disertante = item.disertante;
+            disertanteInfo = {
+              nombre: item.disertante,
+              bio: "",
+              foto_url: "",
+              tema_presentacion: "",
+              linkedin: ""
+            };
+          } else {
+            disertante = "";
+            disertanteInfo = null;
           }
-          
           // Usar el campo correcto para aula
           const aula = item.aula || item.sala || "Aula Magna";
           return {
             aula,
             titulo: item.titulo,
             disertante,
-            disertanteInfo, // Agregar información completa del disertante
+            disertanteInfo, // Siempre hay objeto aunque sea vacío
             descripcion: item.descripcion || "",
             inicio: item.hora_inicio.substring(0, 5),
             fin: item.hora_fin.substring(0, 5),
