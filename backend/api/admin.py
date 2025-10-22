@@ -21,19 +21,10 @@ class AsistenteAdmin(admin.ModelAdmin):
                 asistente.asistencia_confirmada = True
                 asistente.fecha_confirmacion = timezone.now()
                 asistente.save()
-                
-                # Crear certificado de asistencia
-                certificado, created = Certificado.objects.get_or_create(
-                    asistente=asistente,
-                    tipo_certificado=Certificado.TipoCertificado.ASISTENCIA
-                )
-                
-                # Enviar certificado por email
-                send_certificate_email(certificado)
                 updated_count += 1
         
-        self.message_user(request, f"{updated_count} asistencias confirmadas y certificados enviados.")
-    confirmar_asistencia.short_description = "Confirmar asistencia y enviar certificado"
+        self.message_user(request, f"{updated_count} asistencias confirmadas.")
+    confirmar_asistencia.short_description = "Confirmar asistencia (sin enviar certificado)"
 
     def enviar_certificados(self, request, queryset):
         sent_count = 0
@@ -47,6 +38,14 @@ class AsistenteAdmin(admin.ModelAdmin):
         
         self.message_user(request, f"{sent_count} certificados enviados.")
     enviar_certificados.short_description = "Enviar certificados a asistentes confirmados"
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        # Solo mostrar la acción de enviar certificados si se está filtrando por asistencia_confirmada=True
+        if 'asistencia_confirmada__exact' not in request.GET or request.GET['asistencia_confirmada__exact'] != '1':
+            if 'enviar_certificados' in actions:
+                del actions['enviar_certificados']
+        return actions
 
 class CertificadoAdmin(admin.ModelAdmin):
     list_display = ('asistente', 'tipo_certificado', 'fecha_generacion')

@@ -5,7 +5,7 @@ from django.db import transaction
 from .models import Disertante, Inscripcion, Programa, Certificado, Asistente, Empresa, MiembroGrupo
 from .serializers import DisertanteSerializer, InscripcionSerializer, AsistenteSerializer, ProgramaSerializer, EmpresaSerializer, MiembroGrupoSerializer, EmpresaLogoSerializer
 from django.utils import timezone
-from .email import send_certificate_email, send_confirmation_email, send_bulk_confirmation_email
+from .email import send_certificate_email, send_confirmation_email, send_bulk_confirmation_email, send_empresa_confirmation_email, send_new_company_notification, send_new_attendee_notification
 import pandas as pd
 import re
 
@@ -38,12 +38,19 @@ class RegistroEmpresasView(mixins.CreateModelMixin, viewsets.GenericViewSet):
         try:
             serializer.is_valid(raise_exception=True)
             empresa = serializer.save()
-            # Enviar email de confirmación al contacto de la empresa
-            from .email import send_empresa_confirmation_email
+
+            # 1. Enviar email de confirmación al contacto de la empresa
             try:
                 send_empresa_confirmation_email(empresa)
             except Exception as e:
                 print(f"[ERROR] No se pudo enviar el email de confirmación a la empresa: {e}")
+
+            # 2. Enviar notificación interna con los datos y el logo
+            try:
+                send_new_company_notification(empresa)
+            except Exception as e:
+                print(f"[ERROR] No se pudo enviar el email de notificación de nueva empresa: {e}")
+
             return Response({'status': 'success', 'message': 'Registro de empresa realizado correctamente.', 'id': empresa.id}, status=status.HTTP_201_CREATED)
         except serializers.ValidationError as e:
             return Response({'status': 'error', 'message': e.detail}, status=status.HTTP_400_BAD_REQUEST)
@@ -60,6 +67,9 @@ class RegistroParticipantesView(mixins.CreateModelMixin, mixins.ListModelMixin, 
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
+        # La lógica de transacción atómica ya está dentro del serializer,
+        # por lo que simplificamos la vista y delegamos la lógica.
+        serializer = self.get_serializer(data=request.data)
         try:
             with transaction.atomic():
                 profile_type = request.data.get('profile_type')
@@ -69,8 +79,18 @@ class RegistroParticipantesView(mixins.CreateModelMixin, mixins.ListModelMixin, 
                 asistente_serializer.is_valid(raise_exception=True)
                 asistente = asistente_serializer.save() # This will handle MiembroGrupo creation
 
+                # Enviar notificación de nuevo asistente
+                try:
+                    send_new_attendee_notification(asistente)
+                except Exception as e:
+                    print(f"[ERROR] No se pudo enviar el email de notificación de nuevo asistente: {e}")
+
                 return Response({'status': 'success', 'message': 'Registro de participante realizado correctamente.', 'id': asistente.id}, status=status.HTTP_201_CREATED)
         except serializers.ValidationError as e: # Added this block for RegistroParticipantesView
+            serializer.is_valid(raise_exception=True)
+            asistente = serializer.save()
+            return Response({'status': 'success', 'message': 'Registro de participante realizado correctamente.', 'id': asistente.id}, status=status.HTTP_201_CREATED)
+        except serializers.ValidationError as e:
             return Response({'status': 'error', 'message': e.detail}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'status': 'error', 'message': f'Ha ocurrido un error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -90,7 +110,13 @@ class InscripcionViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         try:
             serializer.is_valid(raise_exception=True)
             inscripcion = serializer.save()
-            send_confirmation_email(inscripcion) # Commented out for testing
+            
+            # Enviar email de confirmación al asistente
+            send_confirmation_email(inscripcion)
+            
+            # Enviar notificación de nuevo asistente
+            send_new_attendee_notification(inscripcion.asistente)
+
             headers = self.get_success_headers(serializer.data)
             return Response({'status': 'success', 'message': 'Inscripción realizada correctamente. Se ha enviado un email de confirmación.'}, status=status.HTTP_201_CREATED, headers=headers)
         except serializers.ValidationError as e:
@@ -318,15 +344,19 @@ class EnvioMasivoEmailsView(views.APIView):
         }, status=status_code)
 
 
-class CargaMasivaAsistentesCompletaView(views.APIView):
+class CargaMasivaAsistentesView(views.APIView):
     """
     Vista para carga masiva de asistentes desde archivo Excel/CSV.
     Maneja DNIs nulos y asigna perfil 'OTRO' por defecto cuando el tipo de perfil está vacío.
+    Vista para carga masiva de asistentes desde archivo Excel.
+    Permite subir un archivo Excel con datos de asistentes y procesarlos en lote.
     """
     permission_classes = [AllowAny]  # En producción, cambiar por permisos de administrador
+    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         """Método GET para mostrar información sobre el endpoint"""
+        """Método GET para mostrar información sobre la carga masiva"""
         return Response({
             'status': 'info',
             'message': 'Endpoint para carga masiva de asistentes',
@@ -337,6 +367,9 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
             },
             'estructura_archivo': {
                 'columnas_requeridas': ['NOMBRE', 'Apellido', 'CORREO ELECTRONICO'],
+                'columnas_requeridas': [
+                    'NOMBRE', 'Apellido', 'CORREO ELECTRONICO'
+                ],
                 'columnas_opcionales': [
                     'NUMERO DE CELULAR (con codigo de area)',
                     'DNI',
@@ -441,6 +474,7 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
                 for index, row in df.iterrows():
                     try:
                         # Extraer datos de la fila
+                        # Validar email
                         first_name = str(row[columnas_mapeadas['NOMBRE']]).strip() if pd.notna(row[columnas_mapeadas['NOMBRE']]) else ''
                         last_name = str(row[columnas_mapeadas['Apellido']]).strip() if pd.notna(row[columnas_mapeadas['Apellido']]) else ''
                         email = str(row[columnas_mapeadas['CORREO ELECTRONICO']]).strip() if pd.notna(row[columnas_mapeadas['CORREO ELECTRONICO']]) else ''
@@ -585,175 +619,312 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class CargaMasivaAsistentesView(views.APIView):
+class CargaMasivaProgramaView(views.APIView):
     """
-    Vista para carga masiva de asistentes desde archivo Excel.
-    Permite subir un archivo Excel con datos de asistentes y procesarlos en lote.
+    Vista para carga masiva del programa de charlas desde un archivo Excel/CSV.
     """
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
-        """Método GET para mostrar información sobre la carga masiva"""
         return Response({
             'status': 'info',
-            'message': 'Endpoint para carga masiva de asistentes desde Excel',
-            'instrucciones': {
-                'metodo': 'POST',
-                'contenido': 'multipart/form-data',
-                'parametros': {
-                    'archivo': 'Archivo Excel (.xlsx o .xls) con datos de asistentes',
-                    'enviar_emails': 'true/false - OPCIONAL (default: false)'
-                }
+            'message': 'Endpoint para carga masiva del programa de charlas.',
+            'metodo': 'POST',
+            'parametros': {'archivo': 'Archivo Excel (.xlsx, .xls) o CSV (.csv)'},
+            'estructura_archivo': {
+                'columnas_requeridas': ['TITULO DE LA CHARLA', 'DISERTANTES', 'HORA DE INICIO', 'HORA DE FIN', 'DIA DEL EVENTO', 'AULA', 'CATEGORIA'],
+                'columnas_opcionales': ['DESCRIPCIÓN']
             },
-            'formato_excel': {
-                'columnas_requeridas': [
-                    'Nombre',
-                    'Apellido', 
-                    'Email',
-                    'Institucion',
-                    'Tipo de Perfil',
-                    'DNI (opcional)',
-                    'Columna1 (rol específico)'
-                ],
-                'tipos_perfil_validos': ['VISITOR', 'STUDENT', 'TEACHER', 'PROFESSIONAL', 'GRADUADO', 'OTRO']
+            'aulas_validas': [choice[0] for choice in Programa.AULA_CHOICES],
+            'categorias_validas': [choice[0] for choice in Programa.CATEGORIA_CHOICES]
+        })
+
+    def post(self, request, *args, **kwargs):
+        if 'archivo' not in request.FILES:
+            return Response({'status': 'error', 'message': 'No se proporcionó archivo.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        archivo = request.FILES['archivo']
+        try:
+            if archivo.name.endswith('.csv'):
+                df = pd.read_csv(archivo, dtype=str).fillna('')
+            else:
+                df = pd.read_excel(archivo, dtype=str).fillna('')
+        except Exception as e:
+            return Response({'status': 'error', 'message': f'Error al leer el archivo: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        columnas_esperadas = {
+            'titulo': ['TITULO DE LA CHARLA'],
+            'disertante_nombre': ['DISERTANTES'],
+            'hora_inicio': ['HORA DE INICIO'],
+            'hora_fin': ['HORA DE FIN'],
+            'dia': ['DIA DEL EVENTO'],
+            'descripcion': ['DESCRIPCIÓN'],
+            'aula': ['AULA'],
+            'categoria': ['CATEGORIA'],
+        }
+
+        df.columns = df.columns.str.strip().upper()
+        columnas_mapeadas = {key: next((col for col in df.columns if col in variantes), None) for key, variantes in columnas_esperadas.items()}
+
+        columnas_requeridas = ['titulo', 'disertante_nombre', 'hora_inicio', 'hora_fin', 'dia', 'aula', 'categoria']
+        if not all(columnas_mapeadas[key] for key in columnas_requeridas):
+            return Response({'status': 'error', 'message': f'Faltan columnas requeridas. Se necesitan: {", ".join(v[0] for k, v in columnas_esperadas.items() if k in columnas_requeridas)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        resultados = {'exitosos': 0, 'errores': 0, 'detalles': []} # type: ignore
+        aulas_validas = [choice[0] for choice in Programa.AULA_CHOICES]
+        categorias_validas = [choice[0] for choice in Programa.CATEGORIA_CHOICES]
+
+        with transaction.atomic():
+            for index, row in df.iterrows():
+                try:
+                    disertantes_nombres_str = str(row[columnas_mapeadas['disertante_nombre']]).strip()
+                    aula = str(row[columnas_mapeadas['aula']]).strip()
+                    categoria = str(row[columnas_mapeadas['categoria']]).strip().upper()
+
+                    # Validar Disertantes (ahora puede ser una lista)
+                    disertantes_nombres = [name.strip() for name in disertantes_nombres_str.split(',')]
+                    disertantes_ids = []
+                    if not disertantes_nombres or all(not name for name in disertantes_nombres):
+                        raise ValueError("La columna de disertantes no puede estar vacía.")
+                    for nombre in disertantes_nombres:
+                        try:
+                            disertante = Disertante.objects.get(nombre__iexact=nombre)
+                            disertantes_ids.append(disertante.id)
+                        except Disertante.DoesNotExist:
+                            raise ValueError(f"Disertante '{nombre}' no encontrado en la base de datos.")
+
+                    # Validar Aula y Categoría
+                    if aula not in aulas_validas:
+                        raise ValueError(f"Aula '{aula}' no es válida. Válidas: {aulas_validas}")
+                    if categoria not in categorias_validas:
+                        raise ValueError(f"Categoría '{categoria}' no es válida. Válidas: {categorias_validas}")
+
+                    # Crear el programa y luego asignar los disertantes
+                    programa = Programa.objects.create(
+                        titulo=str(row[columnas_mapeadas['titulo']]).strip(),
+                        hora_inicio=str(row[columnas_mapeadas['hora_inicio']]).strip(),
+                        hora_fin=str(row[columnas_mapeadas['hora_fin']]).strip(),
+                        dia=pd.to_datetime(row[columnas_mapeadas['dia']]).date(),
+                        descripcion=str(row.get(columnas_mapeadas.get('descripcion', ''), '')).strip(),
+                        aula=aula,
+                        categoria=categoria
+                    )
+                    programa.disertantes.set(disertantes_ids)
+
+                    resultados['exitosos'] += 1
+                    resultados['detalles'].append({'fila': index + 2, 'status': 'success', 'message': f"Charla '{row[columnas_mapeadas['titulo']]}' creada."})
+
+                except Exception as e:
+                    resultados['errores'] += 1
+                    resultados['detalles'].append({'fila': index + 2, 'status': 'error', 'message': str(e)})
+
+        return Response({
+            'status': 'completed',
+            'message': f'Carga del programa completada. {resultados["exitosos"]} charlas creadas, {resultados["errores"]} errores.',
+            'resultados': resultados
+        }, status=status.HTTP_200_OK)
+
+class CargaMasivaEmpresasView(views.APIView):
+    """
+    Vista para carga masiva de empresas desde archivo Excel/CSV.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        return Response({
+            'status': 'info',
+            'message': 'Endpoint para carga masiva de empresas. El logo debe subirse manualmente.',
+            'metodo': 'POST',
+            'parametros': {'archivo': 'Archivo Excel (.xlsx, .xls) o CSV (.csv)'},
+            'estructura_archivo': {
+                'columnas_requeridas': ['NOMBRE EMPRESA', 'NOMBRE CONTACTO', 'EMAIL CONTACTO'],
+                'columnas_opcionales': ['CUIT', 'TELEFONO EMPRESA', 'EMAIL EMPRESA', 'SITIO WEB', 'DESCRIPCION', 'CELULAR CONTACTO', 'CARGO CONTACTO']
             }
         })
 
     def post(self, request, *args, **kwargs):
-        """Procesar archivo Excel para carga masiva"""
         if 'archivo' not in request.FILES:
-            return Response({
-                'status': 'error',
-                'message': 'No se proporcionó ningún archivo'
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': 'error', 'message': 'No se proporcionó archivo.'}, status=status.HTTP_400_BAD_REQUEST)
 
         archivo = request.FILES['archivo']
-        enviar_emails = request.data.get('enviar_emails', 'false').lower() == 'true'
-
         try:
-            # Leer archivo Excel
-            if archivo.name.endswith('.xlsx'):
-                df = pd.read_excel(archivo, engine='openpyxl')
-            elif archivo.name.endswith('.xls'):
-                df = pd.read_excel(archivo, engine='xlrd')
+            if archivo.name.endswith('.csv'):
+                df = pd.read_csv(archivo)
             else:
-                return Response({
-                    'status': 'error',
-                    'message': 'Formato de archivo no soportado. Use .xlsx o .xls'
-                }, status=status.HTTP_400_BAD_REQUEST)
-
-            # Mapear nombres de columnas en español a inglés
-            column_mapping = {
-                'Nombre': 'first_name',
-                'Apellido': 'last_name', 
-                'Email': 'email',
-                'Institucion': 'institution',
-                'Tipo de Perfil': 'profile_type',
-                'DNI': 'dni',
-                'Columna1': 'rol_especifico'
-            }
-
-            # Renombrar columnas
-            df.rename(columns=column_mapping, inplace=True)
-
-            resultados = {
-                'total_procesados': 0,
-                'exitosos': 0,
-                'errores': 0,
-                'emails_enviados': 0,
-                'emails_fallidos': 0,
-                'detalles': []
-            }
-
-            with transaction.atomic():
-                for index, row in df.iterrows():
-                    try:
-                        # Validar email
-                        email = row.get('email', '').strip()
-                        if not email or not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
-                            resultados['errores'] += 1
-                            resultados['detalles'].append({
-                                'fila': index + 2,
-                                'email': email,
-                                'error': 'Email inválido o vacío'
-                            })
-                            continue
-
-                        # Verificar si ya existe
-                        if Asistente.objects.filter(email=email).exists():
-                            resultados['errores'] += 1
-                            resultados['detalles'].append({
-                                'fila': index + 2,
-                                'email': email,
-                                'error': 'Email ya registrado'
-                            })
-                            continue
-
-                        # Mapear tipo de perfil
-                        profile_type_map = {
-                            'VISITOR': Asistente.ProfileType.VISITOR,
-                            'STUDENT': Asistente.ProfileType.STUDENT,
-                            'TEACHER': Asistente.ProfileType.TEACHER,
-                            'PROFESSIONAL': Asistente.ProfileType.PROFESSIONAL,
-                            'GRADUADO': Asistente.ProfileType.GRADUADO,
-                            'OTRO': Asistente.ProfileType.OTRO
-                        }
-
-                        profile_type_str = str(row.get('profile_type', 'VISITOR')).upper()
-                        profile_type = profile_type_map.get(profile_type_str, Asistente.ProfileType.VISITOR)
-
-                        # Crear asistente
-                        dni = row.get('dni')
-                        if pd.isna(dni) or dni == '':
-                            dni = None
-
-                        asistente = Asistente.objects.create(
-                            first_name=str(row.get('first_name', '')).strip(),
-                            last_name=str(row.get('last_name', '')).strip(),
-                            email=email,
-                            institution=str(row.get('institution', '')).strip() or None,
-                            profile_type=profile_type,
-                            dni=dni,
-                            rol_especifico=str(row.get('rol_especifico', '')).strip() or None
-                        )
-
-                        resultados['exitosos'] += 1
-                        resultados['detalles'].append({
-                            'fila': index + 2,
-                            'email': email,
-                            'nombre': f"{asistente.first_name} {asistente.last_name}",
-                            'profile_type': asistente.get_profile_type_display(),
-                            'estado': 'creado'
-                        })
-
-                        # Enviar email si está habilitado
-                        if enviar_emails:
-                            try:
-                                if send_bulk_confirmation_email(asistente, es_carga_masiva=True, fecha_evento='2025-11-15'):
-                                    resultados['emails_enviados'] += 1
-                                else:
-                                    resultados['emails_fallidos'] += 1
-                            except Exception as e:
-                                resultados['emails_fallidos'] += 1
-                                print(f"[ERROR] Error enviando email a {email}: {e}")
-
-                    except Exception as e:
-                        resultados['errores'] += 1
-                        resultados['detalles'].append({
-                            'fila': index + 2,
-                            'error': f'Error procesando fila: {str(e)}'
-                        })
-
-                    resultados['total_procesados'] += 1
-
-            return Response({
-                'status': 'success',
-                'message': f'Carga masiva completada. {resultados["exitosos"]} registros exitosos, {resultados["errores"]} errores.',
-                'resultados': resultados
-            }, status=status.HTTP_200_OK)
-
+                df = pd.read_excel(archivo)
         except Exception as e:
-            return Response({
-                'status': 'error',
-                'message': f'Error procesando archivo: {str(e)}'
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'status': 'error', 'message': f'Error al leer el archivo: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        columnas_esperadas = {
+            'nombre_empresa': ['NOMBRE EMPRESA', 'EMPRESA', 'RAZON SOCIAL'],
+            'cuit': ['CUIT'],
+            'email_empresa': ['EMAIL EMPRESA', 'EMAIL GENERAL'],
+            'sitio_web': ['SITIO WEB', 'WEB', 'PAGINA WEB'],
+            'descripcion': ['DESCRIPCION'],
+            'nombre_contacto': ['NOMBRE CONTACTO', 'CONTACTO', 'NOMBRE COMPLETO CONTACTO'],
+            'email_contacto': ['EMAIL CONTACTO', 'CORREO CONTACTO'],
+            'celular_contacto': ['CELULAR CONTACTO', 'TELEFONO CONTACTO'],
+            'cargo_contacto': ['CARGO CONTACTO', 'PUESTO CONTACTO'],
+        }
+
+        df.columns = df.columns.str.strip().upper()
+        columnas_mapeadas = {key: next((col for col in df.columns if col in variantes), None) for key, variantes in columnas_esperadas.items()}
+
+        if not columnas_mapeadas['nombre_empresa'] or not columnas_mapeadas['nombre_contacto'] or not columnas_mapeadas['email_contacto']:
+            return Response({'status': 'error', 'message': 'Faltan columnas requeridas: NOMBRE EMPRESA, NOMBRE CONTACTO, EMAIL CONTACTO.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        resultados = {'exitosos': 0, 'errores': 0, 'detalles': []}
+
+        with transaction.atomic():
+            for index, row in df.iterrows():
+                try:
+                    nombre_empresa = str(row[columnas_mapeadas['nombre_empresa']]).strip()
+                    nombre_contacto = str(row[columnas_mapeadas['nombre_contacto']]).strip()
+                    email_contacto = str(row[columnas_mapeadas['email_contacto']]).strip()
+
+                    if not nombre_empresa or not nombre_contacto or not email_contacto:
+                        raise ValueError("Nombre de empresa, nombre de contacto y email de contacto son obligatorios.")
+
+                    if Empresa.objects.filter(email_contacto=email_contacto).exists():
+                        raise ValueError(f"Ya existe una empresa con el email de contacto {email_contacto}.")
+
+                    data_empresa = {
+                        'nombre_empresa': nombre_empresa,
+                        'nombre_contacto': nombre_contacto,
+                        'email_contacto': email_contacto,
+                    }
+
+                    for key, col_name in columnas_mapeadas.items():
+                        if key not in data_empresa and col_name and pd.notna(row[col_name]):
+                            data_empresa[key] = str(row[col_name]).strip()
+
+                    Empresa.objects.create(**data_empresa)
+                    resultados['exitosos'] += 1
+                    resultados['detalles'].append({'fila': index + 2, 'status': 'success', 'message': f"Empresa '{nombre_empresa}' creada."})
+                except ValueError as e:
+                    resultados['errores'] += 1
+                    resultados['detalles'].append({'fila': index + 2, 'status': 'error', 'message': str(e)})
+
+                except Exception as e:
+                    resultados['errores'] += 1
+                    resultados['detalles'].append({'fila': index + 2, 'status': 'error', 'message': str(e)})
+
+        return Response({
+            'status': 'completed',
+            'message': f'Carga de empresas completada. {resultados["exitosos"]} exitosos, {resultados["errores"]} errores.',
+            'resultados': resultados
+        }, status=status.HTTP_200_OK)
+
+
+class CargaMasivaGruposView(views.APIView):
+    """
+    Vista para carga masiva de grupos desde archivo Excel/CSV.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        return Response({
+            'status': 'info',
+            'message': 'Endpoint para carga masiva de grupos. Cada fila es una persona (representante o miembro).',
+            'metodo': 'POST',
+            'parametros': {'archivo': 'Archivo Excel (.xlsx, .xls) o CSV (.csv)'},
+            'estructura_archivo': {
+                'columnas_requeridas': ['IDENTIFICADOR GRUPO', 'ROL EN GRUPO', 'NOMBRE', 'APELLIDO', 'EMAIL', 'DNI'],
+                'columnas_opcionales': ['NOMBRE GRUPO', 'MUNICIPIO GRUPO']
+            },
+            'valores_rol': "'Representante' o 'Miembro'"
+        })
+
+    def post(self, request, *args, **kwargs):
+        if 'archivo' not in request.FILES:
+            return Response({'status': 'error', 'message': 'No se proporcionó archivo.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        archivo = request.FILES['archivo']
+        try:
+            if archivo.name.endswith('.csv'):
+                df = pd.read_csv(archivo)
+            else:
+                df = pd.read_excel(archivo)
+        except Exception as e:
+            return Response({'status': 'error', 'message': f'Error al leer el archivo: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Normalizar columnas
+        df.columns = df.columns.str.strip().upper()
+        required_cols = ['IDENTIFICADOR GRUPO', 'ROL EN GRUPO', 'NOMBRE', 'APELLIDO', 'EMAIL', 'DNI']
+        if not all(col in df.columns for col in required_cols):
+            return Response({'status': 'error', 'message': f'Faltan columnas requeridas. Se necesitan: {", ".join(required_cols)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Agrupar por identificador
+        grupos_data = df.groupby('IDENTIFICADOR GRUPO')
+        resultados = {'grupos_exitosos': 0, 'grupos_con_errores': 0, 'detalles': []}
+
+        for group_id, group_df in grupos_data:
+            try:
+                with transaction.atomic():
+                    # 1. Validar y encontrar representante
+                    representantes_df = group_df[group_df['ROL EN GRUPO'].str.upper() == 'REPRESENTANTE']
+                    if len(representantes_df) != 1:
+                        raise ValueError(f"El grupo '{group_id}' debe tener exactamente un 'Representante'. Encontrados: {len(representantes_df)}.")
+                    
+                    rep_row = representantes_df.iloc[0]
+                    
+                    # 2. Validar datos del representante
+                    rep_email = str(rep_row['EMAIL']).strip()
+                    rep_dni = str(rep_row['DNI']).strip()
+                    if Asistente.objects.filter(email=rep_email).exists() or Asistente.objects.filter(dni=rep_dni).exists():
+                        raise ValueError(f"El representante con email '{rep_email}' o DNI '{rep_dni}' ya está registrado.")
+
+                    # 3. Crear al representante
+                    representante = Asistente.objects.create(
+                        first_name=str(rep_row['NOMBRE']).strip(),
+                        last_name=str(rep_row['APELLIDO']).strip(),
+                        email=rep_email,
+                        dni=rep_dni,
+                        profile_type=Asistente.ProfileType.GROUP_REPRESENTATIVE,
+                        group_name=str(rep_row.get('NOMBRE GRUPO', group_id)).strip(),
+                        group_municipality=str(rep_row.get('MUNICIPIO GRUPO', '')).strip(),
+                        group_size=len(group_df) - 1
+                    )
+
+                    # 4. Procesar y crear miembros
+                    miembros_df = group_df[group_df['ROL EN GRUPO'].str.upper() == 'MIEMBRO']
+                    miembros_creados = []
+                    for _, miembro_row in miembros_df.iterrows():
+                        miembro_email = str(miembro_row['EMAIL']).strip()
+                        miembro_dni = str(miembro_row['DNI']).strip()
+
+                        if Asistente.objects.filter(email=miembro_email).exists() or Asistente.objects.filter(dni=miembro_dni).exists():
+                            raise ValueError(f"El miembro con email '{miembro_email}' o DNI '{miembro_dni}' ya está registrado.")
+
+                        miembro = Asistente.objects.create(
+                            first_name=str(miembro_row['NOMBRE']).strip(),
+                            last_name=str(miembro_row['APELLIDO']).strip(),
+                            email=miembro_email,
+                            dni=miembro_dni,
+                            profile_type=Asistente.ProfileType.VISITOR, # O el perfil que corresponda
+                            representante_grupo=representante,
+                            group_name=representante.group_name,
+                            group_municipality=representante.group_municipality
+                        )
+                        miembros_creados.append(miembro.email)
+
+                    resultados['grupos_exitosos'] += 1
+                    resultados['detalles'].append({
+                        'identificador_grupo': group_id,
+                        'status': 'success',
+                        'message': f"Grupo creado con representante '{representante.email}' y {len(miembros_creados)} miembro(s)."
+                    })
+
+            except Exception as e:
+                resultados['grupos_con_errores'] += 1
+                resultados['detalles'].append({
+                    'identificador_grupo': group_id,
+                    'status': 'error',
+                    'message': str(e)
+                })
+
+        return Response({
+            'status': 'completed',
+            'message': f'Carga de grupos completada. {resultados["grupos_exitosos"]} grupos exitosos, {resultados["grupos_con_errores"]} con errores.',
+            'resultados': resultados
+        }, status=status.HTTP_200_OK)
