@@ -24,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2zba+jiuh_gqthifa5*y7illxqrj8oz03yv005)g0-wfpi@o1d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.getenv('DJANGO_ENV') == 'development':
-    DEBUG = True
-else:
+if os.getenv('DJANGO_ENV') == 'production':
     DEBUG = False
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -99,14 +99,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-if os.getenv('DJANGO_ENV') == 'development':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-else:
+if os.getenv('DJANGO_ENV') == 'production':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -115,6 +108,13 @@ else:
             'PASSWORD': os.getenv('DB_PASSWORD', ''),
             'HOST': os.getenv('DB_HOST', 'localhost'),
             'PORT': os.getenv('DB_PORT', '3306'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
@@ -225,9 +225,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # =================== SEGURIDAD CSRF Y COOKIES ===================
 if not DEBUG:
     CSRF_TRUSTED_ORIGINS = [
-        "www.congresologistica.unab.edu.ar",
-        "congresologistica.unab.edu.ar",
-        "170.210.44.238",
+        "https://www.congresologistica.unab.edu.ar", # Ya estaba correcto
+        "https://congresologistica.unab.edu.ar",   # Ya estaba correcto
+        "https://170.210.44.238",                  # Ya estaba correcto
     ]
     # Comentamos estas configuraciones para resolver el problema de CSRF
     # CSRF_COOKIE_SECURE = True
@@ -247,3 +247,5 @@ if not DEBUG:
     SESSION_COOKIE_SAMESITE = 'Lax'
 
 
+# =================== URLS EXTERNAS ===================
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')

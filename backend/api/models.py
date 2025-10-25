@@ -47,6 +47,7 @@ class Programa(models.Model):
         ("RADIO", "Radio"),
         ("SUSTENTABILIDAD", "Sustentabilidad"),
         ("TRANSPORTE", "Transporte"),
+        ("ULTIMA MILLA", "Ultima Milla"),
     ]
     
     titulo = models.CharField(max_length=255, verbose_name="Título del Evento")

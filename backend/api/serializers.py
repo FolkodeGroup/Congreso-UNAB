@@ -162,6 +162,14 @@ class AsistenteSerializer(serializers.ModelSerializer):
     def validate(self, data):
         profile_type = data.get('profile_type')
 
+        # Validar formato de DNI si se proporciona
+        if 'dni' in data and data['dni']:
+            import re
+            dni_limpio = re.sub(r'\D', '', data['dni'])
+            if len(dni_limpio) != 8:
+                raise serializers.ValidationError({"dni": "El DNI debe contener exactamente 8 dígitos numéricos."})
+            data['dni'] = dni_limpio # Guardar el DNI limpio
+
         if profile_type == Asistente.ProfileType.STUDENT:
             if data.get('is_unab_student') is None:
                 raise serializers.ValidationError({"is_unab_student": "Este campo es requerido para estudiantes."})
