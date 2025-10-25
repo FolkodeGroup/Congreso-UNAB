@@ -54,9 +54,9 @@ class CertificadoAdmin(admin.ModelAdmin):
     search_fields = ('asistente__first_name', 'asistente__last_name', 'asistente__email')
 
 class ProgramaAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'disertante', 'categoria', 'aula', 'dia', 'hora_inicio', 'hora_fin')
+    list_display = ('titulo', 'categoria', 'aula', 'dia', 'hora_inicio', 'hora_fin')
     list_filter = ('dia', 'categoria', 'aula')
-    search_fields = ('titulo', 'disertante__nombre')
+    search_fields = ('titulo',)
     list_editable = ('categoria',)
 
 @admin.register(Disertante)

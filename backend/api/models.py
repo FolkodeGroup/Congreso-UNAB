@@ -50,7 +50,7 @@ class Programa(models.Model):
     ]
     
     titulo = models.CharField(max_length=255, verbose_name="Título del Evento")
-    disertante = models.ForeignKey(Disertante, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Disertante")
+    disertantes = models.ManyToManyField(Disertante, blank=True, verbose_name="Disertantes", related_name="programas")
     hora_inicio = models.TimeField(verbose_name="Hora de Inicio")
     hora_fin = models.TimeField(verbose_name="Hora de Fin")
     dia = models.DateField(verbose_name="Día del Evento")

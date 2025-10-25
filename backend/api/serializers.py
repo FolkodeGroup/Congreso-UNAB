@@ -11,11 +11,11 @@ class DisertanteSerializer(serializers.ModelSerializer):
         fields = ['nombre', 'bio', 'foto_url', 'foto', 'tema_presentacion', 'linkedin']
 
 class ProgramaSerializer(serializers.ModelSerializer):
-    disertante = DisertanteSerializer(read_only=True)
+    disertantes = DisertanteSerializer(many=True, read_only=True)
 
     class Meta:
         model = Programa
-        fields = ['titulo', 'disertante', 'hora_inicio', 'hora_fin', 'dia', 'descripcion', 'aula', 'categoria']
+        fields = ['titulo', 'disertantes', 'hora_inicio', 'hora_fin', 'dia', 'descripcion', 'aula', 'categoria']
 
 class EmpresaSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):

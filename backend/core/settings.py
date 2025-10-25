@@ -225,9 +225,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # =================== SEGURIDAD CSRF Y COOKIES ===================
 if not DEBUG:
     CSRF_TRUSTED_ORIGINS = [
-        "www.congresologistica.unab.edu.ar",
-        "congresologistica.unab.edu.ar",
-        "170.210.44.238",
+        "https://www.congresologistica.unab.edu.ar",
+        "https://congresologistica.unab.edu.ar",
+        "https://170.210.44.238",
     ]
     # Comentamos estas configuraciones para resolver el problema de CSRF
     # CSRF_COOKIE_SECURE = True

@@ -41,8 +41,7 @@ type DisertanteInfo = {
 type ActividadCalendar = {
   aula: string;
   titulo: string;
-  disertante: string;
-  disertanteInfo?: DisertanteInfo | null; // Información completa del disertante
+  disertantes: DisertanteInfo[];
   descripcion?: string;
   inicio: string; // 'HH:MM'
   fin: string; // 'HH:MM'
@@ -197,61 +196,35 @@ export default function Programa() {
   useEffect(() => {
     const fetchPrograma = async () => {
       try {
-  const apiUrl = API_HOST;
+        const apiUrl = API_HOST;
         const response = await fetch(`${apiUrl}/api/programa/`);
         if (!response.ok)
           throw new Error("No se pudo cargar la agenda desde el backend.");
         const data = await response.json();
         // Mapear los datos del backend al formato visual
         const mapped: ActividadCalendar[] = data.map((item: any) => {
-          // Extraer información completa del disertante
-          let disertante = "";
-          let disertanteInfo: DisertanteInfo | null = null;
-          if (item.disertante && typeof item.disertante === "object") {
-            disertante = item.disertante.nombre || "";
-            // Priorizar la imagen subida (foto) sobre foto_url
-            let foto_url = "";
-            if (item.disertante.foto && typeof item.disertante.foto === "string" && item.disertante.foto.length > 5) {
-              foto_url = item.disertante.foto;
-            } else if (item.disertante.foto_url && typeof item.disertante.foto_url === "string" && item.disertante.foto_url.length > 5) {
-              foto_url = item.disertante.foto_url;
-            }
-            disertanteInfo = {
-              nombre: item.disertante.nombre || "",
-              bio: item.disertante.bio || "",
-              foto_url: foto_url,
-              tema_presentacion: item.disertante.tema_presentacion || "",
-              linkedin: item.disertante.linkedin || ""
-            };
-          } else if (typeof item.disertante === "string" && item.disertante.length > 0) {
-            disertante = item.disertante;
-            disertanteInfo = {
-              nombre: item.disertante,
-              bio: "",
-              foto_url: "",
-              tema_presentacion: "",
-              linkedin: ""
-            };
-          } else {
-            disertante = "";
-            disertanteInfo = null;
-          }
-          // Usar el campo correcto para aula
           const aula = item.aula || item.sala || "Aula Magna";
+          // Si no hay disertantes, poner array vacío
+          const disertantes: DisertanteInfo[] = Array.isArray(item.disertantes) ? item.disertantes.map((d: any) => ({
+            nombre: d.nombre || "",
+            bio: d.bio || "",
+            foto_url: d.foto_url || "",
+            tema_presentacion: d.tema_presentacion || "",
+            linkedin: d.linkedin || ""
+          })) : [];
           return {
             aula,
             titulo: item.titulo,
-            disertante,
-            disertanteInfo, // Siempre hay objeto aunque sea vacío
+            disertantes,
             descripcion: item.descripcion || "",
             inicio: item.hora_inicio.substring(0, 5),
             fin: item.hora_fin.substring(0, 5),
             color: AULA_COLORS[aula] ? aula : "Aula Magna",
-            categoria: item.categoria || "LOGÍSTICA", // Default a LOGÍSTICA si no viene del backend
+            categoria: item.categoria || "LOGÍSTICA",
           };
         });
         setActividades(mapped);
-        setError(null); // Limpiar error si carga exitosa
+        setError(null);
       } catch (err) {
         console.error("Error cargando programa:", err);
         setError("No se pudo cargar la agenda desde el backend.");
@@ -331,7 +304,9 @@ export default function Programa() {
   const categorias = Object.keys(TRACK_CATEGORIES);
 
   // Disertantes únicos para el filtro
-  const disertantesUnicos = Array.from(new Set(actividadesToShow.map(act => act.disertante))).filter(d => d && d.length > 0);
+  const disertantesUnicos = Array.from(new Set(
+    actividadesToShow.flatMap(act => act.disertantes.map(d => d.nombre))
+  )).filter(d => d && d.length > 0);
   const [filtroDisertante, setFiltroDisertante] = useState<string>("TODOS");
 
   // Estado para el modal
@@ -352,13 +327,12 @@ export default function Programa() {
 
   // Filtrar actividades
   const actividadesFiltradas = actividadesToShow.filter(act => {
-    // Si todos los filtros están en "TODOS"/"TODAS", mostrar todo
     if (filtroCategoria === "TODOS" && filtroAula === "TODAS" && filtroDisertante === "TODOS") {
       return true;
     }
     const matchCategoria = filtroCategoria === "TODOS" || act.categoria === filtroCategoria;
     const matchAula = filtroAula === "TODAS" || act.aula === filtroAula;
-    const matchDisertante = filtroDisertante === "TODOS" || act.disertante === filtroDisertante;
+    const matchDisertante = filtroDisertante === "TODOS" || act.disertantes.some(d => d.nombre === filtroDisertante);
     return matchCategoria && matchAula && matchDisertante;
   });
 
@@ -763,7 +737,7 @@ export default function Programa() {
                             const rowSpan = getRowSpan(actividad.inicio, actividad.fin);
                             const trackColor = TRACK_CATEGORIES[actividad.categoria as keyof typeof TRACK_CATEGORIES];
                             const aulaColor = AULA_COLORS[actividad.color] || AULA_COLORS["Aula Magna"];
-                            const disertanteColor = getDisertanteColor(actividad.disertante);
+                            const disertanteColor = getDisertanteColor(actividad.disertantes[0]?.nombre || "");
                             
                             return (
                               <td 
@@ -816,10 +790,12 @@ export default function Programa() {
                                       {actividad.titulo.replace(/\s*\(\d+h\)/gi, "")}
                                     </h3>
 
-                                    {/* Speaker */}
-                                    <p className="text-xs font-semibold text-gray-700 mb-1 truncate">
-                                      {actividad.disertante}
-                                    </p>
+                                    {/* Speakers */}
+                                    <div className="text-xs font-semibold text-gray-700 mb-1 truncate flex flex-wrap gap-1">
+                                      {actividad.disertantes.map((d, idx) => (
+                                        <span key={d.nombre + idx}>{d.nombre}{idx < actividad.disertantes.length - 1 ? ',' : ''}</span>
+                                      ))}
+                                    </div>
 
                                     {/* Descripción */}
                                     {actividad.descripcion && (
@@ -882,7 +858,7 @@ export default function Programa() {
                   {actividadesEnHora.map((actividad, idx) => {
                     const trackColor = TRACK_CATEGORIES[actividad.categoria as keyof typeof TRACK_CATEGORIES];
                     const aulaColor = AULA_COLORS[actividad.color] || AULA_COLORS["Aula Magna"];
-                    const disertanteColor = getDisertanteColor(actividad.disertante);
+                    const disertanteColor = getDisertanteColor(actividad.disertantes[0]?.nombre || "");
                     
                     return (
                       <motion.div
@@ -933,11 +909,13 @@ export default function Programa() {
                             {actividad.titulo.replace(/\s*\(\d+h\)/gi, "")}
                           </h4>
                           
-                          {/* Disertante */}
-                          <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                          {/* Disertantes */}
+                          <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2 flex-wrap">
                             <Person style={{ fontSize: 16, color: disertanteColor }} />
-                            {actividad.disertante}
-                          </p>
+                            {actividad.disertantes.map((d, idx) => (
+                              <span key={d.nombre + idx}>{d.nombre}{idx < actividad.disertantes.length - 1 ? ',' : ''}</span>
+                            ))}
+                          </div>
                           
                           {/* Descripción */}
                           {actividad.descripcion && (
@@ -998,7 +976,7 @@ export default function Programa() {
               <div 
                 className="relative h-64 bg-gradient-to-br from-congress-blue to-congress-cyan overflow-hidden"
                 style={{ 
-                  background: `linear-gradient(135deg, ${TRACK_CATEGORIES[modalActividad.categoria as keyof typeof TRACK_CATEGORIES]?.bg || '#1e40af'} 0%, ${getDisertanteColor(modalActividad.disertante)} 100%)`
+                  background: `linear-gradient(135deg, ${TRACK_CATEGORIES[modalActividad.categoria as keyof typeof TRACK_CATEGORIES]?.bg || '#1e40af'} 0%, ${getDisertanteColor(modalActividad.disertantes[0]?.nombre || "")} 100%)`
                 }}
               >
                 {/* Botón de cierre */}
@@ -1011,11 +989,12 @@ export default function Programa() {
 
                 {/* Imagen del disertante */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  {modalActividad.disertanteInfo?.foto_url ? (
+                  {/* Imagen del primer disertante si existe, si no, icono */}
+                  {modalActividad.disertantes[0]?.foto_url ? (
                     <div className="w-44 h-44 rounded-full overflow-hidden bg-white/10 backdrop-blur-md border-4 border-white/30 shadow-2xl">
                       <img
-                        src={getDisertanteImageUrl(modalActividad.disertanteInfo.foto_url)}
-                        alt={modalActividad.disertante}
+                        src={getDisertanteImageUrl(modalActividad.disertantes[0].foto_url)}
+                        alt={modalActividad.disertantes[0].nombre}
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           // Fallback si la imagen no carga
@@ -1024,9 +1003,9 @@ export default function Programa() {
                           const parent = target.parentElement;
                           if (parent) {
                             parent.innerHTML = `
-                              <div class="w-full h-full bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
-                                <svg class="text-white text-8xl w-22 h-22" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                              <div class=\"w-full h-full bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center\">
+                                <svg class=\"text-white text-8xl w-22 h-22\" fill=\"currentColor\" viewBox=\"0 0 24 24\">
+                                  <path d=\"M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\"/>
                                 </svg>
                               </div>
                             `;
@@ -1080,37 +1059,50 @@ export default function Programa() {
                   </div>
                 </div>
 
-                {/* Disertante */}
+                {/* Disertantes */}
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                    {modalActividad.disertante}
-                  </h3>
-                  {modalActividad.disertanteInfo?.bio ? (
-                    <p className="text-gray-600 text-sm leading-relaxed mb-2">
-                      {modalActividad.disertanteInfo.bio}
-                    </p>
-                  ) : (
-                    <p className="text-gray-600 text-sm">
-                      Especialista en {modalActividad.categoria.toLowerCase()}
-                    </p>
-                  )}
-                  {modalActividad.disertanteInfo?.tema_presentacion && modalActividad.disertanteInfo.tema_presentacion !== "Título de la Presentación" && (
-                    <p className="text-congress-blue text-sm font-medium">
-                      📝 {modalActividad.disertanteInfo.tema_presentacion}
-                    </p>
-                  )}
-                  {/* LinkedIn field */}
-                  {modalActividad.disertanteInfo?.linkedin && (
-                    <a
-                      href={modalActividad.disertanteInfo.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-congress-blue font-semibold text-xs mt-2 hover:underline hover:text-blue-700"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24" className="inline-block align-middle"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.026-3.063-1.868-3.063-1.868 0-2.154 1.459-2.154 2.967v5.7h-3v-10h2.881v1.367h.041c.401-.761 1.379-1.563 2.838-1.563 3.036 0 3.6 2.001 3.6 4.601v5.595z"/></svg>
-                      LinkedIn
-                    </a>
-                  )}
+                  {modalActividad.disertantes.map((d, idx) => (
+                    <div key={d.nombre + idx} className="mb-4 flex flex-row items-start gap-4">
+                      {/* Foto del disertante */}
+                      {d.foto_url && (
+                        <img
+                          src={d.foto_url}
+                          alt={d.nombre}
+                          className="w-20 h-20 object-cover rounded-full border border-gray-200 shadow-sm"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {d.nombre}
+                        </h3>
+                        {d.bio ? (
+                          <p className="text-gray-600 text-sm leading-relaxed mb-2">
+                            {d.bio}
+                          </p>
+                        ) : (
+                          <p className="text-gray-600 text-sm">
+                            Especialista en {modalActividad.categoria.toLowerCase()}
+                          </p>
+                        )}
+                        {d.tema_presentacion && d.tema_presentacion !== "Título de la Presentación" && (
+                          <p className="text-congress-blue text-sm font-medium">
+                            📝 {d.tema_presentacion}
+                          </p>
+                        )}
+                        {d.linkedin && (
+                          <a
+                            href={d.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-congress-blue font-semibold text-xs mt-2 hover:underline hover:text-blue-700"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24" className="inline-block align-middle"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.026-3.063-1.868-3.063-1.868 0-2.154 1.459-2.154 2.967v5.7h-3v-10h2.881v1.367h.041c.401-.761 1.379-1.563 2.838-1.563 3.036 0 3.6 2.001 3.6 4.601v5.595z"/></svg>
+                            LinkedIn
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 {/* Descripción */}
