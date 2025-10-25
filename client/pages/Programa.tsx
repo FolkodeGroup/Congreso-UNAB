@@ -209,10 +209,17 @@ export default function Programa() {
           let disertanteInfo: DisertanteInfo | null = null;
           if (item.disertante && typeof item.disertante === "object") {
             disertante = item.disertante.nombre || "";
+            // Priorizar la imagen subida (foto) sobre foto_url
+            let foto_url = "";
+            if (item.disertante.foto && typeof item.disertante.foto === "string" && item.disertante.foto.length > 5) {
+              foto_url = item.disertante.foto;
+            } else if (item.disertante.foto_url && typeof item.disertante.foto_url === "string" && item.disertante.foto_url.length > 5) {
+              foto_url = item.disertante.foto_url;
+            }
             disertanteInfo = {
               nombre: item.disertante.nombre || "",
               bio: item.disertante.bio || "",
-              foto_url: item.disertante.foto_url || "",
+              foto_url: foto_url,
               tema_presentacion: item.disertante.tema_presentacion || "",
               linkedin: item.disertante.linkedin || ""
             };
