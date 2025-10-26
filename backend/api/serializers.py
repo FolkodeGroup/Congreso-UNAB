@@ -4,11 +4,24 @@ from django.db import transaction
 from .email import send_group_confirmation_emails, send_individual_confirmation_email
 
 class DisertanteSerializer(serializers.ModelSerializer):
-    foto = serializers.ImageField(read_only=True)
+    foto_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Disertante
-        fields = ['nombre', 'bio', 'foto_url', 'foto', 'tema_presentacion', 'linkedin']
+        fields = ['nombre', 'bio', 'foto_url', 'tema_presentacion', 'linkedin']
+
+    def get_foto_url(self, obj):
+        # Si hay imagen subida, devolver la URL absoluta
+        request = self.context.get('request', None)
+        if obj.foto:
+            if request is not None:
+                return request.build_absolute_uri(obj.foto.url)
+            else:
+                return obj.foto.url
+        # Si no, devolver el valor manual (si existe)
+        if obj.foto_url:
+            return obj.foto_url
+        return ""
 
 class ProgramaSerializer(serializers.ModelSerializer):
     disertantes = DisertanteSerializer(many=True, read_only=True)
