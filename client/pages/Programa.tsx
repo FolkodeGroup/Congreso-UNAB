@@ -49,7 +49,7 @@ type ActividadCalendar = {
   categoria: string; // Categoría del track
 };
 
-// Aulas de ejemplo (sin Aula 8)
+// Aulas de ejemplo (sin Aula 8 y Aula 9)
 const AULAS = [
   "Aula Magna",
   "Aula 1",
@@ -60,7 +60,7 @@ const AULAS = [
   "Aula 6",
   "Aula 7",
   // "Aula 8", // Eliminada
-  "Aula 9",
+  // "Aula 9", // Eliminada
   "Aula 10",
   "Aula 11",
   "Aula 12",
@@ -968,7 +968,7 @@ export default function Programa() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
+              className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header con imagen y categoría */}
@@ -1038,7 +1038,7 @@ export default function Programa() {
               </div>
 
               {/* Contenido */}
-              <div className="p-6">
+              <div className="p-6 overflow-y-auto flex-1">
                 {/* Título */}
                 <h2 className="text-2xl font-bold text-gray-900 mb-3 leading-tight">
                   {modalActividad.titulo.replace(/\s*\(\d+h\)/gi, "")}
@@ -1059,7 +1059,7 @@ export default function Programa() {
                 </div>
 
                 {/* Disertantes */}
-                <div className="mb-4">
+                <div className="mb-4 max-h-[400px] overflow-y-auto">
                   {modalActividad.disertantes.map((d, idx) => (
                     <div key={d.nombre + idx} className="mb-4 flex flex-row items-start gap-4">
                       {/* Foto del disertante */}
@@ -1067,7 +1067,7 @@ export default function Programa() {
                         <img
                           src={getDisertanteImageUrl(d.foto_url)}
                           alt={d.nombre}
-                          className="w-20 h-20 object-cover rounded-full border border-gray-200 shadow-sm"
+                          className="w-20 h-20 object-cover rounded-full border border-gray-200 shadow-sm flex-shrink-0"
                         />
                       )}
                       <div className="flex-1">
