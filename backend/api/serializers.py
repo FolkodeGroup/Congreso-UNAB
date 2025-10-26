@@ -24,11 +24,17 @@ class DisertanteSerializer(serializers.ModelSerializer):
         return ""
 
 class ProgramaSerializer(serializers.ModelSerializer):
-    disertantes = DisertanteSerializer(many=True, read_only=True)
+    disertantes = serializers.SerializerMethodField()
 
     class Meta:
         model = Programa
         fields = ['titulo', 'disertantes', 'hora_inicio', 'hora_fin', 'dia', 'descripcion', 'aula', 'categoria']
+    
+    def get_disertantes(self, obj):
+        """Serializa los disertantes pasando el contexto de la request"""
+        disertantes = obj.disertantes.all()
+        serializer = DisertanteSerializer(disertantes, many=True, context=self.context)
+        return serializer.data
 
 class EmpresaSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
