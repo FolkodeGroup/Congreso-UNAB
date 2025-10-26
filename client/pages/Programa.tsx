@@ -1066,7 +1066,7 @@ export default function Programa() {
                       {/* Foto del disertante */}
                       {d.foto_url && (
                         <img
-                          src={d.foto_url}
+                          src={getDisertanteImageUrl(d.foto_url)}
                           alt={d.nombre}
                           className="w-20 h-20 object-cover rounded-full border border-gray-200 shadow-sm"
                         />
