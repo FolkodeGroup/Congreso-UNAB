@@ -156,26 +156,25 @@ function getDisertanteImageUrl(fotoUrl: string): string {
   if (url.startsWith("http://")) {
     url = url.replace("http://", "https://");
   }
-  // Si es ruta absoluta /media/...
-  if (url.startsWith("/media/")) {
-    url = `${DOMAIN_PROD}${url}`;
-  }
-  // Si es solo ponencias/imagen.png
-  if (url.startsWith("ponencias/")) {
-    url = `${DOMAIN_PROD}/media/${url}`;
-  }
-  // Si es una URL absoluta https://
+  // Si ya es una URL absoluta https://
   if (url.startsWith("https://")) {
     return url;
   }
-  // Si es una URL http (ya forzada arriba)
-  if (url.startsWith("http://")) {
-    return url.replace("http://", "https://");
+  // Si es ruta absoluta /media/...
+  if (url.startsWith("/media/")) {
+    return `${DOMAIN_PROD}${url}`;
+  }
+  // Si es solo ponencias/imagen.png
+  if (url.startsWith("ponencias/")) {
+    return `${DOMAIN_PROD}/media/${url}`;
   }
   // Si es una ruta relativa tipo media/...
   if (url.startsWith("media/")) {
-    url = `${DOMAIN_PROD}/${url}`;
-    return url;
+    return `${DOMAIN_PROD}/${url}`;
+  }
+  // Si es solo el nombre del archivo (ej: nombre.png)
+  if (!url.includes("/")) {
+    return `${DOMAIN_PROD}/media/ponencias/${url}`;
   }
   // Default: asumir que es una ruta relativa en media
   return `${DOMAIN_PROD}/media/${url}`;
