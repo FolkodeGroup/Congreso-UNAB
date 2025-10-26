@@ -59,13 +59,6 @@ const AULAS = [
   "Aula 5",
   "Aula 6",
   "Aula 7",
-  // "Aula 8", // Eliminada
-  // "Aula 9", // Eliminada
-  "Aula 10",
-  "Aula 11",
-  "Aula 12",
-  "Aula 13",
-  "Aula 14",
 ];
 
 // Generar horarios fijos cada 15 minutos de 10:00 a 19:00
