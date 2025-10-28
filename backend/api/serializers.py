@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Disertante, Empresa, Programa, Asistente, MiembroGrupo, Inscripcion
 from django.db import transaction
 from .email import send_group_confirmation_emails, send_individual_confirmation_email
+import re
 
 class DisertanteSerializer(serializers.ModelSerializer):
     foto_url = serializers.SerializerMethodField()
@@ -177,6 +178,20 @@ class AsistenteSerializer(serializers.ModelSerializer):
                 # No interrumpimos el proceso de registro por fallos en el email
         
         return asistente
+
+    def validate_dni(self, value):
+        """Valida que el DNI tenga exactamente 8 dígitos numéricos"""
+        if value:
+            # Limpiar caracteres no numéricos
+            dni_limpio = re.sub(r'\D', '', value)
+            # Si tiene 9 dígitos y termina en 0, eliminar el último 0
+            if len(dni_limpio) == 9 and dni_limpio.endswith('0'):
+                dni_limpio = dni_limpio[:-1]
+            # Validar que tenga exactamente 8 dígitos
+            if len(dni_limpio) != 8 or not dni_limpio.isdigit():
+                raise serializers.ValidationError('El DNI debe tener exactamente 8 dígitos numéricos.')
+            return dni_limpio
+        return value
 
     def validate(self, data):
         profile_type = data.get('profile_type')

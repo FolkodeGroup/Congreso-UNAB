@@ -26,7 +26,7 @@ import { CheckCircle } from "lucide-react";
 // Esquema de validación para registro rápido
 const registroRapidoSchema = z.object({
   nombre_completo: z.string().min(3, "El nombre es requerido"),
-  dni: z.string().regex(/^\d{7,8}$/, "DNI inválido, debe tener 7 u 8 dígitos"),
+  dni: z.string().regex(/^\d{7,8}$/, "DNI inválido, debe tener 8 dígitos"),
   email: z.string().email("Email inválido"),
   tipo_inscripcion: z.enum(["INDIVIDUAL", "EMPRESA", "GRUPO"], {
     required_error: "Debes seleccionar un tipo",

@@ -26,7 +26,7 @@ export default function VerificarDNI() {
     }
 
     if (!/^\d{7,8}$/.test(dni)) {
-      toast.error("DNI inválido. Debe tener 7 u 8 dígitos");
+      toast.error("DNI inválido. Debe tener 8 dígitos");
       return;
     }
 

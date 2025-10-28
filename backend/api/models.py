@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from io import BytesIO
 from django.core.files.base import ContentFile
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from django.utils import timezone
+import re
 
 
 class Disertante(models.Model):
@@ -107,6 +109,7 @@ class Asistente(models.Model):
     email = models.EmailField(unique=True, verbose_name="Correo electrónico")
     phone = models.CharField(max_length=20, verbose_name="Número de celular")
     dni = models.CharField(max_length=32, unique=True, null=True, blank=True, verbose_name="DNI")
+    dni_update_token = models.CharField(max_length=64, unique=True, null=True, blank=True, verbose_name="Token de actualización de DNI")
     profile_type = models.CharField(max_length=30, choices=ProfileType.choices, verbose_name="Tipo de Perfil")
     
     # Campo adicional para roles específicos (ej: "Colaborador/a Estudiante", "Colaborador/a Docente")
@@ -141,6 +144,28 @@ class Asistente(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    def clean(self):
+        """Valida que el DNI tenga exactamente 8 dígitos numéricos"""
+        super().clean()
+        if self.dni:
+            # Limpiar caracteres no numéricos
+            dni_limpio = re.sub(r'\D', '', self.dni)
+            # Si tiene 9 dígitos y termina en 0, eliminar el último 0
+            if len(dni_limpio) == 9 and dni_limpio.endswith('0'):
+                dni_limpio = dni_limpio[:-1]
+            # Validar que tenga exactamente 8 dígitos
+            if len(dni_limpio) != 8 or not dni_limpio.isdigit():
+                raise ValidationError({
+                    'dni': 'El DNI debe tener exactamente 8 dígitos numéricos.'
+                })
+            # Actualizar el DNI limpio
+            self.dni = dni_limpio
+
+    def save(self, *args, **kwargs):
+        """Limpia y valida el DNI antes de guardar"""
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     @property
     def nombre_completo(self):

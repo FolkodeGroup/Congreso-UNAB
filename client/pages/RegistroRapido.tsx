@@ -20,11 +20,12 @@ import {
   CheckCircle,
   Zap
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 // Esquema de validación para registro rápido
 const registroRapidoSchema = z.object({
   nombre_completo: z.string().min(3, "El nombre es requerido"),
-  dni: z.string().regex(/^\d{7,8}$/, "DNI inválido, debe tener 7 u 8 dígitos"),
+  dni: z.string().regex(/^\d{7,8}$/, "DNI inválido, debe tener 8 dígitos"),
   email: z.string().email("Email inválido"),
   tipo_inscripcion: z.enum(["INDIVIDUAL", "EMPRESA", "GRUPO"], {
     required_error: "Debes seleccionar un tipo",
@@ -39,6 +40,7 @@ export default function RegistroRapido() {
   const [showModal, setShowModal] = useState(false);
   const [asistente, setAsistente] = useState<any>(null);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const {
     register,
@@ -83,11 +85,24 @@ export default function RegistroRapido() {
       if (response.ok) {
         setShowModal(true);
         setAsistente(data);
+        toast({
+          title: "✅ Registro exitoso",
+          description: "Tu asistencia ha sido confirmada correctamente",
+          variant: "default",
+        });
       } else {
-        alert(`Error: ${result.message || "No se pudo completar el registro."}`);
+        toast({
+          title: "Error en el registro",
+          description: result.message || "No se pudo completar el registro. Por favor, verifica los datos e intenta nuevamente.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
-      alert("Error de conexión: No se pudo conectar con el servidor.");
+      toast({
+        title: "Error de conexión",
+        description: "No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet e intenta nuevamente.",
+        variant: "destructive",
+      });
     }
   };
 

@@ -46,7 +46,17 @@ class RegistroEmpresasView(mixins.CreateModelMixin, viewsets.GenericViewSet):
                 print(f"[ERROR] No se pudo enviar el email de confirmación a la empresa: {e}")
             return Response({'status': 'success', 'message': 'Registro de empresa realizado correctamente.', 'id': empresa.id}, status=status.HTTP_201_CREATED)
         except serializers.ValidationError as e:
-            return Response({'status': 'error', 'message': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            # Formatear errores de validación de manera legible
+            error_messages = {}
+            if isinstance(e.detail, dict):
+                for field, errors in e.detail.items():
+                    if isinstance(errors, list):
+                        error_messages[field] = [str(err) for err in errors]
+                    else:
+                        error_messages[field] = str(errors)
+            else:
+                error_messages = {'detail': str(e.detail)}
+            return Response({'status': 'error', 'message': error_messages}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'status': 'error', 'message': f'Ha ocurrido un error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -70,8 +80,18 @@ class RegistroParticipantesView(mixins.CreateModelMixin, mixins.ListModelMixin, 
                 asistente = asistente_serializer.save() # This will handle MiembroGrupo creation
 
                 return Response({'status': 'success', 'message': 'Registro de participante realizado correctamente.', 'id': asistente.id}, status=status.HTTP_201_CREATED)
-        except serializers.ValidationError as e: # Added this block for RegistroParticipantesView
-            return Response({'status': 'error', 'message': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+        except serializers.ValidationError as e:
+            # Formatear errores de validación de manera legible
+            error_messages = {}
+            if isinstance(e.detail, dict):
+                for field, errors in e.detail.items():
+                    if isinstance(errors, list):
+                        error_messages[field] = [str(err) for err in errors]
+                    else:
+                        error_messages[field] = str(errors)
+            else:
+                error_messages = {'detail': str(e.detail)}
+            return Response({'status': 'error', 'message': error_messages}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'status': 'error', 'message': f'Ha ocurrido un error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -94,7 +114,17 @@ class InscripcionViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
             headers = self.get_success_headers(serializer.data)
             return Response({'status': 'success', 'message': 'Inscripción realizada correctamente. Se ha enviado un email de confirmación.'}, status=status.HTTP_201_CREATED, headers=headers)
         except serializers.ValidationError as e:
-            return Response({'status': 'error', 'message': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            # Formatear errores de validación de manera legible
+            error_messages = {}
+            if isinstance(e.detail, dict):
+                for field, errors in e.detail.items():
+                    if isinstance(errors, list):
+                        error_messages[field] = [str(err) for err in errors]
+                    else:
+                        error_messages[field] = str(errors)
+            else:
+                error_messages = {'detail': str(e.detail)}
+            return Response({'status': 'error', 'message': error_messages}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'status': 'error', 'message': f'Ha ocurrido un error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -756,4 +786,92 @@ class CargaMasivaAsistentesView(views.APIView):
             return Response({
                 'status': 'error',
                 'message': f'Error procesando archivo: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ActualizarDNIView(views.APIView):
+    """
+    Vista para actualizar el DNI de un asistente usando un token único.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        """
+        Verifica si el token es válido y devuelve la información del asistente.
+        """
+        token = request.query_params.get('token')
+        
+        if not token:
+            return Response({
+                'status': 'error',
+                'message': 'Token no proporcionado.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            asistente = Asistente.objects.get(dni_update_token=token)
+            return Response({
+                'status': 'success',
+                'asistente': {
+                    'nombre_completo': asistente.nombre_completo,
+                    'email': asistente.email
+                }
+            }, status=status.HTTP_200_OK)
+        except Asistente.DoesNotExist:
+            return Response({
+                'status': 'error',
+                'message': 'Token inválido o expirado.'
+            }, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request):
+        """
+        Actualiza el DNI del asistente y elimina el token.
+        """
+        token = request.data.get('token')
+        nuevo_dni = request.data.get('dni')
+        
+        if not token or not nuevo_dni:
+            return Response({
+                'status': 'error',
+                'message': 'Token y DNI son requeridos.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            asistente = Asistente.objects.get(dni_update_token=token)
+            
+            # Validar el DNI usando el serializer
+            from .serializers import AsistenteSerializer
+            serializer = AsistenteSerializer()
+            try:
+                dni_validado = serializer.validate_dni(nuevo_dni)
+            except serializers.ValidationError as e:
+                return Response({
+                    'status': 'error',
+                    'message': str(e.detail[0]) if isinstance(e.detail, list) else str(e.detail)
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Verificar si el DNI ya existe
+            if Asistente.objects.filter(dni=dni_validado).exclude(id=asistente.id).exists():
+                return Response({
+                    'status': 'error',
+                    'message': 'Este DNI ya está registrado en el sistema.'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Actualizar el DNI y eliminar el token
+            asistente.dni = dni_validado
+            asistente.dni_update_token = None
+            asistente.save()
+            
+            return Response({
+                'status': 'success',
+                'message': 'DNI actualizado correctamente.'
+            }, status=status.HTTP_200_OK)
+            
+        except Asistente.DoesNotExist:
+            return Response({
+                'status': 'error',
+                'message': 'Token inválido o expirado.'
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                'status': 'error',
+                'message': f'Error actualizando el DNI: {str(e)}'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

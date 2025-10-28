@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django.utils import timezone
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
 from .models import Disertante, Empresa, Asistente, Inscripcion, Certificado, Programa
 from .email import send_certificate_email
 
@@ -12,7 +15,58 @@ class AsistenteAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'email', 'dni', 'asistencia_confirmada', 'fecha_confirmacion')
     list_filter = ('asistencia_confirmada', 'fecha_confirmacion')
     search_fields = ('first_name', 'last_name', 'email', 'dni')
-    actions = ['confirmar_asistencia', 'enviar_certificados']
+    actions = ['confirmar_asistencia', 'enviar_certificados', 'enviar_solicitud_actualizacion_dni']
+
+    def enviar_solicitud_actualizacion_dni(self, request, queryset):
+        """
+        Envía email a los asistentes seleccionados que no tienen DNI válido,
+        con un enlace para que actualicen su DNI.
+        """
+        # Filtrar solo asistentes sin DNI válido (con token asignado)
+        asistentes_sin_dni = queryset.filter(
+            dni__isnull=True
+        ) | queryset.filter(dni='')
+        
+        if not asistentes_sin_dni.exists():
+            self.message_user(request, "Los asistentes seleccionados ya tienen DNI válido.", level='warning')
+            return
+        
+        enviados = 0
+        errores = 0
+        
+        for asistente in asistentes_sin_dni:
+            if not asistente.dni_update_token:
+                self.message_user(request, f"El asistente {asistente.nombre_completo} no tiene token asignado. Ejecuta el script fix_dni.py primero.", level='error')
+                continue
+            
+            try:
+                # Construir el enlace
+                base_url = getattr(settings, 'FRONTEND_URL', 'https://congresologistica.unab.edu.ar')
+                enlace = f"{base_url}/actualizar-dni?token={asistente.dni_update_token}"
+                
+                # Renderizar el template
+                html_content = render_to_string('email/dni_update.html', {
+                    'nombre': asistente.first_name,
+                    'enlace': enlace
+                })
+                
+                # Crear y enviar el email
+                subject = 'Actualización de DNI - Congreso de Logística UNaB 2025'
+                from_email = settings.DEFAULT_FROM_EMAIL
+                to_email = asistente.email
+                
+                email = EmailMultiAlternatives(subject, '', from_email, [to_email])
+                email.attach_alternative(html_content, "text/html")
+                email.send()
+                
+                enviados += 1
+            except Exception as e:
+                errores += 1
+                print(f"[ERROR] Error enviando email a {asistente.email}: {e}")
+        
+        self.message_user(request, f"{enviados} emails enviados correctamente. {errores} errores.")
+    
+    enviar_solicitud_actualizacion_dni.short_description = "Enviar solicitud de actualización de DNI"
 
     def confirmar_asistencia(self, request, queryset):
         updated_count = 0

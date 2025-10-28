@@ -24,12 +24,17 @@ import {
   IdCard,
   CheckCircle
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-// Schemas de validación (mantenidos igual)
+// Schemas de validación con validación de DNI argentino
 const participantSchema = z.object({
   firstName: z.string().min(1, "El nombre es requerido"),
   lastName: z.string().min(1, "El apellido es requerido"),
-  dni: z.string().min(1, "El DNI es requerido"),
+  dni: z
+    .string()
+    .min(1, "El DNI es requerido")
+    .regex(/^\d{7,8}$/, "El DNI debe tener 8 dígitos numéricos")
+    .transform((val) => val.replace(/\D/g, "").slice(0, 8)),
   email: z.string().email("Debe ser un correo electrónico válido"),
   phone: z.string().min(1, "El teléfono es requerido"),
 });
@@ -59,7 +64,11 @@ const professionalSchema = participantSchema.extend({
 const groupMemberSchema = z.object({
   firstName: z.string().min(1, "El nombre del integrante es requerido"),
   lastName: z.string().min(1, "El apellido del integrante es requerido"),
-  dni: z.string().min(1, "El DNI del integrante es requerido"),
+  dni: z
+    .string()
+    .min(1, "El DNI del integrante es requerido")
+    .regex(/^\d{7,8}$/, "El DNI debe tener 8 dígitos numéricos")
+    .transform((val) => val.replace(/\D/g, "").slice(0, 8)),
   email: z.string().email("Debe ser un correo electrónico válido"),
 });
 
@@ -132,6 +141,7 @@ type FormData = z.infer<typeof formSchema>;
 
 const RegistroParticipantes: React.FC = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [showModal, setShowModal] = useState(false);
   const [profileType, setProfileType] = useState<FormData["profileType"]>("visitor");
   const [groupSize, setGroupSize] = useState<number>(0);
@@ -227,7 +237,11 @@ const RegistroParticipantes: React.FC = () => {
         );
         
         if (membersWithData.length !== data.groupSize) {
-          alert(`Error: Has especificado ${data.groupSize} integrantes, pero solo has completado los datos de ${membersWithData.length} integrantes. Por favor completa todos los campos de todos los integrantes.`);
+          toast({
+            title: "❌ Datos incompletos",
+            description: `Has especificado ${data.groupSize} integrantes, pero solo has completado los datos de ${membersWithData.length}. Por favor completa todos los campos.`,
+            variant: "destructive",
+          });
           return;
         }
         // Estructura para el nuevo sistema de inscripción grupal
@@ -293,32 +307,77 @@ const RegistroParticipantes: React.FC = () => {
       }
 
       if (response && response.status === "success") {
+        toast({
+          title: "✅ ¡Registro exitoso!",
+          description: "Tu inscripción ha sido procesada correctamente. Revisa tu correo electrónico.",
+          variant: "default",
+        });
         setShowModal(true);
         reset();
         setGroupSize(0);
         setHasDeclaredGroupSize(false);
       } else {
+        // Procesar errores del backend de forma más detallada
+        let errorTitle = "Error en el registro";
         let errorMsg = "";
+        
         if (response && response.message && typeof response.message === "object") {
-          // Formatear errores de validación de manera más legible
+          // Errores de validación estructurados por campo
           const errors = response.message;
+          const fieldTranslations: Record<string, string> = {
+            'dni': 'DNI',
+            'email': 'Correo electrónico',
+            'first_name': 'Nombre',
+            'last_name': 'Apellido',
+            'phone': 'Teléfono',
+            'group_size': 'Cantidad de miembros',
+            'miembros_grupo_nuevos': 'Datos de miembros del grupo',
+            'institution': 'Institución',
+            'career': 'Carrera',
+            'year_of_study': 'Año de cursada',
+            'work_area': 'Área de trabajo',
+            'occupation': 'Cargo',
+            'group_name': 'Nombre del grupo',
+            'profile_type': 'Tipo de participante'
+          };
+
           const errorList = Object.entries(errors).map(([field, msgs]: [string, any]) => {
-            const fieldName = field === 'group_size' ? 'Cantidad de miembros' : 
-                            field === 'miembros_grupo_nuevos' ? 'Datos de miembros' : field;
-            const message = Array.isArray(msgs) ? msgs[0] : msgs;
+            const fieldName = fieldTranslations[field] || field;
+            let message = Array.isArray(msgs) ? msgs[0] : msgs;
+            
+            // Si el mensaje es un objeto, intentar extraer el string
+            if (typeof message === 'object' && message !== null) {
+              message = message.message || message.string || JSON.stringify(message);
+            }
+            
             return `${fieldName}: ${message}`;
           });
-          errorMsg = errorList.join('\n');
+          
+          errorTitle = "Por favor corrige los siguientes errores";
+          errorMsg = errorList.join('\n\n');
+        } else if (typeof response?.message === 'string') {
+          errorMsg = response.message;
         } else if (response && typeof response === "object") {
-          errorMsg = JSON.stringify(response);
+          errorMsg = "Error al procesar la solicitud. Por favor verifica que todos los campos estén completos y correctos.";
         } else {
-          errorMsg = response?.message || "No se pudo inscribir.";
+          errorMsg = "No se pudo completar la inscripción. Por favor, revisa los datos e intenta nuevamente.";
         }
-        alert("Error en la inscripción:\n\n" + errorMsg);
+        
+        toast({
+          title: errorTitle,
+          description: errorMsg,
+          variant: "destructive",
+          duration: 8000, // Más tiempo para leer errores múltiples
+        });
       }
     } catch (error) {
       console.error("Error en la inscripción:", error);
-      alert("Hubo un error al procesar la inscripción. Por favor, inténtalo de nuevo.");
+      toast({
+        title: "Error de conexión",
+        description: "No se pudo conectar con el servidor. Por favor verifica tu conexión a internet y vuelve a intentarlo.",
+        variant: "destructive",
+        duration: 6000,
+      });
     }
   };
 
@@ -412,6 +471,11 @@ const RegistroParticipantes: React.FC = () => {
                   placeholder="12345678"
                   {...register("dni")}
                   error={getErrorMessage("dni")}
+                  maxLength={8}
+                  onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                    const target = e.target as HTMLInputElement;
+                    target.value = target.value.replace(/\D/g, "").slice(0, 8);
+                  }}
                 />
                 <FormInput
                   label="Teléfono"
@@ -710,6 +774,12 @@ const RegistroParticipantes: React.FC = () => {
                             icon={<IdCard className="h-4 w-4" />}
                             {...register(`groupMembers.${index}.dni`)}
                             error={getErrorMessage(`groupMembers.${index}.dni`)}
+                            maxLength={8}
+                            placeholder="12345678"
+                            onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                              const target = e.target as HTMLInputElement;
+                              target.value = target.value.replace(/\D/g, "").slice(0, 8);
+                            }}
                           />
                           <FormInput
                             type="email"

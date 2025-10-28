@@ -23,6 +23,7 @@ import {
   Users
 } from "lucide-react";
 import { registrarEmpresa } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 const companyRegistrationSchema = z.object({
   companyName: z.string().min(1, "El nombre de la empresa es requerido"),
@@ -43,6 +44,7 @@ const companyRegistrationSchema = z.object({
 type CompanyRegistrationFormData = z.infer<typeof companyRegistrationSchema>;
 
 const RegistroEmpresas: React.FC = () => {
+  const { toast } = useToast();
   const [showModal, setShowModal] = useState(false);
   const [participationType, setParticipationType] = useState<string>("");
   const [otraParticipacion, setOtraParticipacion] = useState("");
@@ -96,22 +98,39 @@ const RegistroEmpresas: React.FC = () => {
     try {
       const response = await registrarEmpresa(formData);
       if (response.status === "success") {
+        toast({
+          title: "✅ ¡Empresa registrada exitosamente!",
+          description: "Hemos recibido tu solicitud. Te contactaremos pronto.",
+          variant: "default",
+        });
         setShowModal(true);
         reset();
         setParticipationType("");
       } else {
-        let errorMsg = "Intente nuevamente.";
+        let errorMsg = "Por favor verifica los datos e intenta nuevamente.";
         if (response.message) {
           if (typeof response.message === "object") {
-            errorMsg = JSON.stringify(response.message, null, 2);
+            const errors = Object.entries(response.message).map(([field, msgs]: [string, any]) => {
+              const message = Array.isArray(msgs) ? msgs[0] : msgs;
+              return `• ${field}: ${message}`;
+            }).join('\n');
+            errorMsg = errors;
           } else {
             errorMsg = response.message;
           }
         }
-        alert("Error al registrar la empresa: " + errorMsg);
+        toast({
+          title: "❌ Error al registrar la empresa",
+          description: errorMsg,
+          variant: "destructive",
+        });
       }
-    } catch (err) {
-      alert("Error de conexión al registrar la empresa. " + (err?.message || ""));
+    } catch (err: any) {
+      toast({
+        title: "❌ Error de conexión",
+        description: err?.message || "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
+        variant: "destructive",
+      });
     }
   };
 

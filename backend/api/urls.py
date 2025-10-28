@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import DisertanteViewSet, VerificarDNIView, ProgramaViewSet, RegistroEmpresasView, RegistroParticipantesView, InscripcionViewSet, RegistroRapidoView, EmpresaViewSet, CargaMasivaAsistentesView, EnvioMasivoEmailsView
+from .views import DisertanteViewSet, VerificarDNIView, ProgramaViewSet, RegistroEmpresasView, RegistroParticipantesView, InscripcionViewSet, RegistroRapidoView, EmpresaViewSet, CargaMasivaAsistentesView, EnvioMasivoEmailsView, ActualizarDNIView
 from .qr_views import GenerateStaticQRView
 
 # Se crea un router para registrar los ViewSets
@@ -21,4 +21,5 @@ urlpatterns = [
     path('registro-rapido/', RegistroRapidoView.as_view({'post': 'create'}), name='registro-rapido'),
     path('carga-masiva/', CargaMasivaAsistentesView.as_view(), name='carga-masiva'),
     path('envio-masivo-emails/', EnvioMasivoEmailsView.as_view(), name='envio-masivo-emails'),
+    path('actualizar-dni/', ActualizarDNIView.as_view(), name='actualizar-dni'),
 ]

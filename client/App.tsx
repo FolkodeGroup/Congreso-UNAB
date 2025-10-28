@@ -20,6 +20,7 @@ import VerificarDNI from "./pages/VerificarDNI";
 import RegistroRapido from "./pages/RegistroRapido";
 import GenerarQRs from "./pages/GenerarQRs";
 import HistoriaCampus from "./pages/HistoriaCampus";
+import ActualizarDNI from "./pages/ActualizarDNI";
 
 import SobreElCongreso from "./pages/SobreElCongreso";
 import Layout from "./components/Layout";
@@ -136,6 +137,14 @@ const App = () => (
             element={
               <Layout>
                 <SobreElCongreso />
+              </Layout>
+            }
+          />
+          <Route
+            path="/actualizar-dni"
+            element={
+              <Layout>
+                <ActualizarDNI />
               </Layout>
             }
           />
