@@ -2,20 +2,20 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { 
-  FormInput, 
-  FormButton, 
-  FormCard, 
+import {
+  FormInput,
+  FormButton,
+  FormCard,
   FormSection,
   FormFileInput,
   FormTextArea
 } from "@/components/ui/modern-form";
-import { 
+import {
   Building2,
-  Mail, 
-  Phone, 
-  MapPin, 
-  User, 
+  Mail,
+  Phone,
+  MapPin,
+  User,
   FileText,
   CheckCircle,
   Briefcase,
@@ -48,7 +48,7 @@ const RegistroEmpresas: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [participationType, setParticipationType] = useState<string>("");
   const [otraParticipacion, setOtraParticipacion] = useState("");
-  
+
   const {
     register,
     handleSubmit,
@@ -60,11 +60,11 @@ const RegistroEmpresas: React.FC = () => {
   });
 
   const participationOptions = [
-  { id: "stand", label: "Stand/Exhibición", description: "Espacio para mostrar productos y servicios" },
-  { id: "sponsorship", label: "Patrocinio", description: "Apoyo financiero con beneficios de marca" },
-  { id: "speaking", label: "Ponencia/Charla", description: "Presentación técnica o caso de éxito" },
-  { id: "visitor", label: "Visitante", description: "Participación como asistente al evento" },
-  { id: "otra", label: "Otra (especificar)", description: "Otra modalidad, escribir abajo" },
+    { id: "stand", label: "Stand/Exhibición", description: "Espacio para mostrar productos y servicios" },
+    { id: "sponsorship", label: "Patrocinio", description: "Apoyo financiero con beneficios de marca" },
+    { id: "speaking", label: "Ponencia/Charla", description: "Presentación técnica o caso de éxito" },
+    { id: "visitor", label: "Visitante", description: "Participación como asistente al evento" },
+    { id: "otra", label: "Otra (especificar)", description: "Otra modalidad, escribir abajo" },
   ];
 
 
@@ -88,7 +88,7 @@ const RegistroEmpresas: React.FC = () => {
     formData.append("email_contacto", data.contactPersonEmail);
     formData.append("celular_contacto", data.contactPersonPhone);
     formData.append("cargo_contacto", data.cargoContacto);
-    
+
     // Enviar solo la opción seleccionada
     formData.append("participacion_opciones", participationType);
     formData.append("participacion_otra", participationType === "otra" ? otraParticipacion : "");

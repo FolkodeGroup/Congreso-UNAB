@@ -81,15 +81,7 @@ export default function EscaneoQR() {
         setError("Respuesta inesperada del servidor.");
       }
     } catch (err) {
-      console.error("Error:", err);
       setError("Error al conectar con el servidor.");
-    }
-  };
-
-  const descargarCertificado = () => {
-    if (certId) {
-      const url = `${API_HOST}/api/certificado/${certId}/`;
-      window.open(url, "_blank");
     }
   };
 
@@ -213,18 +205,6 @@ export default function EscaneoQR() {
                           </div>
                         )}
 
-                        {certId && (
-                          <div className="mt-4">
-                            <FormButton
-                              type="button"
-                              onClick={descargarCertificado}
-                              variant="secondary"
-                              icon={<Download className="h-4 w-4" />}
-                            >
-                              Descargar Certificado
-                            </FormButton>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>

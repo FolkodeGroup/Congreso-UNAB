@@ -23,7 +23,7 @@ export default function GenerarQRs() {
   const generateQRs = async () => {
     setLoading(true);
     try {
-  const response = await fetch(`${API_HOST}/api/generar-qrs/`);
+      const response = await fetch(`${API_HOST}/api/generar-qrs/`);
       const data = await response.json();
 
       if (response.ok) {

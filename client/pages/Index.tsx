@@ -415,7 +415,7 @@ export default function Index() {
           <div className="flex justify-center mt-12">
             <div className="w-full max-w-4xl rounded-lg overflow-hidden shadow-lg">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3274.70762014795!2d-58.38742082408727!3d-34.838443069932694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcd5aebf3ce8ad%3A0x61e0dc504088584!2sUniversidad%20Nacional%20Guillermo%20Brown%20(UNAB)!5e0!3m2!1ses-419!2sar!4v1756827211940!5m2!1ses-419!2sar"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3274.70762014795!2d-58.38742082408727!3d-34.838443069932694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcd5aebf3ce8ad%3A0x61e0dc504088584!2sUniversidad%20Nacional%2GGuillermo%20Brown%20(UNAB)!5e0!3m2!1ses-419!2sar!4v1756827211940!5m2!1ses-419!2sar"
                 width="100%"
                 height="450"
                 style={{ border: 0 }}

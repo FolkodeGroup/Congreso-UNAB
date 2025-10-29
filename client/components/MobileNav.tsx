@@ -39,6 +39,7 @@ export default function MobileNav() {
       ],
     },
     { name: "Registro", path: "/registro", isDropdown: false },
+    { name: "Generar QRs", path: "/generar-qrs", isDropdown: false },
     { name: "Contacto", path: "/contacto", isDropdown: false },
     {
       name: "Historia del Campus",
@@ -59,7 +60,7 @@ export default function MobileNav() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-congress-blue z-50 flex flex-col items-center justify-center space-y-6">
+        <div className="fixed inset-0 bg-congress-blue z-40 flex flex-col items-center justify-center space-y-6">
           <button
             onClick={closeMenu}
             className="absolute top-4 right-4 text-white p-2"

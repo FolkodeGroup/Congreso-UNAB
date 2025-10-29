@@ -205,7 +205,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://www.congresologistica.unab.edu.ar',
     'https://congresologistica.unab.edu.ar',
 ]
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     'accept',
@@ -245,5 +245,3 @@ if not DEBUG:
     # Otras configuraciones útiles
     CSRF_COOKIE_SAMESITE = 'Lax'  # 'Lax' es un buen compromiso entre seguridad y usabilidad
     SESSION_COOKIE_SAMESITE = 'Lax'
-
-

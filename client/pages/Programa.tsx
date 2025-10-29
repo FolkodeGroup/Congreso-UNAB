@@ -995,9 +995,9 @@ export default function Programa() {
                           const parent = target.parentElement;
                           if (parent) {
                             parent.innerHTML = `
-                              <div class=\"w-full h-full bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center\">
-                                <svg class=\"text-white text-8xl w-22 h-22\" fill=\"currentColor\" viewBox=\"0 0 24 24\">
-                                  <path d=\"M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\"/>
+                              <div class="w-full h-full bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
+                                <svg class="text-white text-8xl w-22 h-22" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                                 </svg>
                               </div>
                             `;

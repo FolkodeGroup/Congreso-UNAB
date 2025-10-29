@@ -30,7 +30,7 @@ const BENEFITS = [
     id: "visibility",
     icon: FiTrendingUp,
     title: "Visibilidad de Marca",
-    description: `Posiciona tu empresa frente a ${EXPECTED_ATTENDEES} especializados en logística y transporte, incluyendo tomadores de decisión.`,
+    description: `Posiciona tu empresa frente a ${EXPECTED_ATTENDEES} especializados en logística y transporte, incluyendo tomadores de decisión.`, 
     gradient: "from-congress-blue/90 to-congress-cyan/80",
     iconGradient: "from-congress-blue to-congress-cyan",
   },
