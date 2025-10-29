@@ -5,9 +5,24 @@ from django.db import transaction
 from .models import Disertante, Inscripcion, Programa, Certificado, Asistente, Empresa, MiembroGrupo
 from .serializers import DisertanteSerializer, InscripcionSerializer, AsistenteSerializer, ProgramaSerializer, EmpresaSerializer, MiembroGrupoSerializer, EmpresaLogoSerializer
 from django.utils import timezone
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 from .email import send_certificate_email, send_confirmation_email, send_bulk_confirmation_email
 import pandas as pd
 import re
+
+
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class GetCSRFTokenView(views.APIView):
+    """
+    Vista simple para obtener un token CSRF.
+    Esto es útil para aplicaciones frontend que necesitan obtener
+    el token antes de hacer peticiones POST.
+    """
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        return Response({'detail': 'CSRF cookie set'}, status=status.HTTP_200_OK)
 
 class DisertanteViewSet(viewsets.ReadOnlyModelViewSet):
     """

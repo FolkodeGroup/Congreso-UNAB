@@ -49,15 +49,40 @@ async function ensureCsrfToken(): Promise<string> {
   // Si no hay token o está vacío, hacer una petición GET para obtener uno nuevo
   if (!token) {
     try {
-      // Hacer una petición GET a cualquier endpoint del API para obtener el token
-      await fetch(`${API_BASE}/empresas/`, {
+      console.log('[CSRF] No se encontró token en cookie, obteniendo del servidor...');
+      
+      // Usar el endpoint dedicado para obtener el token CSRF
+      const response = await fetch(`${API_BASE}/csrf/`, {
         method: 'GET',
         credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+        },
       });
+      
+      if (!response.ok) {
+        console.error('[CSRF] Error al obtener token. Status:', response.status);
+      }
+      
+      // Esperar un momento para que la cookie se establezca
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
       token = getCookie('csrftoken');
+      
+      if (!token) {
+        console.error('[CSRF] No se pudo obtener token después de GET al endpoint /csrf/');
+        console.error('[CSRF] Headers de respuesta:', Array.from(response.headers.entries()));
+        console.error('[CSRF] Cookies actuales:', document.cookie);
+      } else {
+        console.log('[CSRF] Token obtenido exitosamente');
+      }
     } catch (error) {
-      console.warn('No se pudo obtener token CSRF del servidor:', error);
+      console.error('[CSRF] Error al obtener token del servidor:', error);
     }
+  }
+  
+  if (!token) {
+    console.warn('[CSRF] Advertencia: No se pudo obtener token CSRF. Las peticiones POST podrían fallar.');
   }
   
   return token || '';
@@ -110,49 +135,70 @@ async function postWithCsrf(url: string, data: any, isFormData: boolean = false)
   return response;
 }
 
+/**
+ * Helper para parsear respuestas JSON con manejo de errores robusto
+ */
+async function parseResponse(response: Response): Promise<any> {
+  const contentType = response.headers.get('content-type');
+  
+  // Si no es JSON, intentar leer como texto para ver qué devolvió el servidor
+  if (!contentType || !contentType.includes('application/json')) {
+    const text = await response.text();
+    console.error('Respuesta no es JSON:', text.substring(0, 500));
+    throw new Error(`El servidor devolvió ${contentType || 'contenido no JSON'}. Puede ser un error del servidor.`);
+  }
+  
+  try {
+    return await response.json();
+  } catch (error) {
+    console.error('Error al parsear JSON:', error);
+    throw new Error('Error al procesar la respuesta del servidor.');
+  }
+}
+
 // Función para registrar empresa
 // Función para registrar empresa con archivos
 export async function registrarEmpresa(data: FormData) {
   const res = await postWithCsrf(`${API_BASE}/registro-empresas/`, data, true);
-  return await res.json();
+  return await parseResponse(res);
 }
 
 // Función para verificar DNI y confirmar asistencia
 export async function verificarDNI(dni: string) {
   const res = await postWithCsrf(`${API_BASE}/verificar-dni/`, { dni });
-  return await res.json();
+  return await parseResponse(res);
 }
 
 // Función para registro rápido in-situ
 export async function registroRapido(data: any) {
   const res = await postWithCsrf(`${API_BASE}/registro-rapido/`, data);
-  return await res.json();
+  return await parseResponse(res);
 }
 
 // Función para generar QRs estáticos
 export async function generarQRsEstaticos() {
   const res = await fetch(`${API_BASE}/generar-qrs/`);
-  return await res.json();
+  return await parseResponse(res);
 }
 
 export async function registrarAsistencia(data: any) {
   const res = await postWithCsrf(`${API_BASE}/registrar-asistencia/`, data);
-  return await res.json();
+  return await parseResponse(res);
 }
 
 // Utilidades para consumir la API del backend
 export async function inscribirIndividual(data: any) {
   const res = await postWithCsrf(`${API_BASE}/inscripcion/`, data);
-  return await res.json();
+  return await parseResponse(res);
 }
 
 export async function inscribirGrupal(data: any) {
   const res = await postWithCsrf(`${API_BASE}/inscripcion-grupal/`, data);
-  return await res.json();
+  return await parseResponse(res);
 }
 
 // Nueva función para el sistema mejorado de inscripción grupal
 export async function inscribirParticipante(data: any) {
   const res = await postWithCsrf(`${API_BASE}/participantes/`, data);
-  return await res.json();
+  return await parseResponse(res);
 }
