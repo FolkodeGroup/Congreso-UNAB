@@ -246,6 +246,7 @@ if not DEBUG:
 
 # Estas configuraciones son críticas para que funcione correctamente (desarrollo y producción)
 CSRF_COOKIE_HTTPONLY = False  # Permite que JavaScript acceda a la cookie CSRF
+CSRF_COOKIE_SECURE = False  # Permitir en HTTP para desarrollo (cambiar a True en prod con HTTPS)
 SESSION_COOKIE_HTTPONLY = True  # Protege la cookie de sesión
 CSRF_USE_SESSIONS = False  # Guarda el token CSRF en cookies, no en sesión
 CSRF_COOKIE_SAMESITE = 'Lax'  # 'Lax' es un buen compromiso entre seguridad y usabilidad

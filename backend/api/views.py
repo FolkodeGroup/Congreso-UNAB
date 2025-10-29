@@ -7,22 +7,30 @@ from .serializers import DisertanteSerializer, InscripcionSerializer, AsistenteS
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
+from django.middleware.csrf import get_token
 from .email import send_certificate_email, send_confirmation_email, send_bulk_confirmation_email
 import pandas as pd
 import re
 
 
-@method_decorator(ensure_csrf_cookie, name='dispatch')
 class GetCSRFTokenView(views.APIView):
     """
     Vista simple para obtener un token CSRF.
     Esto es útil para aplicaciones frontend que necesitan obtener
     el token antes de hacer peticiones POST.
+    
+    IMPORTANTE: No usar @ensure_csrf_cookie ya que fuerza HTTPOnly=True
+    En su lugar, llamamos manualmente get_token() que respeta CSRF_COOKIE_HTTPONLY=False
     """
     permission_classes = [AllowAny]
     
     def get(self, request):
-        return Response({'detail': 'CSRF cookie set'}, status=status.HTTP_200_OK)
+        # Forzar la creación del token CSRF
+        csrf_token = get_token(request)
+        return Response({
+            'detail': 'CSRF cookie set',
+            'csrfToken': csrf_token  # También lo devolvemos en la respuesta por si acaso
+        }, status=status.HTTP_200_OK)
 
 class DisertanteViewSet(viewsets.ReadOnlyModelViewSet):
     """
