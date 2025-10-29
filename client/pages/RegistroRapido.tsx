@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +19,8 @@ import {
   CheckCircle,
   Zap
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 // Esquema de validación para registro rápido
 const registroRapidoSchema = z.object({
@@ -40,7 +40,6 @@ export default function RegistroRapido() {
   const [showModal, setShowModal] = useState(false);
   const [asistente, setAsistente] = useState<any>(null);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const {
     register,
@@ -85,23 +84,17 @@ export default function RegistroRapido() {
       if (response.ok) {
         setShowModal(true);
         setAsistente(data);
-        toast({
-          title: "✅ Registro exitoso",
+        toast.success("Registro exitoso", {
           description: "Tu asistencia ha sido confirmada correctamente",
-          variant: "default",
         });
       } else {
-        toast({
-          title: "Error en el registro",
+        toast.error("Error en el registro", {
           description: result.message || "No se pudo completar el registro. Por favor, verifica los datos e intenta nuevamente.",
-          variant: "destructive",
         });
       }
     } catch (error) {
-      toast({
-        title: "Error de conexión",
+      toast.error("Error de conexión", {
         description: "No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet e intenta nuevamente.",
-        variant: "destructive",
       });
     }
   };

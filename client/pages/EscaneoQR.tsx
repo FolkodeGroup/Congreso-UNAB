@@ -7,7 +7,6 @@ import {
   FormCard, 
   FormSection
 } from "@/components/ui/modern-form";
-import { API_HOST } from "@/lib/api";
 import { 
   QrCode,
   Camera,
