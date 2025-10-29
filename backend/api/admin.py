@@ -6,6 +6,30 @@ from django.conf import settings
 from .models import Disertante, Empresa, Asistente, Inscripcion, Certificado, Programa
 from .email import send_certificate_email
 
+
+class DNIFilter(admin.SimpleListFilter):
+    """
+    Filtro personalizado para filtrar asistentes según si tienen o no DNI válido.
+    """
+    title = 'Estado DNI'
+    parameter_name = 'dni_status'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('sin_dni', 'Sin DNI'),
+            ('con_dni', 'Con DNI'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'sin_dni':
+            # Filtrar asistentes sin DNI (nulo o vacío)
+            return queryset.filter(dni__isnull=True) | queryset.filter(dni='')
+        if self.value() == 'con_dni':
+            # Filtrar asistentes con DNI válido (no nulo y no vacío)
+            return queryset.exclude(dni__isnull=True).exclude(dni='')
+        return queryset
+
+
 class InscripcionAdmin(admin.ModelAdmin):
     list_display = ('asistente', 'empresa', 'fecha_inscripcion')
     list_filter = ('fecha_inscripcion',)
@@ -13,7 +37,7 @@ class InscripcionAdmin(admin.ModelAdmin):
 
 class AsistenteAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'email', 'dni', 'asistencia_confirmada', 'fecha_confirmacion')
-    list_filter = ('asistencia_confirmada', 'fecha_confirmacion')
+    list_filter = (DNIFilter, 'asistencia_confirmada', 'fecha_confirmacion')
     search_fields = ('first_name', 'last_name', 'email', 'dni')
     actions = ['confirmar_asistencia', 'enviar_certificados', 'enviar_solicitud_actualizacion_dni']
 
