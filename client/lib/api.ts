@@ -46,7 +46,7 @@ async function ensureCsrfToken(): Promise<string> {
   // Primero intentar obtener el token de la cookie
   let token = getCookie('csrftoken');
   
-  // Si no hay token o está vacío, hacer una petición GET para obtener uno nuevo
+  // Si no hay token o está vacío, obtenerlo del servidor
   if (!token) {
     try {
       console.log('[CSRF] No se encontró token en cookie, obteniendo del servidor...');
@@ -64,6 +64,17 @@ async function ensureCsrfToken(): Promise<string> {
         console.error('[CSRF] Error al obtener token. Status:', response.status);
       }
       
+      // Intentar obtener el token de la respuesta JSON (fallback si cookie tiene HTTPOnly)
+      try {
+        const data = await response.json();
+        if (data.csrfToken) {
+          console.log('[CSRF] Token obtenido de respuesta JSON (fallback)');
+          return data.csrfToken;
+        }
+      } catch (e) {
+        // Si no hay JSON o no tiene el token, continuar con el método de cookies
+      }
+      
       // Esperar un momento para que la cookie se establezca
       await new Promise(resolve => setTimeout(resolve, 150));
       
@@ -71,10 +82,9 @@ async function ensureCsrfToken(): Promise<string> {
       
       if (!token) {
         console.error('[CSRF] No se pudo obtener token después de GET al endpoint /csrf/');
-        console.error('[CSRF] Headers de respuesta:', Array.from(response.headers.entries()));
         console.error('[CSRF] Cookies actuales:', document.cookie);
       } else {
-        console.log('[CSRF] Token obtenido exitosamente');
+        console.log('[CSRF] Token obtenido exitosamente de cookie');
       }
     } catch (error) {
       console.error('[CSRF] Error al obtener token del servidor:', error);
