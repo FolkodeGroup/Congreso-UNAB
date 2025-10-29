@@ -45,6 +45,8 @@ class AsistenteAdmin(admin.ModelAdmin):
         """
         Envía email a los asistentes seleccionados que no tienen DNI válido,
         con un enlace para que actualicen su DNI.
+        
+        LÍMITE: Máximo 50 correos por ejecución para evitar timeouts.
         """
         # Filtrar solo asistentes sin DNI válido (con token asignado)
         asistentes_sin_dni = queryset.filter(
@@ -55,12 +57,26 @@ class AsistenteAdmin(admin.ModelAdmin):
             self.message_user(request, "Los asistentes seleccionados ya tienen DNI válido.", level='warning')
             return
         
+        # LIMITAR a 50 para evitar timeout de Gunicorn
+        MAX_EMAILS = 50
+        total_sin_dni = asistentes_sin_dni.count()
+        asistentes_lote = asistentes_sin_dni[:MAX_EMAILS]
+        
+        if total_sin_dni > MAX_EMAILS:
+            self.message_user(
+                request, 
+                f"⚠️ Hay {total_sin_dni} asistentes sin DNI. Solo se enviarán {MAX_EMAILS} correos en este lote. "
+                f"Ejecuta la acción nuevamente para enviar los siguientes.",
+                level='warning'
+            )
+        
         enviados = 0
         errores = 0
+        sin_token = 0
         
-        for asistente in asistentes_sin_dni:
+        for asistente in asistentes_lote:
             if not asistente.dni_update_token:
-                self.message_user(request, f"El asistente {asistente.nombre_completo} no tiene token asignado. Ejecuta el script fix_dni.py primero.", level='error')
+                sin_token += 1
                 continue
             
             try:
@@ -88,9 +104,19 @@ class AsistenteAdmin(admin.ModelAdmin):
                 errores += 1
                 print(f"[ERROR] Error enviando email a {asistente.email}: {e}")
         
-        self.message_user(request, f"{enviados} emails enviados correctamente. {errores} errores.")
+        # Mensaje final con resumen
+        mensaje = f"✅ {enviados} emails enviados correctamente."
+        if errores > 0:
+            mensaje += f" ❌ {errores} errores."
+        if sin_token > 0:
+            mensaje += f" ⚠️ {sin_token} sin token (ejecuta fix_dni.py)."
+        if total_sin_dni > MAX_EMAILS:
+            pendientes = total_sin_dni - MAX_EMAILS
+            mensaje += f" 📬 Quedan {pendientes} pendientes."
+        
+        self.message_user(request, mensaje)
     
-    enviar_solicitud_actualizacion_dni.short_description = "Enviar solicitud de actualización de DNI"
+    enviar_solicitud_actualizacion_dni.short_description = "Enviar solicitud de actualización de DNI (máx. 50)"
 
     def confirmar_asistencia(self, request, queryset):
         updated_count = 0
