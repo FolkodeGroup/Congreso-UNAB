@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, QrCode } from "lucide-react";
 import { toast } from "sonner";
+import { API_HOST } from "@/lib/api";
 
 interface QRData {
   url: string;
@@ -22,8 +23,7 @@ export default function GenerarQRs() {
   const generateQRs = async () => {
     setLoading(true);
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-      const response = await fetch(`${apiUrl}/api/generar-qrs/`);
+  const response = await fetch(`${API_HOST}/api/generar-qrs/`);
       const data = await response.json();
 
       if (response.ok) {

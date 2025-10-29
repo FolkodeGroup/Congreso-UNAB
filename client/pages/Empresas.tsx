@@ -30,7 +30,7 @@ const BENEFITS = [
     id: "visibility",
     icon: FiTrendingUp,
     title: "Visibilidad de Marca",
-    description: `Posiciona tu empresa frente a ${EXPECTED_ATTENDEES} especializados en logística y transporte, incluyendo tomadores de decisión.`,
+    description: `Posiciona tu empresa frente a ${EXPECTED_ATTENDEES} especializados en logística y transporte, incluyendo tomadores de decisión.`, 
     gradient: "from-congress-blue/90 to-congress-cyan/80",
     iconGradient: "from-congress-blue to-congress-cyan",
   },
@@ -166,7 +166,7 @@ export default function Empresas() {
               Participa como <span className="text-congress-cyan">Empresa</span>
             </h1>
             <p className="text-xl mb-8 opacity-90">
-              Sumate a las más de 30 empresas líderes del sector que ya
+              Sumate a las más de 50 empresas líderes del sector que ya
               confirmaron su participación en el congreso más importante de
               logística y transporte del país.
             </p>

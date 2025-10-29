@@ -22,17 +22,19 @@ export function groupWith<T>(
   );
 }
 
-export function chunk<T>(arr: T[], size: number): T[][] {
-  if (size <= 0) {
-    // Return an empty array or handle as an error, depending on desired behavior.
-    // For this case, returning an array with the original array as a single chunk might be safe.
-    // Or throwing an error if size is expected to be always positive.
-    // Let's return an empty array for safety, to avoid breaking rendering.
-    return [];
+// Helper para obtener el token CSRF de la cookie
+export function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
   }
-  const result: T[][] = [];
-  for (let i = 0; i < arr.length; i += size) {
-    result.push(arr.slice(i, i + size));
-  }
-  return result;
+  return cookieValue;
 }

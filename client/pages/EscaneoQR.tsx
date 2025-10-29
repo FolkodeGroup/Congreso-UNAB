@@ -7,6 +7,7 @@ import {
   FormCard, 
   FormSection
 } from "@/components/ui/modern-form";
+import { API_HOST } from "@/lib/api";
 import { 
   QrCode,
   Camera,
@@ -87,8 +88,7 @@ export default function EscaneoQR() {
 
   const descargarCertificado = () => {
     if (certId) {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-      const url = `${apiUrl}/api/certificado/${certId}/`;
+      const url = `${API_HOST}/api/certificado/${certId}/`;
       window.open(url, "_blank");
     }
   };

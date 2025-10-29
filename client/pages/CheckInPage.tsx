@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { QrReader } from "react-qr-reader";
 import { Label } from "@/components/ui/label";
+import { API_HOST } from "@/lib/api";
 
 export default function CheckInPage() {
   const [qrCode, setQrCode] = useState<string>("");
@@ -29,8 +30,7 @@ export default function CheckInPage() {
   const processCheckIn = async (code: string) => {
     setLoading(true);
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-      const response = await fetch(`${apiUrl}/api/checkin/`, {
+      const response = await fetch(`${API_HOST}/api/checkin/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

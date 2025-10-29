@@ -2,26 +2,28 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { 
-  FormInput, 
-  FormButton, 
-  FormCard, 
+import {
+  FormInput,
+  FormButton,
+  FormCard,
   FormSection,
   FormFileInput,
   FormTextArea
 } from "@/components/ui/modern-form";
-import { 
+import {
   Building2,
-  Mail, 
-  Phone, 
-  MapPin, 
-  User, 
+  Mail,
+  Phone,
+  MapPin,
+  User,
   FileText,
   CheckCircle,
   Briefcase,
   Crown,
   Users
 } from "lucide-react";
+import { registrarEmpresa } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 const companyRegistrationSchema = z.object({
   companyName: z.string().min(1, "El nombre de la empresa es requerido"),
@@ -42,10 +44,11 @@ const companyRegistrationSchema = z.object({
 type CompanyRegistrationFormData = z.infer<typeof companyRegistrationSchema>;
 
 const RegistroEmpresas: React.FC = () => {
+  const { toast } = useToast();
   const [showModal, setShowModal] = useState(false);
   const [participationType, setParticipationType] = useState<string>("");
   const [otraParticipacion, setOtraParticipacion] = useState("");
-  
+
   const {
     register,
     handleSubmit,
@@ -57,11 +60,11 @@ const RegistroEmpresas: React.FC = () => {
   });
 
   const participationOptions = [
-  { id: "stand", label: "Stand/Exhibición", description: "Espacio para mostrar productos y servicios" },
-  { id: "sponsorship", label: "Patrocinio", description: "Apoyo financiero con beneficios de marca" },
-  { id: "speaking", label: "Ponencia/Charla", description: "Presentación técnica o caso de éxito" },
-  { id: "visitor", label: "Visitante", description: "Participación como asistente al evento" },
-  { id: "otra", label: "Otra (especificar)", description: "Otra modalidad, escribir abajo" },
+    { id: "stand", label: "Stand/Exhibición", description: "Espacio para mostrar productos y servicios" },
+    { id: "sponsorship", label: "Patrocinio", description: "Apoyo financiero con beneficios de marca" },
+    { id: "speaking", label: "Ponencia/Charla", description: "Presentación técnica o caso de éxito" },
+    { id: "visitor", label: "Visitante", description: "Participación como asistente al evento" },
+    { id: "otra", label: "Otra (especificar)", description: "Otra modalidad, escribir abajo" },
   ];
 
 
@@ -85,7 +88,7 @@ const RegistroEmpresas: React.FC = () => {
     formData.append("email_contacto", data.contactPersonEmail);
     formData.append("celular_contacto", data.contactPersonPhone);
     formData.append("cargo_contacto", data.cargoContacto);
-    
+
     // Enviar solo la opción seleccionada
     formData.append("participacion_opciones", participationType);
     formData.append("participacion_otra", participationType === "otra" ? otraParticipacion : "");
@@ -93,24 +96,41 @@ const RegistroEmpresas: React.FC = () => {
       formData.append("logo", data.logo[0]);
     }
     try {
-      const response = await import("@/lib/api").then(api => api.registrarEmpresa(formData));
+      const response = await registrarEmpresa(formData);
       if (response.status === "success") {
+        toast({
+          title: "✅ ¡Empresa registrada exitosamente!",
+          description: "Hemos recibido tu solicitud. Te contactaremos pronto.",
+          variant: "default",
+        });
         setShowModal(true);
         reset();
         setParticipationType("");
       } else {
-        let errorMsg = "Intente nuevamente.";
+        let errorMsg = "Por favor verifica los datos e intenta nuevamente.";
         if (response.message) {
           if (typeof response.message === "object") {
-            errorMsg = JSON.stringify(response.message, null, 2);
+            const errors = Object.entries(response.message).map(([field, msgs]: [string, any]) => {
+              const message = Array.isArray(msgs) ? msgs[0] : msgs;
+              return `• ${field}: ${message}`;
+            }).join('\n');
+            errorMsg = errors;
           } else {
             errorMsg = response.message;
           }
         }
-        alert("Error al registrar la empresa: " + errorMsg);
+        toast({
+          title: "❌ Error al registrar la empresa",
+          description: errorMsg,
+          variant: "destructive",
+        });
       }
-    } catch (err) {
-      alert("Error de conexión al registrar la empresa. " + (err?.message || ""));
+    } catch (err: any) {
+      toast({
+        title: "❌ Error de conexión",
+        description: err?.message || "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -122,7 +142,7 @@ const RegistroEmpresas: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen form-bg-gradient py-12 px-4 sm:px-6 lg:px-8">
+    <div className="form-bg-gradient py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Modal de confirmación modernizado */}
         {showModal && (

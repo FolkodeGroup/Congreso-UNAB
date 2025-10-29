@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from io import BytesIO
 from django.core.files.base import ContentFile
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from django.utils import timezone
+import re
 
 
 class Disertante(models.Model):
@@ -12,6 +14,8 @@ class Disertante(models.Model):
     nombre = models.CharField(max_length=200)
     bio = models.TextField(verbose_name="Biografía")
     foto_url = models.CharField(max_length=300, blank=True, verbose_name="URL de la Foto")
+    foto = models.ImageField(upload_to='ponencias/', blank=True, null=True, verbose_name="Foto (subida)")
+    linkedin = models.URLField(blank=True, null=True, verbose_name="Perfil de LinkedIn")
     tema_presentacion = models.CharField(max_length=255, verbose_name="Título de la Presentación")
 
     def __str__(self):
@@ -48,7 +52,7 @@ class Programa(models.Model):
     ]
     
     titulo = models.CharField(max_length=255, verbose_name="Título del Evento")
-    disertante = models.ForeignKey(Disertante, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Disertante")
+    disertantes = models.ManyToManyField(Disertante, blank=True, verbose_name="Disertantes", related_name="programas")
     hora_inicio = models.TimeField(verbose_name="Hora de Inicio")
     hora_fin = models.TimeField(verbose_name="Hora de Fin")
     dia = models.DateField(verbose_name="Día del Evento")
@@ -71,13 +75,13 @@ class Empresa(models.Model):
     logo = models.ImageField(upload_to='logos_empresas/', blank=True, null=True, verbose_name="Logo de la empresa")
 
     # Contact Person
-    nombre_contacto = models.CharField(max_length=255, verbose_name="Nombre completo de la persona de contacto")
-    email_contacto = models.EmailField(unique=True, verbose_name="Correo electrónico de la persona de contacto")
-    celular_contacto = models.CharField(max_length=20, verbose_name="Número de celular de contacto")
-    cargo_contacto = models.CharField(max_length=255, verbose_name="Cargo que cumple en la empresa / institución")
+    nombre_contacto = models.CharField(max_length=255, blank=True, null=True, verbose_name="Nombre completo de la persona de contacto")
+    email_contacto = models.EmailField(unique=False, blank=True, null=True, verbose_name="Correo electrónico de la persona de contacto")
+    celular_contacto = models.CharField(max_length=20, blank=True, null=True, verbose_name="Número de celular de contacto")
+    cargo_contacto = models.CharField(max_length=255, blank=True, null=True, verbose_name="Cargo que cumple en la empresa / institución")
 
     # Participation
-    participacion_opciones = models.CharField(max_length=50, verbose_name="¿Cómo les gustaría participar?")
+    participacion_opciones = models.CharField(max_length=50, blank=True, null=True, verbose_name="¿Cómo les gustaría participar?")
     participacion_otra = models.CharField(max_length=255, blank=True, null=True, verbose_name="Otra forma de participación")
 
     def __str__(self):
@@ -85,21 +89,31 @@ class Empresa(models.Model):
             return self.nombre_empresa
         return f"Empresa sin nombre (ID: {self.id})"
 
+    class Meta:
+        ordering = ['nombre_empresa']
+
 class Asistente(models.Model):
     class ProfileType(models.TextChoices):
         VISITOR = 'VISITOR', 'Visitante'
         STUDENT = 'STUDENT', 'Estudiante'
         TEACHER = 'TEACHER', 'Docente'
         PROFESSIONAL = 'PROFESSIONAL', 'Profesional'
+        PRESS = 'PRESS', 'Prensa'
         GROUP_REPRESENTATIVE = 'GROUP_REPRESENTATIVE', 'Representante de Grupo'
+        GRADUADO = 'GRADUADO', 'Graduado'
+        OTRO = 'OTRO', 'Otro'
 
     # --- Información Principal (Común a todos) ---
     first_name = models.CharField(max_length=100, verbose_name="Nombre")
     last_name = models.CharField(max_length=100, verbose_name="Apellido")
     email = models.EmailField(unique=True, verbose_name="Correo electrónico")
     phone = models.CharField(max_length=20, verbose_name="Número de celular")
-    dni = models.CharField(max_length=10, unique=True, verbose_name="DNI")
+    dni = models.CharField(max_length=32, unique=True, null=True, blank=True, verbose_name="DNI")
+    dni_update_token = models.CharField(max_length=64, unique=True, null=True, blank=True, verbose_name="Token de actualización de DNI")
     profile_type = models.CharField(max_length=30, choices=ProfileType.choices, verbose_name="Tipo de Perfil")
+    
+    # Campo adicional para roles específicos (ej: "Colaborador/a Estudiante", "Colaborador/a Docente")
+    rol_especifico = models.CharField(max_length=255, blank=True, null=True, verbose_name="Rol Específico")
 
     # --- Campos Condicionales ---
     is_unab_student = models.BooleanField(null=True, blank=True, verbose_name="¿Perteneces a la UNaB?")
@@ -130,6 +144,28 @@ class Asistente(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    def clean(self):
+        """Valida que el DNI tenga exactamente 8 dígitos numéricos"""
+        super().clean()
+        if self.dni:
+            # Limpiar caracteres no numéricos
+            dni_limpio = re.sub(r'\D', '', self.dni)
+            # Si tiene 9 dígitos y termina en 0, eliminar el último 0
+            if len(dni_limpio) == 9 and dni_limpio.endswith('0'):
+                dni_limpio = dni_limpio[:-1]
+            # Validar que tenga exactamente 8 dígitos
+            if len(dni_limpio) != 8 or not dni_limpio.isdigit():
+                raise ValidationError({
+                    'dni': 'El DNI debe tener exactamente 8 dígitos numéricos.'
+                })
+            # Actualizar el DNI limpio
+            self.dni = dni_limpio
+
+    def save(self, *args, **kwargs):
+        """Limpia y valida el DNI antes de guardar"""
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     @property
     def nombre_completo(self):

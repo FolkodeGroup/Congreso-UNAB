@@ -1,33 +1,30 @@
-# Logs
-logs
-*.log
-npm-debug.log*
+# Archivos sensibles y de entorno
+*.env
+*.env.*
+/Congreso-UNAB/backend/.env
+
+# Archivos de configuración locales
+.config/
+env/
+
+# Dependencias y compilados
+node_modules/
+dist/
+dist-ssr/
+*.local
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# Archivos y carpetas de editores
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+__pycache__/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-.config/
-!.env
-env/
-
-__pycache__/
-.vscode/
-
-backend/db.sqlite3

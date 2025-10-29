@@ -89,70 +89,79 @@ export default function Index() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-8">
-              <div className="flex flex-col justify-center items-center gap-4">
-                <h1 className="text-3xl md:text-5xl font-bold text-white uppercase text-center">
-                  CONGRESO DE LOGÍSTICA
-                  <br />
-                  <span className="text-congress-cyan">Y TRANSPORTE</span>
-                </h1>
-                {/* <img
-                  src="/images/LogoUnab.png"
-                  alt="UNaB Logo"
-                  className="h-24 w-auto mx-auto mb-6"
-                /> */}
-                <div className="w-24 h-1 bg-congress-cyan mx-auto mb-10"></div>
-                <div className="mb-6">
-                  <Link to="/registro">
-                    <Button
-                      size="xxl"
-                      className="button-super-enhanced bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-bold px-16 py-8 text-xl shadow-4xl hover:shadow-4xl transform hover:scale-110 transition-all duration-300 animate-gentle-pulse hover:animate-none"
-                    >
-                      Registrarse Gratis
-                    </Button>
-                  </Link>
-                </div>
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                CONGRESO DE LOGÍSTICA
+                <span className="block text-congress-cyan">Y TRANSPORTE</span>
+              </h1>
+              <div className="w-24 h-1 bg-congress-cyan mx-auto mb-10"></div>
+              <h2 className="text-xl md:text-2xl font-semibold mb-4 text-congress-white">
+                MOVIENDO EL FUTURO
+              </h2>
+              <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto mb-4">
+                Innovación y desafíos en la logística y el transporte
+              </p>
+              <div className="mb-6">
+                <Link to="/registro">
+                  <Button
+                    size="xxl"
+                    className="button-super-enhanced bg-congress-blue-dark hover:bg-congress-cyan-light text-congress-white font-bold px-16 py-8 text-xl shadow-4xl hover:shadow-4xl transform hover:scale-110 transition-all duration-300 animate-gentle-pulse hover:animate-none"
+                  >
+                    Registrarse Gratis
+                  </Button>
+                </Link>
               </div>
+              {/* <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left opacity-80 mb-10">
+                <img
+                  src="/images/Logo_unab2.png"
+                  alt="UNaB Logo"
+                  className="h-28 w-auto"
+                />
+                <span className="text-lg font-medium">
+                  Universidad Nacional Guillermo Brown
+                </span>
+              </div> */}
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center mt-10">
-                {/* Card FECHA */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center mt-10">
+              {/* Card FECHA */}
+              <div className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl">
+                <FiCalendar className="w-8 h-8 mb-3 text-congress-blue-dark" />
+                <h3 className="font-semibold mb-2">Fecha</h3>
+                <p className="text-lg text-center">15 de Noviembre 2025</p>
+              </div>
+              {/* Card UBICACION */}
+              <div
+                className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl cursor-pointer"
+                onClick={scrollToMap}
+              >
+                <FiMapPin className="w-8 h-8 mb-3 text-congress-blue-dark" />
+                <h3 className="font-semibold mb-2">Ubicación</h3>
+                <p className="text-lg text-center">
+                  Campus UNaB
+                  <br />
+                  Blas Parera 132, Burzaco
+                </p>
+              </div>
+              {/* Card CONTACTO */}
+              <a
+                href="mailto:congresologisticaytransporte@unab.edu.ar"
+                className="block"
+              >
                 <div className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl">
-                  <FiCalendar className="w-8 h-8 mb-3 text-congress-blue-dark" />
-                  <h3 className="font-semibold mb-2">Fecha</h3>
-                  <p className="text-lg text-center">15 de Noviembre 2025</p>
-                </div>
-                {/* Card UBICACION */}
-                <div
-                  className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl cursor-pointer"
-                  onClick={scrollToMap}
-                >
-                  <FiMapPin className="w-8 h-8 mb-3 text-congress-blue-dark" />
-                  <h3 className="font-semibold mb-2">Ubicación</h3>
-                  <p className="text-lg text-center">
-                    Campus UNaB
+                  <FiMail className="w-8 h-8 mb-3 text-congress-blue-dark" />
+                  <h3 className="font-semibold mb-2">Contacto</h3>
+                  <p className="text-lg break-words text-center leading-tight">
+                    congresologisticaytransporte
                     <br />
-                    Blas Parera 132, Burzaco
+                    @unab.edu.ar
                   </p>
                 </div>
-                {/* Card CONTACTO */}
-                <a
-                  href="mailto:congresologisticaytransporte@unab.edu.ar"
-                  className="block"
-                >
-                  <div className="card-info group bg-white/10 backdrop-blur-sm rounded-lg p-8 flex flex-col items-center justify-center min-h-[210px] transition-all duration-300 hover:bg-white/20 hover:shadow-xl">
-                    <FiMail className="w-8 h-8 mb-3 text-congress-blue-dark" />
-                    <h3 className="font-semibold mb-2">Contacto</h3>
-                    <p className="text-lg break-words text-center leading-tight">
-                      congresologisticaytransporte
-                      <br />
-                      @unab.edu.ar
-                    </p>
-                  </div>
-                </a>
-              </div>
+              </a>
             </div>
           </div>
         </div>
       </section>
+
       <LogoCarouselsSection />
 
       {/* Participation Modalities Section */}
@@ -210,7 +219,7 @@ export default function Index() {
                     ¿Interesado en Participar como Empresa?
                   </h3>
                   <p className="text-congress-cyan-light mb-6 text-lg leading-relaxed max-w-2xl mx-auto">
-                    Sumate a las más de 30 empresas que ya confirmaron su
+                    Sumate a las más de 50 empresas que ya confirmaron su
                     participación. Es una excelente oportunidad para networking,
                     visibilidad y desarrollo de negocio.
                   </p>
@@ -406,7 +415,7 @@ export default function Index() {
           <div className="flex justify-center mt-12">
             <div className="w-full max-w-4xl rounded-lg overflow-hidden shadow-lg">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3274.70762014795!2d-58.38742082408727!3d-34.838443069932694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcd5aebf3ce8ad%3A0x61e0dc504088584!2sUniversidad%20Nacional%20Guillermo%20Brown%20(UNAB)!5e0!3m2!1ses-419!2sar!4v1756827211940!5m2!1ses-419!2sar"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3274.70762014795!2d-58.38742082408727!3d-34.838443069932694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcd5aebf3ce8ad%3A0x61e0dc504088584!2sUniversidad%20Nacional%2GGuillermo%20Brown%20(UNAB)!5e0!3m2!1ses-419!2sar!4v1756827211940!5m2!1ses-419!2sar"
                 width="100%"
                 height="450"
                 style={{ border: 0 }}

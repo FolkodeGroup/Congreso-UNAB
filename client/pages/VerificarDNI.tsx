@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { CheckCircle, AlertCircle } from "lucide-react";
+import { API_HOST } from "@/lib/api";
 
 export default function VerificarDNI() {
   const navigate = useNavigate();
@@ -25,14 +26,13 @@ export default function VerificarDNI() {
     }
 
     if (!/^\d{7,8}$/.test(dni)) {
-      toast.error("DNI inválido. Debe tener 7 u 8 dígitos");
+      toast.error("DNI inválido. Debe tener 8 dígitos");
       return;
     }
 
     setLoading(true);
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-      const response = await fetch(`${apiUrl}/api/verificar-dni/`, {
+  const response = await fetch(`${API_HOST}/api/verificar-dni/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

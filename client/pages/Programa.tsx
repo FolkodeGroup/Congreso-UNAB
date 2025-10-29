@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_HOST } from "@/lib/api";
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -33,14 +34,14 @@ type DisertanteInfo = {
   bio: string;
   foto_url: string;
   tema_presentacion: string;
+  linkedin?: string;
 };
 
 // Nueva estructura de datos para actividades con hora de inicio y fin
 type ActividadCalendar = {
   aula: string;
   titulo: string;
-  disertante: string;
-  disertanteInfo?: DisertanteInfo | null; // Información completa del disertante
+  disertantes: DisertanteInfo[];
   descripcion?: string;
   inicio: string; // 'HH:MM'
   fin: string; // 'HH:MM'
@@ -48,7 +49,7 @@ type ActividadCalendar = {
   categoria: string; // Categoría del track
 };
 
-// Aulas de ejemplo (incluyendo Aula Magna y 4 aulas)
+// Aulas de ejemplo (sin Aula 8 y Aula 9)
 const AULAS = [
   "Aula Magna",
   "Aula 1",
@@ -58,24 +59,16 @@ const AULAS = [
   "Aula 5",
   "Aula 6",
   "Aula 7",
-  "Aula 8",
-  "Aula 9",
-  "Aula 10",
-  "Aula 11",
-  "Aula 12",
-  "Aula 13",
-  "Aula 14",
 ];
 
-// Generar horarios fijos cada 30 minutos de 10:00 a 19:00
+// Generar horarios fijos cada 15 minutos de 10:00 a 19:00
 function getHorariosFijos() {
   const horarios: string[] = [];
-  let h = 10,
-    m = 0;
+  let h = 10, m = 0;
   while (h < 19 || (h === 19 && m === 0)) {
     const hora = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
     horarios.push(hora);
-    m += 30;
+    m += 15;
     if (m === 60) {
       m = 0;
       h++;
@@ -150,30 +143,34 @@ function getDisertanteColor(disertante: string): string {
 // Función para construir la URL completa de la imagen del disertante
 function getDisertanteImageUrl(fotoUrl: string): string {
   if (!fotoUrl) return "";
-  
-  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-  
-  // Si la URL ya incluye la ruta completa, normalizarla
-  if (fotoUrl.includes("Congreso-UNAB/backend/media/")) {
-    // Extraer solo la parte de ponencias/imagen.png
-    const pathParts = fotoUrl.split("media/");
-    if (pathParts.length > 1) {
-      return `${apiUrl}/media/${pathParts[1]}`;
-    }
+  const DOMAIN_PROD = "https://www.congresologistica.unab.edu.ar";
+  let url = fotoUrl.trim();
+  // Forzar HTTPS si viene con http://
+  if (url.startsWith("http://")) {
+    url = url.replace("http://", "https://");
   }
-  
+  // Si ya es una URL absoluta https://
+  if (url.startsWith("https://")) {
+    return url;
+  }
+  // Si es ruta absoluta /media/...
+  if (url.startsWith("/media/")) {
+    return `${DOMAIN_PROD}${url}`;
+  }
   // Si es solo ponencias/imagen.png
-  if (fotoUrl.startsWith("ponencias/")) {
-    return `${apiUrl}/media/${fotoUrl}`;
+  if (url.startsWith("ponencias/")) {
+    return `${DOMAIN_PROD}/media/${url}`;
   }
-  
-  // Si es una URL completa ya
-  if (fotoUrl.startsWith("http")) {
-    return fotoUrl;
+  // Si es una ruta relativa tipo media/...
+  if (url.startsWith("media/")) {
+    return `${DOMAIN_PROD}/${url}`;
   }
-  
+  // Si es solo el nombre del archivo (ej: nombre.png)
+  if (!url.includes("/")) {
+    return `${DOMAIN_PROD}/media/ponencias/${url}`;
+  }
   // Default: asumir que es una ruta relativa en media
-  return `${apiUrl}/media/${fotoUrl}`;
+  return `${DOMAIN_PROD}/media/${url}`;
 }
 
 // Estado para actividades y carga
@@ -183,56 +180,47 @@ export default function Programa() {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Variable para controlar si se muestra el programa completo o el banner "próximamente"
+  const programaDisponible = import.meta.env.VITE_PROGRAMA_DISPONIBLE === 'true' || false;
 
   // Fetch de la API de Django
   useEffect(() => {
     const fetchPrograma = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+        const apiUrl = API_HOST;
         const response = await fetch(`${apiUrl}/api/programa/`);
         if (!response.ok)
           throw new Error("No se pudo cargar la agenda desde el backend.");
         const data = await response.json();
         // Mapear los datos del backend al formato visual
         const mapped: ActividadCalendar[] = data.map((item: any) => {
-          // Extraer información completa del disertante
-          let disertante = "";
-          let disertanteInfo = null;
-          
-          if (typeof item.disertante === "string") {
-            disertante = item.disertante;
-          } else if (item.disertante && typeof item.disertante === "object") {
-            disertante = item.disertante.nombre || "";
-            disertanteInfo = {
-              nombre: item.disertante.nombre || "",
-              bio: item.disertante.bio || "",
-              foto_url: item.disertante.foto_url || "",
-              tema_presentacion: item.disertante.tema_presentacion || ""
-            };
-          }
-          
-          // Usar el campo correcto para aula
           const aula = item.aula || item.sala || "Aula Magna";
+          // Si no hay disertantes, poner array vacío
+          const disertantes: DisertanteInfo[] = Array.isArray(item.disertantes) ? item.disertantes.map((d: any) => ({
+            nombre: d.nombre || "",
+            bio: d.bio || "",
+            foto_url: d.foto_url || "",
+            tema_presentacion: d.tema_presentacion || "",
+            linkedin: d.linkedin || ""
+          })) : [];
           return {
             aula,
             titulo: item.titulo,
-            disertante,
-            disertanteInfo, // Agregar información completa del disertante
+            disertantes,
             descripcion: item.descripcion || "",
             inicio: item.hora_inicio.substring(0, 5),
             fin: item.hora_fin.substring(0, 5),
             color: AULA_COLORS[aula] ? aula : "Aula Magna",
-            categoria: item.categoria || "LOGÍSTICA", // Default a LOGÍSTICA si no viene del backend
+            categoria: item.categoria || "LOGÍSTICA",
           };
         });
         setActividades(mapped);
-        setError(null); // Limpiar error si carga exitosa
+        setError(null);
       } catch (err) {
         console.error("Error cargando programa:", err);
-        setError(
-          "No se pudo cargar la agenda desde el backend. Mostrando ejemplo.",
-        );
-        setActividades(null);
+        setError("No se pudo cargar la agenda desde el backend.");
+        setActividades([]);
       } finally {
         setLoading(false);
       }
@@ -241,251 +229,18 @@ export default function Programa() {
   }, []);
 
   // Para calcular el número de filas que ocupa una actividad
-  // Cada fila representa 30 minutos, así que necesitamos calcular cuántos intervalos de 30 min hay
+  // Cada fila representa 15 minutos
   function getRowSpan(inicio: string, fin: string) {
     const [h1, m1] = inicio.split(":").map(Number);
     const [h2, m2] = fin.split(":").map(Number);
-    
-    // Convertir a minutos totales desde medianoche
     const inicioMinutos = h1 * 60 + m1;
     const finMinutos = h2 * 60 + m2;
-    
-    // Calcular la diferencia en minutos y dividir por 30 (cada fila = 30 min)
     const duracionMinutos = finMinutos - inicioMinutos;
-    return Math.ceil(duracionMinutos / 30); // Usar ceil para asegurar que cubra todo el tiempo
+    return Math.ceil(duracionMinutos / 15); // 15 minutos por fila
   }
 
-  // Usar datos reales si existen, si no, usar mock
-  const actividadesToShow = actividades ?? [
-    {
-      aula: "Aula Magna",
-      titulo: "Apertura y bienvenida",
-      disertante: "Comité Organizador",
-      disertanteInfo: null,
-      descripcion: "Bienvenida y apertura general del congreso",
-      inicio: "10:00",
-      fin: "10:30",
-      color: "Aula Magna",
-      categoria: "NETWORKING",
-    },
-    {
-      aula: "Aula Magna",
-      titulo: "Tendencias en Logística 4.0",
-      disertante: "Ing. Laura Pérez",
-      disertanteInfo: null,
-      descripcion: "Automatización y tecnología en la cadena de suministro",
-      inicio: "10:30",
-      fin: "11:30",
-      color: "Aula Magna",
-      categoria: "LOGÍSTICA",
-    },
-    {
-      aula: "Aula Magna",
-      titulo: "Panel: Desafíos del e-commerce",
-      disertante: "Varios Expertos",
-      disertanteInfo: null,
-      descripcion: "Mesa redonda sobre logística en comercio electrónico",
-      inicio: "12:00",
-      fin: "13:00",
-      color: "Aula Magna",
-      categoria: "SUPPLY CHAIN",
-    },
-    {
-      aula: "Aula Magna",
-      titulo: "Casos de éxito en supply chain",
-      disertante: "Ing. Pablo Ruiz",
-      descripcion: "Experiencias reales de optimización logística",
-      inicio: "15:00",
-      fin: "16:00",
-      color: "Aula Magna",
-      categoria: "GESTIÓN",
-    },
-    {
-      aula: "Aula 1",
-      titulo: "Movilidad urbana sostenible",
-      disertante: "Lic. Sofía Ramírez",
-      descripcion: "Estrategias para un transporte urbano más limpio",
-      inicio: "10:00",
-      fin: "11:00",
-      color: "Aula 1",
-      categoria: "SOSTENIBILIDAD",
-    },
-    {
-      aula: "Aula 1",
-      titulo: "Transporte multimodal",
-      disertante: "Ing. Diego Fernández", 
-      descripcion: "Integración de diferentes medios de transporte",
-      inicio: "11:00",
-      fin: "12:30",
-      color: "Aula 1",
-      categoria: "TRANSPORTE",
-    },
-    {
-      aula: "Aula 1",
-      titulo: "Vehículos autónomos",
-      disertante: "Dr. Javier López",
-      descripcion: "El futuro del transporte inteligente",
-      inicio: "13:00",
-      fin: "14:00",
-      color: "Aula 1",
-      categoria: "INNOVACIÓN",
-    },
-    {
-      aula: "Aula 2",
-      titulo: "Logística inversa",
-      disertante: "Ing. Ricardo Sosa",
-      descripcion: "Optimización de procesos de retorno y reciclaje",
-      inicio: "10:00",
-      fin: "11:30",
-      color: "Aula 2",
-      categoria: "LOGÍSTICA",
-    },
-    {
-      aula: "Aula 2",
-      titulo: "Big Data en transporte",
-      disertante: "Lic. Paula Castro",
-      descripción: "Análisis de datos para optimización logística",
-      inicio: "12:00",
-      fin: "13:00",
-      color: "Aula 2",
-      categoria: "TECNOLOGÍA",
-    },
-    {
-      aula: "Aula 3",
-      titulo: "Taller: Simulación de flotas",
-      disertante: "Ing. Tomás Vera",
-      descripcion: "Workshop práctico de optimización de rutas",
-      inicio: "10:00",
-      fin: "12:00",
-      color: "Aula 3",
-      categoria: "GESTIÓN",
-    },
-    {
-      aula: "Aula 3",
-      titulo: "Tendencias en movilidad eléctrica",
-      disertante: "Dra. Lucía Benítez",
-      descripcion: "Innovaciones en transporte sustentable",
-      inicio: "14:00",
-      fin: "15:30",
-      color: "Aula 3",
-      categoria: "SOSTENIBILIDAD",
-    },
-    {
-      aula: "Aula 4",
-      titulo: "Infraestructura inteligente",
-      disertante: "Arq. Mariana Díaz",
-      descripcion: "Ciudades conectadas y sistemas de transporte",
-      inicio: "11:00",
-      fin: "12:00",
-      color: "Aula 4",
-      categoria: "TECNOLOGÍA",
-    },
-    {
-      aula: "Aula 4",
-      titulo: "Políticas públicas de transporte",
-      disertante: "Lic. Carla Méndez",
-      descripcion: "Marco regulatorio y políticas de movilidad",
-      inicio: "13:00",
-      fin: "14:00",
-      color: "Aula 4",
-      categoria: "GESTIÓN",
-    },
-    {
-      aula: "Aula 4",
-      titulo: "Panel: Mujeres en logística",
-      disertante: "Líderes del sector",
-      descripcion: "Mesa redonda sobre liderazgo femenino",
-      inicio: "16:00",
-      fin: "17:00",
-      color: "Aula 4",
-      categoria: "NETWORKING",
-    },
-    {
-      aula: "Aula 5",
-      titulo: "Inteligencia Artificial en Logística",
-      disertante: "Dr. Carlos Mendoza",
-      descripcion: "Aplicaciones de IA en optimización de rutas",
-      inicio: "10:00",
-      fin: "11:00",
-      color: "Aula 5",
-      categoria: "TECNOLOGÍA",
-    },
-    {
-      aula: "Aula 5",
-      titulo: "Blockchain en Supply Chain",
-      disertante: "Ing. María Santos",
-      disertanteInfo: null,
-      descripcion: "Trazabilidad y transparencia con blockchain",
-      inicio: "14:00",
-      fin: "15:00",
-      color: "Aula 5",
-      categoria: "INNOVACIÓN",
-    },
-    {
-      aula: "Aula 6",
-      titulo: "Logística urbana de última milla",
-      disertante: "Lic. Roberto González",
-      disertanteInfo: null,
-      descripcion: "Desafíos y soluciones para entregas urbanas",
-      inicio: "11:00",
-      fin: "12:30",
-      color: "Aula 6",
-      categoria: "SUPPLY CHAIN",
-    },
-    {
-      aula: "Aula 6",
-      titulo: "Gestión de inventarios Just-in-Time",
-      disertante: "Ing. Ana Rodríguez",
-      disertanteInfo: null,
-      descripcion: "Optimización de inventarios y reducción de costos",
-      inicio: "15:00",
-      fin: "16:00",
-      color: "Aula 6",
-      categoria: "GESTIÓN",
-    },
-    {
-      aula: "Aula 7",
-      titulo: "Energías renovables en transporte",
-      disertante: "Dr. Miguel Torres",
-      disertanteInfo: null,
-      descripcion: "Transición hacia combustibles limpios",
-      inicio: "10:30",
-      fin: "12:00",
-      color: "Aula 7",
-      categoria: "SOSTENIBILIDAD",
-    },
-    {
-      aula: "Aula 7",
-      titulo: "Sistemas de transporte inteligente",
-      disertante: "Ing. Carmen López",
-      descripcion: "IoT y sensores en infraestructura de transporte",
-      inicio: "13:30",
-      fin: "14:30",
-      color: "Aula 7",
-      categoria: "TECNOLOGÍA",
-    },
-    {
-      aula: "Aula 8",
-      titulo: "Economía circular en logística",
-      disertante: "Dra. Isabel Morales",
-      descripcion: "Modelos de negocio sostenibles",
-      inicio: "11:30",
-      fin: "13:00",
-      color: "Aula 8",
-      categoria: "SOSTENIBILIDAD",
-    },
-    {
-      aula: "Aula 8",
-      titulo: "Automatización de almacenes",
-      disertante: "Ing. Fernando Silva",
-      descripcion: "Robots y sistemas automatizados",
-      inicio: "14:30",
-      fin: "15:30",
-      color: "Aula 8",
-      categoria: "INNOVACIÓN",
-    },
-  ];
-
+  // Usar solo los datos reales de la base de datos
+  const actividadesToShow = actividades || [];
   // Usar horarios fijos cada 30 minutos de 10:00 a 19:00
   const HORARIOS = getHorariosFijos();
 
@@ -541,7 +296,9 @@ export default function Programa() {
   const categorias = Object.keys(TRACK_CATEGORIES);
 
   // Disertantes únicos para el filtro
-  const disertantesUnicos = Array.from(new Set(actividadesToShow.map(act => act.disertante))).filter(d => d && d.length > 0);
+  const disertantesUnicos = Array.from(new Set(
+    actividadesToShow.flatMap(act => act.disertantes.map(d => d.nombre))
+  )).filter(d => d && d.length > 0);
   const [filtroDisertante, setFiltroDisertante] = useState<string>("TODOS");
 
   // Estado para el modal
@@ -562,13 +319,12 @@ export default function Programa() {
 
   // Filtrar actividades
   const actividadesFiltradas = actividadesToShow.filter(act => {
-    // Si todos los filtros están en "TODOS"/"TODAS", mostrar todo
     if (filtroCategoria === "TODOS" && filtroAula === "TODAS" && filtroDisertante === "TODOS") {
       return true;
     }
     const matchCategoria = filtroCategoria === "TODOS" || act.categoria === filtroCategoria;
     const matchAula = filtroAula === "TODAS" || act.aula === filtroAula;
-    const matchDisertante = filtroDisertante === "TODOS" || act.disertante === filtroDisertante;
+    const matchDisertante = filtroDisertante === "TODOS" || act.disertantes.some(d => d.nombre === filtroDisertante);
     return matchCategoria && matchAula && matchDisertante;
   });
 
@@ -610,34 +366,199 @@ export default function Programa() {
     return !!actividad;
   }
 
-  return (
-    <>
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-congress-blue via-congress-blue/90 to-congress-cyan min-h-[40vh] flex items-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
+  // Componente del banner "Próximamente"
+  const BannerProximamente = () => (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="container mx-auto px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="max-w-4xl mx-auto text-center"
+        >
+          {/* Banner principal */}
+          <div className="relative rounded-3xl shadow-2xl overflow-hidden min-h-[600px] flex items-center justify-center">
+            {/* Imagen de fondo tipo hero */}
+            <div className="absolute inset-0 w-full h-full">
+              <img
+                src="/images/congress-audience.jpg"
+                alt="Auditorio del congreso"
+                className="w-full h-full object-cover object-center scale-105 opacity-70"
+                draggable="false"
+                loading="eager"
+                style={{ pointerEvents: 'none', userSelect: 'none' }}
+              />
+              {/* Overlay para legibilidad */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-congress-blue/5" />
+            </div>
+            {/* Contenido con padding y posición relativa */}
+            <div className="relative z-10 p-8 md:p-16 w-full flex flex-col items-center justify-center">
+            
+            {/* Patrón decorativo */}
+            <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
+              <svg viewBox="0 0 200 200" className="w-full h-full">
+                <defs>
+                  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="1"/>
+                  </pattern>
+                </defs>
+                <rect width="200" height="200" fill="url(#grid)" className="text-congress-blue"/>
+              </svg>
+            </div>
+            
+              {/* Contenido principal */}
+              <div className="relative z-10">
+              {/* Icono principal con mayor contraste */}
+              <motion.div 
+                initial={{ rotate: -10, scale: 0.8 }}
+                animate={{ rotate: 0, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="mb-8"
+              >
+                <div className="w-28 h-28 mx-auto bg-gradient-to-br from-congress-blue to-congress-cyan rounded-full flex items-center justify-center shadow-2xl border-4 border-white/50">
+                  <svg className="w-14 h-14 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </motion.div>
+              
+              {/* Título principal */}
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-congress-blue via-congress-cyan to-purple-600 bg-clip-text text-transparent mb-6 drop-shadow-sm"
+              >
+                Próximamente
+              </motion.h1>
+              
+              {/* Subtítulo */}
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+                className="text-xl md:text-3xl font-bold text-gray-900 mb-8 drop-shadow-sm"
+              >
+                Programa Completo del Congreso
+              </motion.h2>
+              
+              {/* Descripción */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.9 }}
+                className="space-y-4 mb-12 text-gray-700"
+              >
+                <p className="text-lg md:text-xl leading-relaxed font-medium drop-shadow-sm">
+                  Estamos finalizando los últimos detalles del programa académico para ofrecerte la mejor experiencia posible.
+                </p>
+                <p className="text-base md:text-lg drop-shadow-sm">
+                  Pronto podrás conocer todas las conferencias, talleres y actividades que hemos preparado para ti.
+                </p>
+              </motion.div>
+              
+              {/* Características destacadas */}
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 1.1 }}
+                className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+              >
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl">
+                  <div className="w-12 h-12 bg-congress-blue rounded-xl flex items-center justify-center mb-4 mx-auto">
+                    <Person className="text-white text-xl" />
+                  </div>
+                  <h3 className="font-bold text-gray-800 mb-2">Ponentes Expertos</h3>
+                  <p className="text-sm text-gray-600">Los mejores profesionales del sector</p>
+                </div>
+                
+                <div className="bg-gradient-to-br from-cyan-50 to-cyan-100 p-6 rounded-2xl">
+                  <div className="w-12 h-12 bg-congress-cyan rounded-xl flex items-center justify-center mb-4 mx-auto">
+                    <School className="text-white text-xl" />
+                  </div>
+                  <h3 className="font-bold text-gray-800 mb-2">Múltiples Aulas</h3>
+                  <p className="text-sm text-gray-600">Actividades paralelas especializadas</p>
+                </div>
+                
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-2xl">
+                  <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                    <Category className="text-white text-xl" />
+                  </div>
+                  <h3 className="font-bold text-gray-800 mb-2">Temas Diversos</h3>
+                  <p className="text-sm text-gray-600">Tecnología, logística y más</p>
+                </div>
+              </motion.div>
+              
+              {/* Call to action */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 1.3 }}
+                className="bg-gradient-to-r from-congress-blue to-congress-cyan p-6 rounded-2xl text-white"
+              >
+                <h3 className="text-xl font-bold mb-2">¿Ya te inscribiste?</h3>
+                <p className="mb-4 text-white/90">Asegura tu lugar en este evento único</p>
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-white text-congress-blue px-8 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors"
+                  onClick={() => window.location.href = '/inscripcion'}
+                >
+                  Inscribirme Ahora
+                </motion.button>
+              </motion.div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Información adicional */}
+          <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
+            transition={{ duration: 1, delay: 1.5 }}
+            className="mt-12 text-center"
           >
-            <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
-              Agenda_
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto font-light">
-              Charlas y actividades por aula • de 10:00 a 18:00 hs
+            <p className="text-gray-500 text-sm">
+              El programa estará disponible próximamente. Mantente atento a nuestras actualizaciones.
             </p>
-            {loading && (
-              <div className="text-white/80 mt-6 text-lg">Cargando agenda...</div>
-            )}
-            {error && <div className="text-red-200 mt-6 bg-red-500/20 p-4 rounded-lg max-w-2xl mx-auto">{error}</div>}
           </motion.div>
-        </div>
+        </motion.div>
       </div>
+    </div>
+  );
+
+  return (
+    <>
+      {!programaDisponible ? (
+        <BannerProximamente />
+      ) : (
+        <>
+          {/* Hero Section */}
+          <div className="bg-gradient-to-br from-congress-blue via-congress-blue/90 to-congress-cyan min-h-[40vh] flex items-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="container mx-auto px-4 relative z-10">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-center"
+              >
+                <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
+                  Agenda_
+                </h1>
+                <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto font-light">
+                  Charlas y actividades por aula • de 10:00 a 18:00 hs
+                </p>
+                {loading && (
+                  <div className="text-white/80 mt-6 text-lg">Cargando agenda...</div>
+                )}
+                {error && <div className="text-red-200 mt-6 bg-red-500/20 p-4 rounded-lg max-w-2xl mx-auto">{error}</div>}
+              </motion.div>
+            </div>
+          </div>
 
       {/* Filtros Modernos con MUI */}
-      <Box sx={{ position: 'sticky', top: 0, zIndex: 40, background: 'transparent', py: 3, display: 'flex', justifyContent: 'center' }}>
+  <Box sx={{ position: 'sticky', top: 144, zIndex: 40, background: 'transparent', py: 0, display: 'flex', justifyContent: 'center' }}>
         <Card sx={{ maxWidth: 1200, width: '100%', boxShadow: 6, borderRadius: 4, background: '#fff', px: { xs: 2, md: 6 }, py: { xs: 2, md: 3 } }}>
           <CardContent sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 2, md: 3 }, alignItems: 'center', justifyContent: 'center', px: 0, mx: 'auto', width: '100%' }}>
             <Box sx={{ 
@@ -775,7 +696,7 @@ export default function Programa() {
                       <th className="w-32 p-4 font-bold text-center border-r border-white/20">
                         Horario
                       </th>
-                      {AULAS.slice(0, 9).map((aula) => (
+                      {AULAS.filter(aula => aula !== "Aula 8").slice(0, 8).map((aula) => (
                         <th key={aula} className="p-4 font-bold text-center border-r border-white/20 last:border-r-0 text-sm">
                           {aula}
                         </th>
@@ -800,7 +721,7 @@ export default function Programa() {
                         </td>
 
                         {/* Columnas de aulas */}
-                        {AULAS.slice(0, 9).map((aula) => {
+                        {AULAS.filter(aula => aula !== "Aula 8").slice(0, 8).map((aula) => {
                           if (isCellCoveredFiltrado(aula, hora)) return null;
                           
                           const actividad = gridFiltrada[aula] && gridFiltrada[aula][hora];
@@ -808,7 +729,7 @@ export default function Programa() {
                             const rowSpan = getRowSpan(actividad.inicio, actividad.fin);
                             const trackColor = TRACK_CATEGORIES[actividad.categoria as keyof typeof TRACK_CATEGORIES];
                             const aulaColor = AULA_COLORS[actividad.color] || AULA_COLORS["Aula Magna"];
-                            const disertanteColor = getDisertanteColor(actividad.disertante);
+                            const disertanteColor = getDisertanteColor(actividad.disertantes[0]?.nombre || "");
                             
                             return (
                               <td 
@@ -861,10 +782,12 @@ export default function Programa() {
                                       {actividad.titulo.replace(/\s*\(\d+h\)/gi, "")}
                                     </h3>
 
-                                    {/* Speaker */}
-                                    <p className="text-xs font-semibold text-gray-700 mb-1 truncate">
-                                      {actividad.disertante}
-                                    </p>
+                                    {/* Speakers */}
+                                    <div className="text-xs font-semibold text-gray-700 mb-1 truncate flex flex-wrap gap-1">
+                                      {actividad.disertantes.map((d, idx) => (
+                                        <span key={d.nombre + idx}>{d.nombre}{idx < actividad.disertantes.length - 1 ? ',' : ''}</span>
+                                      ))}
+                                    </div>
 
                                     {/* Descripción */}
                                     {actividad.descripcion && (
@@ -927,7 +850,7 @@ export default function Programa() {
                   {actividadesEnHora.map((actividad, idx) => {
                     const trackColor = TRACK_CATEGORIES[actividad.categoria as keyof typeof TRACK_CATEGORIES];
                     const aulaColor = AULA_COLORS[actividad.color] || AULA_COLORS["Aula Magna"];
-                    const disertanteColor = getDisertanteColor(actividad.disertante);
+                    const disertanteColor = getDisertanteColor(actividad.disertantes[0]?.nombre || "");
                     
                     return (
                       <motion.div
@@ -978,11 +901,13 @@ export default function Programa() {
                             {actividad.titulo.replace(/\s*\(\d+h\)/gi, "")}
                           </h4>
                           
-                          {/* Disertante */}
-                          <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                          {/* Disertantes */}
+                          <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2 flex-wrap">
                             <Person style={{ fontSize: 16, color: disertanteColor }} />
-                            {actividad.disertante}
-                          </p>
+                            {actividad.disertantes.map((d, idx) => (
+                              <span key={d.nombre + idx}>{d.nombre}{idx < actividad.disertantes.length - 1 ? ',' : ''}</span>
+                            ))}
+                          </div>
                           
                           {/* Descripción */}
                           {actividad.descripcion && (
@@ -1036,14 +961,14 @@ export default function Programa() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
+              className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header con imagen y categoría */}
               <div 
                 className="relative h-64 bg-gradient-to-br from-congress-blue to-congress-cyan overflow-hidden"
                 style={{ 
-                  background: `linear-gradient(135deg, ${TRACK_CATEGORIES[modalActividad.categoria as keyof typeof TRACK_CATEGORIES]?.bg || '#1e40af'} 0%, ${getDisertanteColor(modalActividad.disertante)} 100%)`
+                  background: `linear-gradient(135deg, ${TRACK_CATEGORIES[modalActividad.categoria as keyof typeof TRACK_CATEGORIES]?.bg || '#1e40af'} 0%, ${getDisertanteColor(modalActividad.disertantes[0]?.nombre || "")} 100%)`
                 }}
               >
                 {/* Botón de cierre */}
@@ -1056,11 +981,12 @@ export default function Programa() {
 
                 {/* Imagen del disertante */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  {modalActividad.disertanteInfo?.foto_url ? (
+                  {/* Imagen del primer disertante si existe, si no, icono */}
+                  {modalActividad.disertantes[0]?.foto_url ? (
                     <div className="w-44 h-44 rounded-full overflow-hidden bg-white/10 backdrop-blur-md border-4 border-white/30 shadow-2xl">
                       <img
-                        src={getDisertanteImageUrl(modalActividad.disertanteInfo.foto_url)}
-                        alt={modalActividad.disertante}
+                        src={getDisertanteImageUrl(modalActividad.disertantes[0].foto_url)}
+                        alt={modalActividad.disertantes[0].nombre}
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           // Fallback si la imagen no carga
@@ -1105,7 +1031,7 @@ export default function Programa() {
               </div>
 
               {/* Contenido */}
-              <div className="p-6">
+              <div className="p-6 overflow-y-auto flex-1">
                 {/* Título */}
                 <h2 className="text-2xl font-bold text-gray-900 mb-3 leading-tight">
                   {modalActividad.titulo.replace(/\s*\(\d+h\)/gi, "")}
@@ -1125,25 +1051,50 @@ export default function Programa() {
                   </div>
                 </div>
 
-                {/* Disertante */}
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                    {modalActividad.disertante}
-                  </h3>
-                  {modalActividad.disertanteInfo?.bio ? (
-                    <p className="text-gray-600 text-sm leading-relaxed mb-2">
-                      {modalActividad.disertanteInfo.bio}
-                    </p>
-                  ) : (
-                    <p className="text-gray-600 text-sm">
-                      Especialista en {modalActividad.categoria.toLowerCase()}
-                    </p>
-                  )}
-                  {modalActividad.disertanteInfo?.tema_presentacion && modalActividad.disertanteInfo.tema_presentacion !== "Título de la Presentación" && (
-                    <p className="text-congress-blue text-sm font-medium">
-                      📝 {modalActividad.disertanteInfo.tema_presentacion}
-                    </p>
-                  )}
+                {/* Disertantes */}
+                <div className="mb-4 max-h-[400px] overflow-y-auto">
+                  {modalActividad.disertantes.map((d, idx) => (
+                    <div key={d.nombre + idx} className="mb-4 flex flex-row items-start gap-4">
+                      {/* Foto del disertante */}
+                      {d.foto_url && (
+                        <img
+                          src={getDisertanteImageUrl(d.foto_url)}
+                          alt={d.nombre}
+                          className="w-20 h-20 object-cover rounded-full border border-gray-200 shadow-sm flex-shrink-0"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {d.nombre}
+                        </h3>
+                        {d.bio ? (
+                          <p className="text-gray-600 text-sm leading-relaxed mb-2">
+                            {d.bio}
+                          </p>
+                        ) : (
+                          <p className="text-gray-600 text-sm">
+                            Especialista en {modalActividad.categoria.toLowerCase()}
+                          </p>
+                        )}
+                        {d.tema_presentacion && d.tema_presentacion !== "Título de la Presentación" && (
+                          <p className="text-congress-blue text-sm font-medium">
+                            📝 {d.tema_presentacion}
+                          </p>
+                        )}
+                        {d.linkedin && (
+                          <a
+                            href={d.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-congress-blue font-semibold text-xs mt-2 hover:underline hover:text-blue-700"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24" className="inline-block align-middle"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.026-3.063-1.868-3.063-1.868 0-2.154 1.459-2.154 2.967v5.7h-3v-10h2.881v1.367h.041c.401-.761 1.379-1.563 2.838-1.563 3.036 0 3.6 2.001 3.6 4.601v5.595z"/></svg>
+                            LinkedIn
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 {/* Descripción */}
@@ -1187,6 +1138,8 @@ export default function Programa() {
           </motion.div>
         )}
       </AnimatePresence>
+        </>
+      )}
     </>
   );
 }

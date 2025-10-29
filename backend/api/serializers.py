@@ -2,36 +2,53 @@ from rest_framework import serializers
 from .models import Disertante, Empresa, Programa, Asistente, MiembroGrupo, Inscripcion
 from django.db import transaction
 from .email import send_group_confirmation_emails, send_individual_confirmation_email
+import re
 
 class DisertanteSerializer(serializers.ModelSerializer):
+    foto_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Disertante
-        fields = ['nombre', 'bio', 'foto_url', 'tema_presentacion']
+        fields = ['nombre', 'bio', 'foto_url', 'tema_presentacion', 'linkedin']
+
+    def get_foto_url(self, obj):
+        # Si hay imagen subida, devolver la URL absoluta
+        request = self.context.get('request', None)
+        if obj.foto:
+            if request is not None:
+                return request.build_absolute_uri(obj.foto.url)
+            else:
+                return obj.foto.url
+        # Si no, devolver el valor manual (si existe)
+        if obj.foto_url:
+            return obj.foto_url
+        return ""
 
 class ProgramaSerializer(serializers.ModelSerializer):
-    disertante = DisertanteSerializer(read_only=True)
+    disertantes = serializers.SerializerMethodField()
 
     class Meta:
         model = Programa
-        fields = ['titulo', 'disertante', 'hora_inicio', 'hora_fin', 'dia', 'descripcion', 'aula', 'categoria']
+        fields = ['titulo', 'disertantes', 'hora_inicio', 'hora_fin', 'dia', 'descripcion', 'aula', 'categoria']
+    
+    def get_disertantes(self, obj):
+        """Serializa los disertantes pasando el contexto de la request"""
+        disertantes = obj.disertantes.all()
+        serializer = DisertanteSerializer(disertantes, many=True, context=self.context)
+        return serializer.data
 
 class EmpresaSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         errors = {}
         required_fields = [
-            'nombre_empresa', 'nombre_contacto', 'email_contacto', 'celular_contacto', 'cargo_contacto', 'participacion_opciones'
+            'nombre_empresa', 'logo'
         ]
         for field in required_fields:
             value = data.get(field, None)
             if not value or (isinstance(value, str) and not value.strip()):
                 errors[field] = f'Este campo es obligatorio.'
-        # Validar modalidad
-        value = data.get('participacion_opciones', None)
-        if not value or not isinstance(value, str):
-            errors['participacion_opciones'] = 'Debe seleccionar una modalidad válida.'
         if errors:
             raise serializers.ValidationError(errors)
-        data['participacion_opciones'] = value
         return super().to_internal_value(data)
 
     class Meta:
@@ -52,6 +69,16 @@ class EmpresaSerializer(serializers.ModelSerializer):
             'participacion_opciones',
             'participacion_otra'
         ]
+
+
+class EmpresaLogoSerializer(serializers.ModelSerializer):
+    """
+    Serializador simplificado para mostrar empresas en carrusel/slider.
+    Solo incluye campos necesarios para mostrar logos.
+    """
+    class Meta:
+        model = Empresa
+        fields = ['id', 'nombre_empresa', 'logo', 'sitio_web', 'descripcion']
 
 class MiembroGrupoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -77,7 +104,7 @@ class AsistenteSerializer(serializers.ModelSerializer):
             'is_unab_student', 'institution', 'career', 'year_of_study',
             'career_taught', 'work_area', 'occupation', 'company_name',
             'group_name', 'group_municipality', 'group_size', 'representante_grupo',
-            'miembros_grupo', 'miembros_grupo_nuevos', 'miembros_representados'
+            'miembros_grupo', 'miembros_grupo_nuevos', 'miembros_representados', 'rol_especifico'
         ]
         read_only_fields = ['id', 'miembros_representados']
     
@@ -152,6 +179,20 @@ class AsistenteSerializer(serializers.ModelSerializer):
         
         return asistente
 
+    def validate_dni(self, value):
+        """Valida que el DNI tenga exactamente 8 dígitos numéricos"""
+        if value:
+            # Limpiar caracteres no numéricos
+            dni_limpio = re.sub(r'\D', '', value)
+            # Si tiene 9 dígitos y termina en 0, eliminar el último 0
+            if len(dni_limpio) == 9 and dni_limpio.endswith('0'):
+                dni_limpio = dni_limpio[:-1]
+            # Validar que tenga exactamente 8 dígitos
+            if len(dni_limpio) != 8 or not dni_limpio.isdigit():
+                raise serializers.ValidationError('El DNI debe tener exactamente 8 dígitos numéricos.')
+            return dni_limpio
+        return value
+
     def validate(self, data):
         profile_type = data.get('profile_type')
 
@@ -177,6 +218,9 @@ class AsistenteSerializer(serializers.ModelSerializer):
             if not data.get('occupation'):
                 raise serializers.ValidationError({"occupation": "El cargo es requerido para profesionales."})
 
+        elif profile_type == Asistente.ProfileType.PRESS:
+            # No hay campos obligatorios extra para prensa
+            pass
         elif profile_type == Asistente.ProfileType.GROUP_REPRESENTATIVE:
             if not data.get('group_name'):
                 raise serializers.ValidationError({"group_name": "El nombre del grupo o institución es requerido."})

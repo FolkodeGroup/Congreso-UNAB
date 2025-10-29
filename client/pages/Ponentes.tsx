@@ -3,6 +3,7 @@ import { motion, useAnimation, useScroll, useTransform } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { API_HOST } from "@/lib/api";
 
 // Definimos el tipo de dato para un disertante, basado en el modelo de Django
 type Disertante = {
@@ -10,10 +11,30 @@ type Disertante = {
   nombre: string;
   bio: string;
   foto_url: string;
+  foto?: string; // Nuevo campo opcional para la imagen subida
   tema_presentacion: string;
+  linkedin?: string;
 };
 
 export default function Ponentes() {
+  const [forceUpdate, setForceUpdate] = useState(0);
+  // Devuelve la URL de la imagen del disertante, forzando https si es necesario
+  function getFotoUrl(disertante: Disertante): string {
+    let url = "";
+    if (disertante.foto && typeof disertante.foto === "string" && disertante.foto.length > 5) {
+      url = disertante.foto;
+    } else if (disertante.foto_url && typeof disertante.foto_url === "string" && disertante.foto_url.length > 5) {
+      if (disertante.foto_url.startsWith("http")) {
+        url = disertante.foto_url;
+      } else {
+        url = `${apiUrl}/media/${disertante.foto_url.replace(/^.*ponencias\//, "ponencias/")}`;
+      }
+    }
+    if (url.startsWith("http://")) {
+      url = url.replace("http://", "https://");
+    }
+    return url;
+  }
   const [disertantes, setDisertantes] = useState<Disertante[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +44,7 @@ export default function Ponentes() {
   const backgroundY = useTransform(scrollY, [0, 1000], [0, -200]);
   const circleY1 = useTransform(scrollY, [0, 1000], [0, -150]);
   const circleY2 = useTransform(scrollY, [0, 1000], [0, -100]);
-  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+  const apiUrl = API_HOST;
 
   useEffect(() => {
     const fetchDisertantes = async () => {
@@ -35,103 +56,24 @@ export default function Ponentes() {
         }
         const data = await response.json();
         if (Array.isArray(data) && data.length > 0) {
-            // Ordenar alfabéticamente por nombre
-            const dataOrdenada = [...data].sort((a, b) => a.nombre.localeCompare(b.nombre));
-            setDisertantes(dataOrdenada);
+          // Ordenar alfabéticamente por nombre
+          const dataOrdenada = [...data].sort((a, b) => a.nombre.localeCompare(b.nombre));
+          setDisertantes(dataOrdenada);
+          // Forzar re-render y reflow tras cargar disertantes
+          setTimeout(() => {
+            setForceUpdate(f => f + 1);
+            // Forzar reflow del DOM
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('resize'));
+            }
+          }, 150);
         } else {
-          // Si no hay datos, generar disertantes desde los archivos locales
-          const archivos = [
-            "agustin-varamo.png",
-            "alexander-machado.png",
-            "ana-gaude.png",
-            "argenis-soto.png",
-            "arnaldo-ventancu.png",
-            "boris-villalon.png",
-            "claudia-freed.png",
-            "cristian-ruiz.png",
-            "delfina-salgado.png",
-            "diego-plumaris.png",
-            "ernesto-castagnet.png",
-            "ezequiel-grillo.png",
-            "federico-carlos.png",
-            "felipe-rios.png",
-            "gabriel-luchessi.png",
-            "ignacio-villalon.png",
-            "john-doe.png",
-            "jorge-golfieri.png",
-            "jorge-metz.png",
-            "juan-sanchez.png",
-            "mariano-caiban.png",
-            "martin-boris.png",
-            "natalia-gonzalez.png",
-          ];
-          const ejemploTema = "Título de la Presentación";
-          const ejemploBio = "Descripción de ejemplo del disertante.";
-            const disertantesAuto = archivos.map((archivo, idx) => {
-              const nombreBase = archivo.replace(/\.[^/.]+$/, "");
-              const nombre = nombreBase
-                .split("-")
-                .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                .join(" ");
-              return {
-                id: idx + 1,
-                nombre,
-                bio: ejemploBio,
-                foto_url: `${apiUrl}/media/ponencias/${archivo}`,
-                tema_presentacion: ejemploTema,
-              };
-            });
-            // Ordenar alfabéticamente por nombre
-            const disertantesAutoOrdenados = [...disertantesAuto].sort((a, b) => a.nombre.localeCompare(b.nombre));
-            setDisertantes(disertantesAutoOrdenados);
+          // No hay disertantes en la base de datos
+          setError("No hay disertantes disponibles en la base de datos.");
         }
       } catch (err) {
-        // Si hay error, mostrar los disertantes de ejemplo
-        const archivos = [
-          "agustin-varamo.png",
-          "alexander-machado.png",
-          "ana-gaude.png",
-          "argenis-soto.png",
-          "arnaldo-ventancu.png",
-          "boris-villalon.png",
-          "claudia-freed.png",
-          "cristian-ruiz.png",
-          "delfina-salgado.png",
-          "diego-plumaris.png",
-          "ernesto-castagnet.png",
-          "ezequiel-grillo.png",
-          "federico-carlos.png",
-          "felipe-rios.png",
-          "gabriel-luchessi.png",
-          "ignacio-villalon.png",
-          "john-doe.png",
-          "jorge-golfieri.png",
-          "jorge-metz.png",
-          "juan-sanchez.png",
-          "mariano-caiban.png",
-          "martin-boris.png",
-          "natalia-gonzalez.png",
-        ];
-        const ejemploTema = "Título de la Presentación";
-        const ejemploBio = "Descripción de ejemplo del disertante.";
-        const disertantesAuto = archivos.map((archivo, idx) => {
-          const nombreBase = archivo.replace(/\.[^/.]+$/, "");
-          const nombre = nombreBase
-            .split("-")
-            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(" ");
-          return {
-            id: idx + 1,
-            nombre,
-            bio: ejemploBio,
-            foto_url: `${apiUrl}/media/ponencias/${archivo}`,
-            tema_presentacion: ejemploTema,
-          };
-        });
-        // Ordenar alfabéticamente por nombre
-        const disertantesAutoOrdenados = [...disertantesAuto].sort((a, b) => a.nombre.localeCompare(b.nombre));
-        setDisertantes(disertantesAutoOrdenados);
-        setError(null);
+        console.error("Error al cargar disertantes:", err);
+        setError("Error al conectar con el servidor. Verifique que el backend esté funcionando.");
       } finally {
         setLoading(false);
       }
@@ -161,7 +103,7 @@ export default function Ponentes() {
 
   return (
     <>
-      <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-white to-congress-blue/10 px-2 py-16 flex flex-col items-center relative overflow-x-auto">
+  <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-white to-congress-blue/10 px-2 py-16 flex flex-col items-center relative z-10 max-w-7xl mx-auto overflow-x-auto sm:overflow-x-visible">
         {/* Fondo decorativo elegante con efecto parallax */}
         <motion.div 
           className="absolute inset-0 pointer-events-none z-0"
@@ -305,19 +247,19 @@ export default function Ponentes() {
           </div>
         ) : (
           <motion.div
-            className="flex flex-row gap-6 z-10 w-full overflow-x-auto pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 sm:overflow-x-visible"
-            style={{ WebkitOverflowScrolling: 'touch' }}
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 z-10 w-full max-w-7xl mx-auto"
+            style={{ willChange: 'transform' }}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
+            animate="visible"
             variants={{
               hidden: {},
               visible: {
                 transition: {
-                  staggerChildren: 0.25,
+                  staggerChildren: 0.15,
                 },
               },
             }}
+            key={forceUpdate}
           >
             {disertantes.map((disertante, idx) => {
               const rotations = [
@@ -328,31 +270,40 @@ export default function Ponentes() {
                 "rotate-0",
               ];
               const rotation = rotations[idx % rotations.length];
-              let fotoUrl = disertante.foto_url;
-              if (fotoUrl && !fotoUrl.startsWith("http")) {
-                const cleanPath = fotoUrl.replace(/^.*media\//, "");
-                fotoUrl = `${apiUrl}/media/${cleanPath}`;
-              }
+              // Usar función unificada para obtener la URL de la foto y forzar https
+              const fotoUrl = getFotoUrl(disertante);
               return (
                 <motion.div
                   key={`${disertante.nombre}-${idx}`}
-                  className="flex-shrink-0 flex flex-col items-center group w-72 sm:w-full"
-                  variants={{
-                    hidden: { opacity: 0, y: 80 },
-                    visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } },
-                  }}
+                  className="flex flex-col items-center group"
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                  variants={{}}
                 >
                   {/* Modern Polaroid Card */}
                   <div
-                    className={`relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-64 h-64 flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5 ${rotation}`}
+                    className={`relative bg-gradient-to-br from-white via-gray-100 to-congress-blue/10 border border-gray-200 shadow-2xl rounded-2xl p-3 mb-5 w-full flex flex-col items-center justify-center group-hover:scale-105 group-hover:shadow-3xl transition-transform duration-300 group-hover:border-congress-blue/60 group-hover:bg-congress-blue/5 ${rotation}`}
+                    style={{ aspectRatio: '1/1', minHeight: '200px' }}
                   >
                     <div className="absolute inset-0 rounded-2xl pointer-events-none border border-congress-blue/20"></div>
-                    <img
-                      src={fotoUrl}
-                      alt={disertante.nombre}
-                      className="w-full max-w-[90%] h-auto aspect-square object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl"
-                      style={{ aspectRatio: "1/1" }}
-                    />
+                    {fotoUrl ? (
+                      <img
+                        src={fotoUrl}
+                        alt={disertante.nombre}
+                        className="w-full h-full object-cover object-center rounded-xl border-4 border-white shadow-lg bg-gradient-to-br from-congress-blue/10 to-white group-hover:border-congress-blue/40 group-hover:shadow-xl"
+                        style={{ objectFit: 'cover', objectPosition: 'center' }}
+                        loading="eager"
+                        onError={e => { e.currentTarget.style.display = 'none'; }}
+                        onLoad={e => { e.currentTarget.style.opacity = '1'; }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <svg className="text-congress-blue/40 w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                      </div>
+                    )}
                     {/* Minimalist screws */}
                     <span className="absolute top-2 left-2 w-2 h-2 bg-congress-blue/30 rounded-full border border-congress-blue/40 shadow-sm"></span>
                     <span className="absolute top-2 right-2 w-2 h-2 bg-congress-blue/30 rounded-full border border-congress-blue/40 shadow-sm"></span>
@@ -360,7 +311,7 @@ export default function Ponentes() {
                     <span className="absolute bottom-2 right-2 w-2 h-2 bg-congress-blue/30 rounded-full border border-congress-blue/40 shadow-sm"></span>
                   </div>
                   {/* Data Card */}
-                  <div className="bg-white/95 border border-congress-blue/20 rounded-xl shadow-lg px-3 py-3 w-64 text-center flex flex-col items-center backdrop-blur-sm group-hover:border-congress-blue/40 group-hover:shadow-xl">
+                  <div className="bg-white/95 border border-congress-blue/20 rounded-xl shadow-lg px-3 py-3 w-full text-center flex flex-col items-center backdrop-blur-sm group-hover:border-congress-blue/40 group-hover:shadow-xl">
                     <h2 className="text-lg font-extrabold text-congress-blue tracking-wide mb-1 uppercase drop-shadow-sm group-hover:text-congress-blue/80">
                       {disertante.nombre}
                     </h2>
@@ -370,12 +321,26 @@ export default function Ponentes() {
                     <div className="text-gray-600 text-xs mb-1 group-hover:text-congress-blue/60">
                       {disertante.bio}
                     </div>
+                    {/* LinkedIn field */}
+                    {disertante.linkedin && (
+                      <a
+                        href={disertante.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-congress-blue font-semibold text-xs mt-2 hover:underline hover:text-blue-700"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24" className="inline-block align-middle"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.026-3.063-1.868-3.063-1.868 0-2.154 1.459-2.154 2.967v5.7h-3v-10h2.881v1.367h.041c.401-.761 1.379-1.563 2.838-1.563 3.036 0 3.6 2.001 3.6 4.601v5.595z"/></svg>
+                        LinkedIn
+                      </a>
+                    )}
                   </div>
                 </motion.div>
               );
             })}
           </motion.div>
-        )}
+  )}
+  {/* Forzar re-render visual */}
+  <span style={{ display: 'none' }}>{forceUpdate}</span>
       </div>
     </>
   );

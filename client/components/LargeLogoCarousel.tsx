@@ -1,49 +1,35 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  FIRST_CAROUSEL_LOGOS,
-  SECOND_CAROUSEL_LOGOS,
-  THIRD_CAROUSEL_LOGOS,
-  DEFAULT_LOGOS,
-  LogoItem,
-} from "./data/logos";
-import { chunk } from "@/lib/utils";
+import { LogoItem, chunk } from "./data/logos";
 import { motion, AnimatePresence } from "framer-motion";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useEmpresas } from "@/hooks/use-empresas";
 
-// Combine all logos and remove duplicates
-const allLogos: LogoItem[] = [
-  ...DEFAULT_LOGOS,
-  ...FIRST_CAROUSEL_LOGOS,
-  ...SECOND_CAROUSEL_LOGOS,
-  ...THIRD_CAROUSEL_LOGOS,
-].filter(
-  (logo, index, self) => index === self.findIndex((l) => l.src === logo.src),
-);
 
 const LargeLogoCarousel: React.FC = () => {
-  const isMobile = useIsMobile();
-  const logosPerPage = isMobile ? 6 : 12; // 4 columns * 3 rows = 12 logos per page
-  const chunkedLogos = chunk(allLogos, logosPerPage);
+  const { logosForCarousel, loading, error } = useEmpresas();
   const [currentPage, setCurrentPage] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const [carouselHeight, setCarouselHeight] = useState(400);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detectar mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Elegir chunking según mobile/desktop
+  const logosPerPage = isMobile ? 6 : 12; // 2x3 en mobile, 4x3 en desktop
+  const chunkedLogos = chunk(logosForCarousel, logosPerPage);
 
   useEffect(() => {
     timeoutRef.current = setTimeout(() => {
       setCurrentPage((prev) => (prev + 1) % chunkedLogos.length);
-    }, 5000); // Change slide every 5 seconds
-
+    }, 5000);
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [currentPage, chunkedLogos.length]);
-
-  useEffect(() => {
-    if (gridRef.current) {
-      setCarouselHeight(gridRef.current.offsetHeight);
-    }
-  }, [currentPage, chunkedLogos]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -62,20 +48,55 @@ const LargeLogoCarousel: React.FC = () => {
     exit: { y: -20, opacity: 0, scale: 0.9 },
   };
 
+  if (loading) {
+    return (
+      <section className="py-16 bg-gray-100">
+        <div className="w-full px-4 flex justify-center items-center h-[400px]">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-16 bg-gray-100">
+        <div className="w-full px-4 flex justify-center items-center h-[400px]">
+          <div className="text-center text-red-600">
+            Error al cargar las empresas: {error}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (chunkedLogos.length === 0) {
+    return (
+      <section className="py-16 bg-gray-100">
+        <div className="w-full px-4 flex justify-center items-center h-[400px]">
+          <div className="text-center text-gray-600">
+            No hay empresas disponibles.
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="py-8 bg-gray-100 overflow-hidden relative">
+    <section className="py-16 bg-gray-100 overflow-hidden relative">
       <div className="w-full px-4">
-        <div className="relative w-full" style={{ height: carouselHeight }}>
-          {" "}
-          {/* Fixed height for carousel container */}
+        <div className="relative w-full h-[400px]">
           <AnimatePresence mode="wait">
             {chunkedLogos.map(
               (page, pageIndex) =>
                 pageIndex === currentPage && (
                   <motion.div
-                    ref={gridRef}
                     key={pageIndex}
-                    className="absolute top-0 left-0 w-full h-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 justify-items-center items-center"
+                    className={
+                      isMobile
+                        ? "absolute top-0 left-0 w-full h-full grid grid-cols-2 grid-rows-3 gap-6 justify-items-center items-center"
+                        : "absolute top-0 left-0 w-full h-full grid grid-cols-4 grid-rows-3 gap-8 justify-items-center items-center"
+                    }
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
@@ -91,7 +112,7 @@ const LargeLogoCarousel: React.FC = () => {
                         <img
                           src={logo.src}
                           alt={logo.alt}
-                          className="max-h-24 w-auto object-contain" // Uniform size for all logos
+                          className="max-h-24 w-auto object-contain"
                         />
                       </motion.div>
                     ))}
