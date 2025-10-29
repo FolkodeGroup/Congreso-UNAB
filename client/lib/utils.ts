@@ -38,3 +38,20 @@ export function getCookie(name: string): string | null {
   }
   return cookieValue;
 }
+
+// Helper para eliminar una cookie específica
+export function deleteCookie(name: string): void {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${window.location.hostname};`;
+}
+
+// Helper para limpiar cookies de sesión antiguas
+export function cleanupSessionCookies(): void {
+  if (typeof document === 'undefined') return;
+  const cookiesToClean = ['csrftoken', 'sessionid'];
+  cookiesToClean.forEach(cookieName => {
+    deleteCookie(cookieName);
+  });
+}
