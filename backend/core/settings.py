@@ -222,28 +222,33 @@ CORS_ALLOW_HEADERS = [
 # Media files (PDFs, imágenes, etc)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # =================== SEGURIDAD CSRF Y COOKIES ===================
+# Configuración de orígenes confiables para CSRF (aplica tanto en desarrollo como producción)
+CSRF_TRUSTED_ORIGINS = [
+    "https://www.congresologistica.unab.edu.ar",
+    "https://congresologistica.unab.edu.ar",
+    "http://localhost:8080",
+    "http://localhost:5173",
+    "http://127.0.0.1:8080",
+    "http://127.0.0.1:5173",
+]
+
+# Configuraciones adicionales de seguridad para producción
 if not DEBUG:
-    CSRF_TRUSTED_ORIGINS = [
-        "https://www.congresologistica.unab.edu.ar",
-        "https://congresologistica.unab.edu.ar",
-        "https://170.210.44.238",
-    ]
     # Comentamos estas configuraciones para resolver el problema de CSRF
-    # CSRF_COOKIE_SECURE = True
-    # SESSION_COOKIE_SECURE = True
+    # CSRF_COOKIE_SECURE = True  # Requiere HTTPS
+    # SESSION_COOKIE_SECURE = True  # Requiere HTTPS
     # CSRF_COOKIE_DOMAIN = '.congresologistica.unab.edu.ar'
     
-    # Estas configuraciones son críticas para que funcione correctamente
-    CSRF_COOKIE_HTTPONLY = False  # Permite que JavaScript acceda a la cookie CSRF
-    SESSION_COOKIE_HTTPONLY = True  # Protege la cookie de sesión
-    CSRF_USE_SESSIONS = False  # Guarda el token CSRF en cookies, no en sesión
-    
-    # Configuración para proxy inverso
+    # Configuración para proxy inverso (Nginx)
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-    
-    # Otras configuraciones útiles
-    CSRF_COOKIE_SAMESITE = 'Lax'  # 'Lax' es un buen compromiso entre seguridad y usabilidad
-    SESSION_COOKIE_SAMESITE = 'Lax'
+
+# Estas configuraciones son críticas para que funcione correctamente (desarrollo y producción)
+CSRF_COOKIE_HTTPONLY = False  # Permite que JavaScript acceda a la cookie CSRF
+SESSION_COOKIE_HTTPONLY = True  # Protege la cookie de sesión
+CSRF_USE_SESSIONS = False  # Guarda el token CSRF en cookies, no en sesión
+CSRF_COOKIE_SAMESITE = 'Lax'  # 'Lax' es un buen compromiso entre seguridad y usabilidad
+SESSION_COOKIE_SAMESITE = 'Lax'
 
 
