@@ -110,6 +110,8 @@ class Asistente(models.Model):
     phone = models.CharField(max_length=20, verbose_name="Número de celular")
     dni = models.CharField(max_length=32, unique=True, null=True, blank=True, verbose_name="DNI")
     dni_update_token = models.CharField(max_length=64, unique=True, null=True, blank=True, verbose_name="Token de actualización de DNI")
+    dni_email_sent = models.BooleanField(default=False, verbose_name="Email de solicitud DNI enviado")
+    dni_email_sent_date = models.DateTimeField(null=True, blank=True, verbose_name="Fecha envío email DNI")
     profile_type = models.CharField(max_length=30, choices=ProfileType.choices, verbose_name="Tipo de Perfil")
     
     # Campo adicional para roles específicos (ej: "Colaborador/a Estudiante", "Colaborador/a Docente")

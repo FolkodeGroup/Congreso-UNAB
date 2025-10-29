@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db import models
 from django.utils import timezone
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
@@ -47,14 +48,29 @@ class AsistenteAdmin(admin.ModelAdmin):
         con un enlace para que actualicen su DNI.
         
         LÍMITE: Máximo 50 correos por ejecución para evitar timeouts.
+        Solo envía a quienes NO han recibido el correo previamente.
         """
-        # Filtrar solo asistentes sin DNI válido (con token asignado)
+        # Filtrar solo asistentes sin DNI válido (con token asignado) Y que no hayan recibido el correo
         asistentes_sin_dni = queryset.filter(
-            dni__isnull=True
-        ) | queryset.filter(dni='')
+            models.Q(dni__isnull=True) | models.Q(dni=''),
+            dni_email_sent=False  # Solo quienes NO han recibido el correo
+        )
         
         if not asistentes_sin_dni.exists():
-            self.message_user(request, "Los asistentes seleccionados ya tienen DNI válido.", level='warning')
+            # Verificar si hay asistentes que ya recibieron el correo
+            ya_enviados = queryset.filter(
+                models.Q(dni__isnull=True) | models.Q(dni=''),
+                dni_email_sent=True
+            ).count()
+            
+            if ya_enviados > 0:
+                self.message_user(
+                    request, 
+                    f"✅ Los {ya_enviados} asistentes seleccionados ya recibieron el correo de solicitud de DNI.",
+                    level='info'
+                )
+            else:
+                self.message_user(request, "Los asistentes seleccionados ya tienen DNI válido.", level='warning')
             return
         
         # LIMITAR a 50 para evitar timeout de Gunicorn
@@ -65,7 +81,8 @@ class AsistenteAdmin(admin.ModelAdmin):
         if total_sin_dni > MAX_EMAILS:
             self.message_user(
                 request, 
-                f"⚠️ Hay {total_sin_dni} asistentes sin DNI. Solo se enviarán {MAX_EMAILS} correos en este lote. "
+                f"⚠️ Hay {total_sin_dni} asistentes sin DNI que no han recibido el correo. "
+                f"Solo se enviarán {MAX_EMAILS} correos en este lote. "
                 f"Ejecuta la acción nuevamente para enviar los siguientes.",
                 level='warning'
             )
@@ -99,6 +116,11 @@ class AsistenteAdmin(admin.ModelAdmin):
                 email.attach_alternative(html_content, "text/html")
                 email.send()
                 
+                # MARCAR como enviado
+                asistente.dni_email_sent = True
+                asistente.dni_email_sent_date = timezone.now()
+                asistente.save(update_fields=['dni_email_sent', 'dni_email_sent_date'])
+                
                 enviados += 1
             except Exception as e:
                 errores += 1
@@ -112,7 +134,7 @@ class AsistenteAdmin(admin.ModelAdmin):
             mensaje += f" ⚠️ {sin_token} sin token (ejecuta fix_dni.py)."
         if total_sin_dni > MAX_EMAILS:
             pendientes = total_sin_dni - MAX_EMAILS
-            mensaje += f" 📬 Quedan {pendientes} pendientes."
+            mensaje += f" 📬 Quedan {pendientes} pendientes de enviar."
         
         self.message_user(request, mensaje)
     
