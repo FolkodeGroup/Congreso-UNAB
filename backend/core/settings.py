@@ -252,4 +252,7 @@ CSRF_USE_SESSIONS = False  # Guarda el token CSRF en cookies, no en sesión
 CSRF_COOKIE_SAMESITE = 'Lax'  # 'Lax' es un buen compromiso entre seguridad y usabilidad
 SESSION_COOKIE_SAMESITE = 'Lax'
 
+# URL del frontend para enlaces en emails
+FRONTEND_URL = "https://www.congresologistica.unab.edu.ar"
+
 
