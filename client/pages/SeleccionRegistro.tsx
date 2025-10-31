@@ -66,7 +66,8 @@ export default function SeleccionRegistro() {
             </Card>
           </Link>
 
-          <Link to="/registro-empresas" className="group block">
+          {/* REGISTRO DE EMPRESAS TEMPORALMENTE OCULTO */}
+          {/* <Link to="/registro-empresas" className="group block">
             <Card className="selection-card form-glass border-0 form-shadow-soft hover:form-shadow-hover transition-all duration-500 hover:-translate-y-2 overflow-hidden">
               <CardContent className="p-8 relative">
                 <div className="flex items-center space-x-6">
@@ -95,11 +96,10 @@ export default function SeleccionRegistro() {
                   </div>
                 </div>
                 
-                {/* Efecto de gradiente sutil en hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-congress-cyan/5 to-congress-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </CardContent>
             </Card>
-          </Link>
+          </Link> */}
         </div>
 
         {/* Footer informativo elegante */}
