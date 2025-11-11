@@ -40,7 +40,52 @@ class AsistenteAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'email', 'dni', 'asistencia_confirmada', 'fecha_confirmacion')
     list_filter = (DNIFilter, 'asistencia_confirmada', 'fecha_confirmacion')
     search_fields = ('first_name', 'last_name', 'email', 'dni')
-    actions = ['confirmar_asistencia', 'enviar_certificados', 'enviar_solicitud_actualizacion_dni']
+    actions = ['confirmar_asistencia', 'enviar_certificados', 'enviar_solicitud_actualizacion_dni', 'enviar_certificados_lote_40']
+    def enviar_certificados_lote_40(self, request, queryset):
+        """
+        Envía certificados solo a los asistentes seleccionados, confirmados el 15 de noviembre,
+        en lotes de 40 para evitar errores de envío masivo.
+        """
+        from datetime import datetime, timedelta
+        from django.utils import timezone
+        # Fecha del evento: 15 de noviembre de 2025
+        fecha_evento = datetime(2025, 11, 15, tzinfo=timezone.get_current_timezone())
+        fecha_inicio = fecha_evento.replace(hour=0, minute=0, second=0, microsecond=0)
+        fecha_fin = fecha_evento.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+        # Filtrar solo asistentes confirmados el 15 de noviembre
+        asistentes = queryset.filter(
+            asistencia_confirmada=True,
+            fecha_confirmacion__range=(fecha_inicio, fecha_fin)
+        )
+        total = asistentes.count()
+        if total == 0:
+            self.message_user(request, "No hay asistentes confirmados el 15 de noviembre en la selección.", level='warning')
+            return
+
+        # Enviar en lotes de 40
+        LOTE = 40
+        enviados = 0
+        errores = 0
+        asistentes_lote = asistentes[:LOTE]
+        for asistente in asistentes_lote:
+            try:
+                certificado, _ = Certificado.objects.get_or_create(
+                    asistente=asistente,
+                    tipo_certificado=Certificado.TipoCertificado.ASISTENCIA
+                )
+                send_certificate_email(certificado)
+                enviados += 1
+            except Exception as e:
+                errores += 1
+        mensaje = f"Se enviaron {enviados} certificados en este lote."
+        if errores:
+            mensaje += f" Hubo {errores} errores."
+        if total > LOTE:
+            mensaje += f" Quedan {total - LOTE} asistentes pendientes. Ejecuta la acción nuevamente para continuar."
+        self.message_user(request, mensaje)
+
+    enviar_certificados_lote_40.short_description = "Enviar certificados (confirmados 15/11, lote de 40)"
 
     def enviar_solicitud_actualizacion_dni(self, request, queryset):
         """
