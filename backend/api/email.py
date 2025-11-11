@@ -381,26 +381,10 @@ def send_certificate_email(certificado_instance):
     }
 
     try:
-        # Renderizar la plantilla HTML del certificado
-        html_string = render_to_string('api/certificate/asistencia.html', context)
-
-        # Generar el PDF con xhtml2pdf
-        pdf_file_buffer = io.BytesIO()
-        result = pisa.CreatePDF(html_string, dest=pdf_file_buffer)
-        
-        if result.err:
-            raise Exception(f"Error generando PDF: {result.err}")
-        
-        pdf_file = pdf_file_buffer.getvalue()
-
-        # Guardar el PDF en el modelo Certificado
-        from django.core.files.base import ContentFile
-        certificado_instance.pdf_generado.save(
-            f'certificado_{asistente.nombre_completo.replace(" ", "_")}_{asistente.dni}.pdf',
-            ContentFile(pdf_file),
-            save=True
-        )
-
+        # Generar el PDF usando el método del modelo Certificado (imagen base personalizada)
+        certificado_instance.generar_pdf(save=True)
+        # Leer el PDF generado
+        pdf_file = certificado_instance.pdf_generado.read()
         # Crear el email
         email = EmailMultiAlternatives(
             subject='Certificado de Asistencia al Congreso de Logística UNAB',
@@ -413,7 +397,6 @@ def send_certificate_email(certificado_instance):
             pdf_file,
             'application/pdf'
         )
-        
         # Enviar el email
         email.send(fail_silently=False)
         print(f"Certificado enviado exitosamente a {asistente.email}")

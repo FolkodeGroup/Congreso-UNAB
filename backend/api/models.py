@@ -218,18 +218,48 @@ class Certificado(models.Model):
         return f"Certificado de {self.get_tipo_certificado_display()} para {self.asistente.first_name} {self.asistente.last_name}"
 
     def generar_pdf(self, save=True):
+        """
+        Genera un PDF personalizado usando la imagen base y superponiendo el nombre del asistente.
+        """
+        import os
+        from PIL import Image, ImageDraw, ImageFont
+        from io import BytesIO
+        from django.core.files.base import ContentFile
+
+        # Ruta de la imagen base
+        base_path = os.path.join(os.path.dirname(__file__), '../certificates/Certificados-congreso.png')
+        base_path = os.path.abspath(base_path)
+        # Escribir el nombre en mayúsculas para reemplazar el texto de la plantilla
+        nombre_apellido = f"{self.asistente.first_name} {self.asistente.last_name}".upper()
+
+        # Abrir la imagen base
+        img = Image.open(base_path).convert("RGBA")
+        draw = ImageDraw.Draw(img)
+
+        # Fuente (ajusta la ruta y tamaño según el diseño y el servidor)
+        # Puedes cambiar la ruta a una fuente que tengas disponible
+        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+        # Ajustar tamaño de fuente y posición para que reemplace exactamente 'NOMBRE Y APELLIDO'
+        font_size = 110  # Puedes ajustar este valor si el texto no encaja perfecto
+        try:
+            font = ImageFont.truetype(font_path, font_size)
+        except Exception:
+            font = ImageFont.load_default()
+
+        # Medir el texto para centrarlo (Pillow moderno: usar textbbox)
+        bbox = draw.textbbox((0, 0), nombre_apellido, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+        x = (img.width - text_width) // 2
+        y = 470  # Ajusta este valor para que el texto quede justo encima de 'ha participado del'
+
+        # Escribir el texto (color azul similar al diseño)
+        draw.text((x, y), nombre_apellido, font=font, fill=(18, 90, 150, 255))
+
+        # Convertir la imagen a PDF en memoria
         buffer = BytesIO()
-        c = canvas.Canvas(buffer, pagesize=letter)
-        c.setFont("Helvetica-Bold", 20)
-        c.drawCentredString(300, 700, "Certificado de Asistencia")
-        c.setFont("Helvetica", 14)
-        c.drawCentredString(300, 650, f"Se certifica que {self.asistente.first_name} {self.asistente.last_name}")
-        c.drawCentredString(300, 630, f"asistió a la Convención de Logística UNaB")
-        c.drawCentredString(300, 610, f"Fecha de emisión: {self.fecha_generacion.strftime('%d/%m/%Y')}")
-        c.setFont("Helvetica", 10)
-        c.drawCentredString(300, 570, "Folkode Group - UNaB 2025")
-        c.showPage()
-        c.save()
+        rgb_img = img.convert('RGB')
+        rgb_img.save(buffer, format="PDF")
         buffer.seek(0)
         file_name = f"certificado_{self.asistente.email}.pdf"
         self.pdf_generado.save(file_name, ContentFile(buffer.getvalue()), save=save)
