@@ -143,32 +143,46 @@ function getDisertanteColor(disertante: string): string {
 // Función para construir la URL completa de la imagen del disertante
 function getDisertanteImageUrl(fotoUrl: string): string {
   if (!fotoUrl) return "";
+  
   const DOMAIN_PROD = "https://www.congresologistica.unab.edu.ar";
   let url = fotoUrl.trim();
-  // Forzar HTTPS si viene con http://
-  if (url.startsWith("http://")) {
-    url = url.replace("http://", "https://");
-  }
-  // Si ya es una URL absoluta https://
+  
+  // Si ya viene como URL absoluta HTTPS válida, retornarla directamente
   if (url.startsWith("https://")) {
     return url;
   }
-  // Si es ruta absoluta /media/...
+  
+  // Forzar HTTPS si viene con http://
+  if (url.startsWith("http://")) {
+    return url.replace("http://", "https://");
+  }
+  
+  // Limpiar rutas mal formadas que incluyen el path completo del servidor
+  if (url.includes("Congreso-UNAB/backend/media/")) {
+    url = url.split("media/")[1];
+    return `${DOMAIN_PROD}/media/${url}`;
+  }
+  
+  // Si es ruta absoluta del servidor /media/...
   if (url.startsWith("/media/")) {
     return `${DOMAIN_PROD}${url}`;
   }
+  
   // Si es solo ponencias/imagen.png
   if (url.startsWith("ponencias/")) {
     return `${DOMAIN_PROD}/media/${url}`;
   }
+  
   // Si es una ruta relativa tipo media/...
   if (url.startsWith("media/")) {
     return `${DOMAIN_PROD}/${url}`;
   }
+  
   // Si es solo el nombre del archivo (ej: nombre.png)
   if (!url.includes("/")) {
     return `${DOMAIN_PROD}/media/ponencias/${url}`;
   }
+  
   // Default: asumir que es una ruta relativa en media
   return `${DOMAIN_PROD}/media/${url}`;
 }
@@ -989,6 +1003,13 @@ export default function Programa() {
                         alt={modalActividad.disertantes[0].nombre}
                         className="w-full h-full object-cover"
                         onError={(e) => {
+                          // Log del error para debugging
+                          console.error('Error cargando imagen del disertante:', {
+                            nombre: modalActividad.disertantes[0]?.nombre,
+                            foto_url_original: modalActividad.disertantes[0]?.foto_url,
+                            foto_url_procesada: getDisertanteImageUrl(modalActividad.disertantes[0]?.foto_url)
+                          });
+                          
                           // Fallback si la imagen no carga
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
@@ -1061,6 +1082,15 @@ export default function Programa() {
                           src={getDisertanteImageUrl(d.foto_url)}
                           alt={d.nombre}
                           className="w-20 h-20 object-cover rounded-full border border-gray-200 shadow-sm flex-shrink-0"
+                          onError={(e) => {
+                            console.error('Error cargando imagen del disertante en lista:', {
+                              nombre: d.nombre,
+                              foto_url_original: d.foto_url,
+                              foto_url_procesada: getDisertanteImageUrl(d.foto_url)
+                            });
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                          }}
                         />
                       )}
                       <div className="flex-1">
