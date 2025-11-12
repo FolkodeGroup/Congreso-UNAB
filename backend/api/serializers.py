@@ -12,17 +12,56 @@ class DisertanteSerializer(serializers.ModelSerializer):
         fields = ['nombre', 'bio', 'foto_url', 'tema_presentacion', 'linkedin']
 
     def get_foto_url(self, obj):
-        # Si hay imagen subida, devolver la URL absoluta
+        """
+        Devuelve la URL absoluta de la foto del disertante.
+        Garantiza que siempre sea HTTPS y tenga el dominio correcto.
+        """
         request = self.context.get('request', None)
+        foto_url = ""
+        
+        # Prioridad 1: Imagen subida al sistema (ImageField)
         if obj.foto:
             if request is not None:
-                return request.build_absolute_uri(obj.foto.url)
+                foto_url = request.build_absolute_uri(obj.foto.url)
             else:
-                return obj.foto.url
-        # Si no, devolver el valor manual (si existe)
-        if obj.foto_url:
-            return obj.foto_url
-        return ""
+                # Sin request, construir manualmente la URL absoluta
+                foto_url = f"https://www.congresologistica.unab.edu.ar{obj.foto.url}"
+        
+        # Prioridad 2: URL manual (CharField)
+        elif obj.foto_url:
+            foto_url = obj.foto_url.strip()
+        
+        # Si no hay foto, retornar vacío
+        if not foto_url:
+            return ""
+        
+        # Limpiar y normalizar la URL
+        # Caso 1: Rutas absolutas mal formadas con path completo del servidor
+        if "Congreso-UNAB/backend/media/" in foto_url:
+            # Extraer solo la parte de media/ponencias/archivo.png
+            foto_url = foto_url.split("media/")[-1]
+            foto_url = f"https://www.congresologistica.unab.edu.ar/media/{foto_url}"
+        
+        # Caso 2: Rutas relativas que empiezan con ponencias/
+        elif foto_url.startswith("ponencias/"):
+            foto_url = f"https://www.congresologistica.unab.edu.ar/media/{foto_url}"
+        
+        # Caso 3: Rutas que empiezan con media/
+        elif foto_url.startswith("media/"):
+            foto_url = f"https://www.congresologistica.unab.edu.ar/{foto_url}"
+        
+        # Caso 4: Rutas absolutas del servidor /media/
+        elif foto_url.startswith("/media/"):
+            foto_url = f"https://www.congresologistica.unab.edu.ar{foto_url}"
+        
+        # Caso 5: URLs HTTP - convertir a HTTPS
+        elif foto_url.startswith("http://"):
+            foto_url = foto_url.replace("http://", "https://")
+        
+        # Caso 6: Ya es una URL completa HTTPS - dejarla como está
+        # (no hace falta hacer nada)
+        
+        return foto_url
 
 class ProgramaSerializer(serializers.ModelSerializer):
     disertantes = serializers.SerializerMethodField()
