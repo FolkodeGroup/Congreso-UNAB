@@ -40,7 +40,49 @@ class AsistenteAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'email', 'dni', 'asistencia_confirmada', 'fecha_confirmacion')
     list_filter = (DNIFilter, 'asistencia_confirmada', 'fecha_confirmacion')
     search_fields = ('first_name', 'last_name', 'email', 'dni')
-    actions = ['confirmar_asistencia', 'enviar_certificados', 'enviar_solicitud_actualizacion_dni', 'enviar_certificados_lote_40']
+    actions = ['confirmar_asistencia', 'enviar_certificados', 'enviar_solicitud_actualizacion_dni', 'enviar_certificados_lote_40', 'exportar_no_estudiantes_xls']
+
+    def exportar_no_estudiantes_xls(self, request, queryset):
+        """
+        Exporta los asistentes seleccionados que NO son estudiantes a un archivo Excel (.xls)
+        """
+        import xlwt
+        from django.http import HttpResponse
+
+        # Filtrar solo los que no son estudiantes
+        asistentes = queryset.exclude(profile_type='STUDENT')
+        if not asistentes.exists():
+            self.message_user(request, "No hay asistentes no estudiantes en la selección.", level='warning')
+            return
+
+        # Crear libro y hoja
+        wb = xlwt.Workbook()
+        ws = wb.add_sheet('No Estudiantes')
+
+        # Definir campos a exportar
+        campos = [
+            'first_name', 'last_name', 'email', 'dni', 'phone', 'profile_type',
+            'rol_especifico', 'is_unab_student', 'institution', 'career', 'year_of_study',
+            'career_taught', 'work_area', 'occupation', 'company_name', 'group_name',
+            'group_municipality', 'group_size', 'asistencia_confirmada', 'fecha_confirmacion'
+        ]
+        # Escribir cabeceras
+        for col, campo in enumerate(campos):
+            ws.write(0, col, campo)
+
+        # Escribir datos
+        for row, asistente in enumerate(asistentes, start=1):
+            for col, campo in enumerate(campos):
+                valor = getattr(asistente, campo, '')
+                ws.write(row, col, str(valor) if valor is not None else '')
+
+        # Preparar respuesta
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=asistentes_no_estudiantes.xls'
+        wb.save(response)
+        return response
+
+    exportar_no_estudiantes_xls.short_description = "Exportar asistentes NO estudiantes a Excel (.xls)"
     def enviar_certificados_lote_40(self, request, queryset):
         """
         Envía certificados solo a los asistentes seleccionados, confirmados el 15 de noviembre,
