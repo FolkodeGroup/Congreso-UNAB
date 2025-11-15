@@ -40,7 +40,42 @@ class AsistenteAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'email', 'dni', 'asistencia_confirmada', 'fecha_confirmacion')
     list_filter = (DNIFilter, 'asistencia_confirmada', 'fecha_confirmacion')
     search_fields = ('first_name', 'last_name', 'email', 'dni')
-    actions = ['confirmar_asistencia', 'enviar_certificados', 'enviar_solicitud_actualizacion_dni', 'enviar_certificados_lote_40', 'exportar_no_estudiantes_xls']
+    actions = ['confirmar_asistencia', 'enviar_certificados', 'enviar_solicitud_actualizacion_dni', 'enviar_certificados_lote_40', 'exportar_no_estudiantes_xls', 'exportar_asistentes_xls']
+    def exportar_asistentes_xls(self, request, queryset):
+        """
+        Exporta todos los asistentes seleccionados a un archivo Excel (.xls)
+        """
+        import xlwt
+        from django.http import HttpResponse
+
+        asistentes = queryset
+        if not asistentes.exists():
+            self.message_user(request, "No hay asistentes en la selección.", level='warning')
+            return
+
+        wb = xlwt.Workbook()
+        ws = wb.add_sheet('Asistentes')
+
+        campos = [
+            'first_name', 'last_name', 'email', 'dni', 'phone', 'profile_type',
+            'rol_especifico', 'is_unab_student', 'institution', 'career', 'year_of_study',
+            'career_taught', 'work_area', 'occupation', 'company_name', 'group_name',
+            'group_municipality', 'group_size', 'asistencia_confirmada', 'fecha_confirmacion'
+        ]
+        for col, campo in enumerate(campos):
+            ws.write(0, col, campo)
+
+        for row, asistente in enumerate(asistentes, start=1):
+            for col, campo in enumerate(campos):
+                valor = getattr(asistente, campo, '')
+                ws.write(row, col, str(valor) if valor is not None else '')
+
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=asistentes.xls'
+        wb.save(response)
+        return response
+
+    exportar_asistentes_xls.short_description = "Exportar asistentes seleccionados a Excel (.xls)"
 
     def exportar_no_estudiantes_xls(self, request, queryset):
         """
