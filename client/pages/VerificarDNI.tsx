@@ -160,10 +160,10 @@ export default function VerificarDNI() {
               className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg py-2 rounded"
               onClick={() => {
                 setShowModal(false);
-                navigate("/registro-rapido");
+                navigate("/seleccion-registro");
               }}
             >
-              Ir a Registro Rápido
+              Ir a Selección de Registro
             </Button>
           </div>
         </div>
