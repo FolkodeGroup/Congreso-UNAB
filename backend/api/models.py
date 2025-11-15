@@ -107,7 +107,7 @@ class Asistente(models.Model):
     first_name = models.CharField(max_length=100, verbose_name="Nombre")
     last_name = models.CharField(max_length=100, verbose_name="Apellido")
     email = models.EmailField(unique=True, verbose_name="Correo electrónico")
-    phone = models.CharField(max_length=20, verbose_name="Número de celular")
+    phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Número de celular")
     dni = models.CharField(max_length=32, unique=True, null=True, blank=True, verbose_name="DNI")
     dni_update_token = models.CharField(max_length=64, unique=True, null=True, blank=True, verbose_name="Token de actualización de DNI")
     dni_email_sent = models.BooleanField(default=False, verbose_name="Email de solicitud DNI enviado")

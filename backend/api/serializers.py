@@ -135,6 +135,7 @@ class AsistenteSerializer(serializers.ModelSerializer):
     miembros_grupo = MiembroGrupoSerializer(many=True, required=False)  # Mantenemos compatibilidad
     miembros_grupo_nuevos = AsistenteGrupoSerializer(many=True, required=False, write_only=True)  # Nueva estructura
     miembros_representados = serializers.SerializerMethodField()  # Para lectura
+    phone = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     class Meta:
         model = Asistente

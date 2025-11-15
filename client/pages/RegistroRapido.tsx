@@ -58,33 +58,52 @@ export default function RegistroRapido() {
   const tipoInscripcion = watch("tipo_inscripcion");
 
   const onSubmit = async (data: RegistroRapidoFormData) => {
-    const payload = {
-      tipo_inscripcion: data.tipo_inscripcion,
+    // Separar nombre completo en first_name y last_name
+    let first_name = "";
+    let last_name = "";
+    if (data.nombre_completo) {
+      const partes = data.nombre_completo.trim().split(" ");
+      first_name = partes.shift() || "";
+      last_name = partes.join(" ") || "";
+    }
+
+    // Si empresa es string vacía, enviar null
+    let empresa = data.empresa && data.empresa.trim() !== "" ? data.empresa : null;
+    // Si nombre_grupo es string vacía, no enviarlo
+
+    const payload: any = {
       asistente: {
-        nombre_completo: data.nombre_completo,
+        first_name,
+        last_name,
         dni: data.dni,
         email: data.email,
+        profile_type: data.tipo_inscripcion === "GRUPO" ? "GROUP_REPRESENTATIVE" : "VISITOR",
+        group_name: data.tipo_inscripcion === "GRUPO" ? data.nombre_grupo : undefined,
+        company_name: data.tipo_inscripcion === "EMPRESA" ? data.empresa : undefined,
       },
-      empresa: data.empresa || null,
-      nombre_grupo: data.nombre_grupo || "",
+      empresa: data.tipo_inscripcion === "EMPRESA" ? empresa : null,
     };
 
     try {
-      const response = await fetch(`${API_HOST}/api/registro-rapido/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+      const response = await fetch(`${API_HOST}/api/registro-rapido/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(payload),
+      });
 
-      const result = await response.json();
+      let result: any = {};
+      try {
+        result = await response.json();
+      } catch (e) {
+        // Si la respuesta no es JSON, mostrar error genérico
+        result = { message: "Respuesta inesperada del servidor." };
+      }
 
       if (response.ok) {
         setShowModal(true);
-        setAsistente(data);
+        setAsistente({ ...data, first_name, last_name });
         toast({
           title: "✅ Registro exitoso",
           description: "Tu asistencia ha sido confirmada correctamente",
@@ -93,14 +112,14 @@ export default function RegistroRapido() {
       } else {
         toast({
           title: "Error en el registro",
-          description: result.message || "No se pudo completar el registro. Por favor, verifica los datos e intenta nuevamente.",
+          description: typeof result.message === "string" ? result.message : JSON.stringify(result),
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error de conexión",
-        description: "No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet e intenta nuevamente.",
+        description: error?.message || "No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet e intenta nuevamente.",
         variant: "destructive",
       });
     }
