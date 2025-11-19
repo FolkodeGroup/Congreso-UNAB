@@ -1,0 +1,30 @@
+# Archivos sensibles y de entorno
+*.env
+*.env.*
+/Congreso-UNAB/backend/.env
+
+# Archivos de configuración locales
+.config/
+env/
+
+# Dependencias y compilados
+node_modules/
+dist/
+dist-ssr/
+*.local
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Archivos y carpetas de editores
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+__pycache__/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
