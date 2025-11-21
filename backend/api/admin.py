@@ -16,10 +16,10 @@ class DNIFilter(admin.SimpleListFilter):
     parameter_name = 'dni_status'
 
     def lookups(self, request, model_admin):
-        return (
+        return [
             ('sin_dni', 'Sin DNI'),
             ('con_dni', 'Con DNI'),
-        )
+        ]
 
     def queryset(self, request, queryset):
         if self.value() == 'sin_dni':
@@ -75,7 +75,7 @@ class AsistenteAdmin(admin.ModelAdmin):
         wb.save(response)
         return response
 
-    exportar_asistentes_xls.short_description = "Exportar asistentes seleccionados a Excel (.xls)"
+    exportar_asistentes_xls.short_description = "Exportar asistentes seleccionados a Excel (.xls)"  # type: ignore
 
     def exportar_no_estudiantes_xls(self, request, queryset):
         """
@@ -117,7 +117,7 @@ class AsistenteAdmin(admin.ModelAdmin):
         wb.save(response)
         return response
 
-    exportar_no_estudiantes_xls.short_description = "Exportar asistentes NO estudiantes a Excel (.xls)"
+    exportar_no_estudiantes_xls.short_description = "Exportar asistentes NO estudiantes a Excel (.xls)"  # type: ignore
     def enviar_certificados_lote_40(self, request, queryset):
         """
         Envía certificados solo a los asistentes seleccionados, confirmados el 15 de noviembre,
@@ -162,7 +162,7 @@ class AsistenteAdmin(admin.ModelAdmin):
             mensaje += f" Quedan {total - LOTE} asistentes pendientes. Ejecuta la acción nuevamente para continuar."
         self.message_user(request, mensaje)
 
-    enviar_certificados_lote_40.short_description = "Enviar certificados (confirmados 15/11, lote de 40)"
+    enviar_certificados_lote_40.short_description = "Enviar certificados (confirmados 15/11, lote de 40)"  # type: ignore
 
     def enviar_solicitud_actualizacion_dni(self, request, queryset):
         """
@@ -260,7 +260,7 @@ class AsistenteAdmin(admin.ModelAdmin):
         
         self.message_user(request, mensaje)
     
-    enviar_solicitud_actualizacion_dni.short_description = "Enviar solicitud de actualización de DNI (máx. 50)"
+    enviar_solicitud_actualizacion_dni.short_description = "Enviar solicitud de actualización de DNI (máx. 50)"  # type: ignore
 
     def confirmar_asistencia(self, request, queryset):
         updated_count = 0
@@ -281,7 +281,7 @@ class AsistenteAdmin(admin.ModelAdmin):
                 updated_count += 1
         
         self.message_user(request, f"{updated_count} asistencias confirmadas y certificados enviados.")
-    confirmar_asistencia.short_description = "Confirmar asistencia y enviar certificado"
+    confirmar_asistencia.short_description = "Confirmar asistencia y enviar certificado"  # type: ignore
 
     def enviar_certificados(self, request, queryset):
         sent_count = 0
@@ -294,7 +294,7 @@ class AsistenteAdmin(admin.ModelAdmin):
             sent_count += 1
         
         self.message_user(request, f"{sent_count} certificados enviados.")
-    enviar_certificados.short_description = "Enviar certificados a asistentes confirmados"
+    enviar_certificados.short_description = "Enviar certificados a asistentes confirmados"  # type: ignore
 
 class CertificadoAdmin(admin.ModelAdmin):
     list_display = ('asistente', 'tipo_certificado', 'fecha_generacion')

@@ -99,6 +99,8 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# --- FORZAR BASE DE DATOS LOCAL (SQLITE) PARA PRUEBAS ---
+# Usa la base de datos correcta según el entorno (development o production).
 if os.getenv('DJANGO_ENV') == 'development':
     DATABASES = {
         'default': {
@@ -148,7 +150,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # EMAIL_PORT=587
 # EMAIL_USE_TLS=True
 
+# Backend de email para producción
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# Para probar en local, comenta la línea de arriba y descomenta la siguiente:
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
@@ -159,7 +165,7 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 # Validación básica para evitar errores comunes
 if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
     print("[ERROR] EMAIL_HOST_USER o EMAIL_HOST_PASSWORD no están definidos en el .env. El envío de emails fallará.")
-if EMAIL_HOST_USER and '@gmail.com' in EMAIL_HOST_USER and len(EMAIL_HOST_PASSWORD) < 16:
+if EMAIL_HOST_USER and '@gmail.com' in EMAIL_HOST_USER and EMAIL_HOST_PASSWORD and len(EMAIL_HOST_PASSWORD) < 16:
     print("[ADVERTENCIA] Gmail requiere una contraseña de aplicación (16 caracteres) si tienes 2FA activado. Verifica tu .env.")
 
 
@@ -206,6 +212,9 @@ CORS_ALLOWED_ORIGINS = [
     'https://congresologistica.unab.edu.ar',
 ]
 CORS_ALLOW_ALL_ORIGINS = True
+# ¡IMPORTANTE! Se establece en False por seguridad en producción.
+# Solo los orígenes en CORS_ALLOWED_ORIGINS podrán acceder a la API.
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     'accept',
@@ -241,6 +250,8 @@ if not DEBUG:
     # SESSION_COOKIE_SECURE = True  # Requiere HTTPS
     # CSRF_COOKIE_DOMAIN = '.congresologistica.unab.edu.ar'
     
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
     # Configuración para proxy inverso (Nginx)
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
@@ -254,5 +265,3 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 
 # URL del frontend para enlaces en emails
 FRONTEND_URL = "https://www.congresologistica.unab.edu.ar"
-
-

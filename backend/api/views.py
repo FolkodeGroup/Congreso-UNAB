@@ -187,7 +187,8 @@ class VerificarDNIView(views.APIView):
             tipo_certificado=Certificado.TipoCertificado.ASISTENCIA
         )
         
-        # send_certificate_email(certificado) # Commented out for testing
+        # Enviar el certificado por email
+        send_certificate_email(certificado)
 
         # Preparar la respuesta con los datos del asistente
         asistente_data = AsistenteSerializer(asistente).data
@@ -224,7 +225,8 @@ class RegistroRapidoView(mixins.CreateModelMixin, viewsets.GenericViewSet):
                 tipo_certificado=Certificado.TipoCertificado.ASISTENCIA
             )
             
-            # send_certificate_email(certificado) # Commented out for testing
+            # Enviar el certificado por email
+            send_certificate_email(certificado)
             
             headers = self.get_success_headers(serializer.data)
             return Response({
@@ -494,15 +496,15 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
                 for index, row in df.iterrows():
                     try:
                         # Extraer datos de la fila
-                        first_name = str(row[columnas_mapeadas['NOMBRE']]).strip() if pd.notna(row[columnas_mapeadas['NOMBRE']]) else ''
-                        last_name = str(row[columnas_mapeadas['Apellido']]).strip() if pd.notna(row[columnas_mapeadas['Apellido']]) else ''
-                        email = str(row[columnas_mapeadas['CORREO ELECTRONICO']]).strip() if pd.notna(row[columnas_mapeadas['CORREO ELECTRONICO']]) else ''
+                        first_name = str(row[columnas_mapeadas['NOMBRE']]).strip() if pd.notna(row[columnas_mapeadas['NOMBRE']]) else '' # type: ignore
+                        last_name = str(row[columnas_mapeadas['Apellido']]).strip() if pd.notna(row[columnas_mapeadas['Apellido']]) else '' # type: ignore
+                        email = str(row[columnas_mapeadas['CORREO ELECTRONICO']]).strip() if pd.notna(row[columnas_mapeadas['CORREO ELECTRONICO']]) else '' # type: ignore
                         
                         # Validar datos mínimos
                         if not first_name or not last_name or not email:
                             resultados['errores'] += 1
                             resultados['detalles'].append({
-                                'fila': index + 2,  # +2 porque empezamos en 0 y hay header
+                                'fila': index + 2,  # type: ignore # +2 porque empezamos en 0 y hay header
                                 'error': 'Faltan datos básicos (nombre, apellido, email)',
                                 'datos': {'nombre': first_name, 'apellido': last_name, 'email': email}
                             })
@@ -512,7 +514,7 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
                         if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
                             resultados['errores'] += 1
                             resultados['detalles'].append({
-                                'fila': index + 2,
+                                'fila': index + 2, # type: ignore
                                 'error': 'Formato de email inválido',
                                 'datos': {'email': email}
                             })
@@ -522,7 +524,7 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
                         if Asistente.objects.filter(email=email).exists():
                             resultados['errores'] += 1
                             resultados['detalles'].append({
-                                'fila': index + 2,
+                                'fila': index + 2, # type: ignore
                                 'error': 'Email ya registrado',
                                 'datos': {'email': email}
                             })
@@ -530,8 +532,8 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
 
                         # Procesar DNI (puede ser nulo)
                         dni = None
-                        if 'DNI' in columnas_mapeadas and pd.notna(row[columnas_mapeadas['DNI']]):
-                            dni_raw = str(row[columnas_mapeadas['DNI']]).strip()
+                        if 'DNI' in columnas_mapeadas and pd.notna(row[columnas_mapeadas['DNI']]): # type: ignore
+                            dni_raw = str(row[columnas_mapeadas['DNI']]).strip() # type: ignore
                             # Limpiar DNI (remover puntos, guiones, etc.)
                             dni = re.sub(r'[^\d]', '', dni_raw)
                             if dni and len(dni) > 0:
@@ -539,7 +541,7 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
                                 if Asistente.objects.filter(dni=dni).exists():
                                     resultados['errores'] += 1
                                     resultados['detalles'].append({
-                                        'fila': index + 2,
+                                        'fila': index + 2, # type: ignore
                                         'error': 'DNI ya registrado',
                                         'datos': {'dni': dni}
                                     })
@@ -549,13 +551,13 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
 
                         # Procesar teléfono (puede ser vacío)
                         phone = ''
-                        if 'NUMERO DE CELULAR (con código de área)' in columnas_mapeadas and pd.notna(row[columnas_mapeadas['NUMERO DE CELULAR (con código de área)']]):
-                            phone = str(row[columnas_mapeadas['NUMERO DE CELULAR (con código de área)']]).strip()
+                        if 'NUMERO DE CELULAR (con código de área)' in columnas_mapeadas and pd.notna(row[columnas_mapeadas['NUMERO DE CELULAR (con código de área)']]): # type: ignore
+                            phone = str(row[columnas_mapeadas['NUMERO DE CELULAR (con código de área)']]).strip() # type: ignore
 
                         # Procesar tipo de perfil
                         profile_type = Asistente.ProfileType.OTRO  # Por defecto OTRO
-                        if 'TIPO DE PERFIL' in columnas_mapeadas and pd.notna(row[columnas_mapeadas['TIPO DE PERFIL']]):
-                            tipo_perfil_raw = str(row[columnas_mapeadas['TIPO DE PERFIL']]).strip().upper()
+                        if 'TIPO DE PERFIL' in columnas_mapeadas and pd.notna(row[columnas_mapeadas['TIPO DE PERFIL']]): # type: ignore
+                            tipo_perfil_raw = str(row[columnas_mapeadas['TIPO DE PERFIL']]).strip().upper() # type: ignore
                             
                             # Mapear tipos de perfil
                             mapeo_perfiles = {
@@ -576,8 +578,8 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
 
                         # Procesar rol específico (Columna1)
                         rol_especifico = None
-                        if 'Columna1' in columnas_mapeadas and pd.notna(row[columnas_mapeadas['Columna1']]):
-                            rol_especifico = str(row[columnas_mapeadas['Columna1']]).strip()
+                        if 'Columna1' in columnas_mapeadas and pd.notna(row[columnas_mapeadas['Columna1']]): # type: ignore
+                            rol_especifico = str(row[columnas_mapeadas['Columna1']]).strip() # type: ignore
 
                         # Crear asistente
                         asistente = Asistente.objects.create(
@@ -592,9 +594,9 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
 
                         resultados['exitosos'] += 1
                         resultados['detalles'].append({
-                            'fila': index + 2,
+                            'fila': index + 2, # type: ignore
                             'success': 'Registro creado exitosamente',
-                            'id': asistente.id,
+                            'id': asistente.pk,
                             'datos': {
                                 'nombre': first_name,
                                 'apellido': last_name,
@@ -619,11 +621,11 @@ class CargaMasivaAsistentesCompletaView(views.APIView):
                     except Exception as e:
                         resultados['errores'] += 1
                         resultados['detalles'].append({
-                            'fila': index + 2,
+                            'fila': index + 2, # type: ignore
                             'error': f'Error procesando fila: {str(e)}'
                         })
 
-                    resultados['total_procesados'] += 1
+                    resultados['total_procesados'] += 1 # type: ignore
 
             return Response({
                 'status': 'success',
@@ -726,7 +728,7 @@ class CargaMasivaAsistentesView(views.APIView):
                         if not email or not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
                             resultados['errores'] += 1
                             resultados['detalles'].append({
-                                'fila': index + 2,
+                                'fila': index + 2, # type: ignore
                                 'email': email,
                                 'error': 'Email inválido o vacío'
                             })
@@ -736,7 +738,7 @@ class CargaMasivaAsistentesView(views.APIView):
                         if Asistente.objects.filter(email=email).exists():
                             resultados['errores'] += 1
                             resultados['detalles'].append({
-                                'fila': index + 2,
+                                'fila': index + 2, # type: ignore
                                 'email': email,
                                 'error': 'Email ya registrado'
                             })
@@ -772,10 +774,10 @@ class CargaMasivaAsistentesView(views.APIView):
 
                         resultados['exitosos'] += 1
                         resultados['detalles'].append({
-                            'fila': index + 2,
+                            'fila': index + 2, # type: ignore
                             'email': email,
                             'nombre': f"{asistente.first_name} {asistente.last_name}",
-                            'profile_type': asistente.get_profile_type_display(),
+                            'profile_type': asistente.get_profile_type_display(), # type: ignore
                             'estado': 'creado'
                         })
 
@@ -793,11 +795,11 @@ class CargaMasivaAsistentesView(views.APIView):
                     except Exception as e:
                         resultados['errores'] += 1
                         resultados['detalles'].append({
-                            'fila': index + 2,
+                            'fila': index + 2, # type: ignore
                             'error': f'Error procesando fila: {str(e)}'
                         })
 
-                    resultados['total_procesados'] += 1
+                    resultados['total_procesados'] += 1 # type: ignore
 
             return Response({
                 'status': 'success',
@@ -864,7 +866,7 @@ class ActualizarDNIView(views.APIView):
             from .serializers import AsistenteSerializer
             serializer = AsistenteSerializer()
             try:
-                dni_validado = serializer.validate_dni(nuevo_dni)
+                dni_validado = serializer.validate_dni(nuevo_dni) # type: ignore
             except serializers.ValidationError as e:
                 return Response({
                     'status': 'error',
@@ -872,7 +874,7 @@ class ActualizarDNIView(views.APIView):
                 }, status=status.HTTP_400_BAD_REQUEST)
             
             # Verificar si el DNI ya existe
-            if Asistente.objects.filter(dni=dni_validado).exclude(id=asistente.id).exists():
+            if Asistente.objects.filter(dni=dni_validado).exclude(id=asistente.pk).exists():
                 return Response({
                     'status': 'error',
                     'message': 'Este DNI ya está registrado en el sistema.'
